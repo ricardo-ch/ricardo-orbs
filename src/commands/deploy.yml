@@ -1,0 +1,11 @@
+description: >
+  Deploy to a GKE cluster to given environment. Use Isopod. Environment can be dev or prod.
+parameters:
+  to:
+    type: string
+    default: dev
+steps:
+  - auth_gke
+  - run:
+      name: Deploy to cluster
+      command: isopod deploy --environment << parameters.to >>

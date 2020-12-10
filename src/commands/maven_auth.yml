@@ -1,0 +1,14 @@
+description: >
+  Command for creating ${HOME}/.m2/settings.xml file. Expects content to present in environment variable.
+  Content needs to be 64bit encoded. Input parameter `maven_credentials` is name environment/context
+  variable.
+parameters:
+  maven_credentials:
+    type: env_var_name
+    default: ARTIFACTORY_MAVEN_CREDENTIALS
+steps:
+  - run:
+      name: Set Maven credentials
+      command: |
+        mkdir ${HOME}/.m2
+        echo -e "${<< parameters.maven_credentials >>}" | base64 -d > ${HOME}/.m2/settings.xml

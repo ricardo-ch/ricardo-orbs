@@ -1,0 +1,190 @@
+description: |
+  Sample example description.
+usage:
+  version: 2.1
+
+  orbs:
+    ric-orb: ricardo/ric-orb@dev:f105181
+
+  references:
+    qa: &qa
+      quality_checks:
+        - ric-orb/auth_gke
+        - run:
+            name: Install newman
+            command: npm install newman --global
+        - ric-orb/gke_port_forward:
+            context: $GKE_CLUSTER_NAME
+            target: svc/marketplace-spa-svc
+            port: 3333
+            namespace: marketplace-spa
+        - run:
+            name: Run integration tests
+            command: make test-integration
+
+      # This is the original deploy process
+      # - run:
+      #     name: Deploy to cluster
+      #     command: isopod deploy --environment << parameters.to >>
+
+      # This deploy process is a workaround for this issue: https://github.com/kubernetes/kubernetes/issues/72775
+      # We should be revert to the regular process, after we updated our clusters to Kubernetes 1.16
+
+    pre_deploy:
+      predeploy_steps: &predeploy
+        - ric-orb/auth_gke
+        - run:
+            name: Removing HPA during deployment
+            command: kubectl delete  hpa -n marketplace-spa marketplace-spa || true
+
+    deploy_dev:
+      deploy_steps: &deploy_dev
+        - run:
+            name: Generating all Kubernetes resources
+            command: isopod deploy --environment dev --dry-run
+
+    deploy_prod:
+      deploy_steps: &deploy_prod
+        - run:
+            name: Generating all Kubernetes resources
+            command: isopod deploy --environment prod --dry-run
+
+    post_deploy:
+      postdeploy_steps: &postdeploy
+        - run:
+            name: Applying all resources except HPA
+            command: |
+              K_PATH=/tmp/$(ls /tmp/ | grep -e "-k8s-m")
+              for r in $(ls $K_PATH/ | grep -v autoscaler); do kubectl apply -f $K_PATH/$r; done
+        - run:
+            name: Wait for the deployment to finish for max 5min
+            command: kubectl rollout status deployment marketplace-spa -n marketplace-spa --timeout=300s || true
+        - run:
+            name: Applying HPA resources
+            command: |
+              K_PATH=/tmp/$(ls /tmp/ | grep -e "-k8s-m")
+              kubectl apply -f $K_PATH/$(ls $K_PATH | grep autoscaler)
+
+  workflows:
+    version: 2
+    release_workflow:
+      jobs:
+        - ric-orb/build_push_image:
+            lang: node
+            prebuild_steps:
+              - run:
+                  name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
+                  command: printenv > .env.sentry
+            docker_layer_cashing: true
+            name: docker
+            context: dev
+            filters:
+              branches:
+                only:
+                  - master
+        - ric-orb/deploy_job:
+            context: dev
+            name: dev_deploy
+            predeploy_steps: *predeploy
+            deploy_steps: *deploy_dev
+            postdeploy_steps: *postdeploy
+            requires:
+              - docker
+        - ric-orb/quality_gate_job:
+            executor: cypress-with-gcloud
+            name: integration-test
+            context: dev
+            <<: *qa
+            requires:
+              - dev_deploy
+        - ric-orb/deploy_job:
+            context: prod
+            name: prod_deploy
+            predeploy_steps: *predeploy
+            deploy_steps: *deploy_prod
+            postdeploy_steps: *postdeploy
+            requires:
+              - integration-test
+
+
+    development_workflow:
+      jobs:
+        - ric-orb/quality_gate_job:
+            executor: js
+            context: dev
+            resource_class: large
+            cache_name: dependency-cache-{{ checksum "yarn.lock" }}
+            cache_path: "~/.cache"
+            quality_checks:
+              - ric-orb/npm_auth
+              - run:
+                  name: Installing dependencies
+                  command: make install
+              - run:
+                  name: Test that the app can successfully build
+                  command: make build
+              - run:
+                  name: Linting
+                  command: make test-lint
+              - run:
+                  name: Check typing
+                  command: make test-ts
+              - run:
+                  name: Running tests
+                  command: make test-jest
+              - store_test_results:
+                  path: reports/junit
+              - store_artifacts:
+                  path: reports/junit
+            filters:
+              branches:
+                ignore:
+                  - master
+        - request_branch_deployment_to_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            lang: node
+            prebuild_steps:
+              - run:
+                  name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
+                  command: printenv > .env.sentry
+            docker_layer_cashing: true
+            name: docker
+            context: dev
+            requires:
+              - request_branch_deployment_to_dev
+        - ric-orb/deploy_job:
+            env: dev
+            context: dev
+            name: dev_deploy
+            predeploy_steps: *predeploy
+            deploy_steps: *deploy_dev
+            postdeploy_steps: *postdeploy
+            requires:
+              - docker
+        - ric-orb/quality_gate_job:
+            executor: cypress-with-gcloud
+            name: integration-test
+            context: dev
+            <<: *qa
+            requires:
+              - dev_deploy
+
+  executors:
+    cypress-with-gcloud:
+      docker:
+        - image: ric-docker.jfrog.io/ricardo-ch/node12-cypress-with-gcloud:latest
+          auth:
+            username: $DOCKER_JFROG_USERNAME
+            password: $DOCKER_JFROG_PASSWORD
+      working_directory: /go/src/github.com/ricardo-ch/users-domain-api
+    js:
+      docker:
+        - image: circleci/node:erbium-buster
+          auth:
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD

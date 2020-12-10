@@ -1,0 +1,10 @@
+description: >
+  This command deploys artifact to GCP with isopod. Required context/environment variables:
+    - GCLOUD_SERVICE_KEY
+    - GOOGLE_PROJECT_ID
+    - GKE_COMPUTE_ZONE
+    - GKE_CLUSTER_NAME
+steps:
+  - run:
+      name: Authenticate to GKE
+      command: <<include(scripts/authenticate.sh)>>

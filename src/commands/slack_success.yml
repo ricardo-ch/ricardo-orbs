@@ -1,0 +1,21 @@
+description: >
+  This command sends message to channel if action is successful.
+# What will this command do?
+# Descriptions should be short, simple, and clear.
+parameters:
+  branches:
+    type: string
+    default: master
+    description: Comma separated list of branches for which notification is sent
+  webhook:
+    type: string
+    description: Slack webhook.
+    default: ${SLACK_WEBHOOK}
+steps:
+  - slack/status:
+      only_for_branches: << parameters.branches >>
+      success_message: |
+        :tada: $CIRCLE_JOB job has succeeded!
+        *User*: $CIRCLE_USERNAME
+        *Commit*: https://github.com/ricardo-ch/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1
+      webhook: << parameters.webhook >>

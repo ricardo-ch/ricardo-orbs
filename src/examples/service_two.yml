@@ -1,0 +1,68 @@
+description: >
+  Sample example description.
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+usage:
+  version: 2.1
+
+  orbs:
+    ric-orb: ricardo/ric-orb@dev:db3895f
+
+  workflows:
+    version: 2
+    release_workflow:
+      jobs:
+        - ric-orb/build_push_image:
+            context: dev
+            filters:
+              branches:
+                only:
+                  - master
+        - ric-orb/deploy_job:
+            name: deploy_dev
+            env: dev
+            context: dev
+            requires:
+              - ric-orb/build_push_image
+        - ric-orb/deploy_job:
+            name: prod
+            env: prod
+            context: prod
+            requires:
+              - deploy_dev
+
+    development_workflow:
+      jobs:
+        - ric-orb/quality_gate_job:
+            executor: go
+            context: dev
+        - request_branch_deployment_to_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            name: build_image
+            context: dev
+            requires:
+              - request_branch_deployment_to_dev
+        - ric-orb/deploy_job:
+            slack_ok_webhook: https://hooks.slack.com/...
+            slack_ok_branches: test-orb
+            slack_fail_webhook: https://hooks.slack.com/...
+            slack_fail_branches: test-orb
+            env: dev
+            context: dev
+            requires:
+              - build_image
+
+  executors:
+    go:
+      docker:
+        - image: circleci/golang:1.14
+          auth:
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD
+      working_directory: /go/src/github.com/ricardo-ch/orders-domain-api

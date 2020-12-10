@@ -1,0 +1,15 @@
+description: >
+  Login to Docker Registry
+parameters:
+  url:
+    type: string
+    default: ""
+    description: "Registry URL"
+  username:
+    type: string
+  password:
+    type: string
+steps:
+  - run:
+      name: Login to Docker Registry
+      command: docker login -u <<parameters.username>> -p <<parameters.password>> <<parameters.url>>

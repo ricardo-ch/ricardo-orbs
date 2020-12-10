@@ -1,0 +1,136 @@
+description: |
+  Sample example description.
+usage:
+  version: 2.1
+
+  references:
+    deploy_cfg: &deploy_cfg
+      isopod_version: 0.16.1
+      private_hub_username: $DOCKER_JFROG_USERNAME
+      private_hub_password: $DOCKER_JFROG_PASSWORD
+    build_cfg: &build_cfg
+      isopod_version: 0.16.1
+      private_hub_username: $DOCKER_JFROG_USERNAME
+      private_hub_password: $DOCKER_JFROG_PASSWORD
+      docker_hub_username: $DOCKER_HUB_USERNAME
+      docker_hub_password: $DOCKER_HUB_PASSWORD
+      private_hub_url: $DOCKER_JFROG_REGISTRY_URL
+      cache_name: dependency-cache-{{ checksum "go.sum" }}
+    qa: &qa
+      quality_checks:
+        - ric-orb/auth_gke
+        - run:
+            name: Install newman
+            command: npm install newman --global
+        - ric-orb/gke_port_forward:
+            context: $GKE_CLUSTER_NAME
+            port: 8080
+            namespace: payment
+            target: svc/payment-api-svc
+        - run:
+            name: Run integration tests
+            command: make test-integration
+
+  orbs:
+    ric-orb: ricardo/ric-orb@dev:db3895f
+
+  workflows:
+    version: 2
+    release_workflow:
+      jobs:
+        - ric-orb/build_push_image:
+            <<: *build_cfg
+            context: dev
+            filters:
+              branches:
+                only:
+                  - master
+        - ric-orb/deploy_job:
+            name: deploy_dev
+            <<: *deploy_cfg
+            env: dev
+            context: dev
+            requires:
+              - ric-orb/build_push_image
+        - ric-orb/quality_gate_job:
+            executor: cypress-with-gcloud
+            name: integration-test
+            context: dev
+            <<: *qa
+            requires:
+              - deploy_dev
+        - ric-orb/deploy_job:
+            name: prod
+            <<: *deploy_cfg
+            env: prod
+            context: prod
+            requires:
+              - integration-test
+
+    development_workflow:
+      jobs:
+        - ric-orb/quality_gate_job:
+            executor: go
+            context: dev
+            cache_name: dependency-cache-{{ checksum "go.sum" }}
+            cache_path: "$GOPATH/pkg/mod"
+        - request_branch_deployment_to_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            <<: *build_cfg
+            context: dev
+            requires:
+              - request_branch_deployment_to_dev
+        - ric-orb/deploy_job:
+            <<: *deploy_cfg
+            env: dev
+            context: dev
+            name: dev_deploy
+            requires:
+              - ric-orb/build_push_image
+        - ric-orb/quality_gate_job:
+            executor: cypress-with-gcloud
+            name: integration-test
+            context: dev
+            <<: *qa
+            requires:
+              - deploy_dev
+
+  executors:
+    cypress-with-gcloud:
+      docker:
+        - image: node10-cypress-with-gcloud:latest
+          auth:
+            username: $DOCKER_JFROG_USERNAME
+            password: $DOCKER_JFROG_PASSWORD
+      working_directory: somepath
+    go:
+      docker:
+        - image: circleci/golang:1.14
+          auth:
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD
+      working_directory: somepath
+
+  jobs:
+
+    integration-test:
+      executor: cypress-with-gcloud
+      steps:
+        - checkout
+        - ric-orb/auth_gke
+        - run:
+            name: Install newman
+            command: npm install newman --global
+        - ric-orb/gke_port_forward:
+            context: $GKE_CLUSTER_NAME
+            port: 8080
+            namespace: payment
+            target: svc/target-svc
+        - run:
+            name: Run integration tests
+            command: make test-integration
