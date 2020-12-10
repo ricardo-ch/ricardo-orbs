@@ -1,0 +1,20 @@
+description: >
+  Setup port forwarding in GKE cluster to the target in given namespace. Requires to authenticated to
+  the GKE. Executor needs dockersize tool in the PATH.
+parameters:
+  target:
+    type: string
+  port:
+    type: integer
+  namespace:
+    type: string
+  context:
+    type: string
+steps:
+  - run:
+      background: true
+      name: Setup port forwarding to target
+      command: kubectl port-forward --context <<parameters.context>> -n <<parameters.namespace>> <<parameters.target>> <<parameters.port>>
+  - run:
+      name: Wait for port forwarding setup completion
+      command: dockerize -wait tcp://localhost:<<parameters.port>> -timeout 60s

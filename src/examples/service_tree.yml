@@ -1,0 +1,73 @@
+description: >
+  Sample example description.
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+usage:
+  version: 2.1
+
+  orbs:
+    ric-orb: ricardo/ric-orb@dev:0397e57
+
+  workflows:
+    version: 2
+    release_workflow:
+      jobs:
+        - ric-orb/build_push_image:
+            name: build_image
+            context: prod
+            filters:
+              branches:
+                only:
+                  - master
+        - ric-orb/deploy_job:
+            name: deploy_dev
+            env: dev
+            context: dev
+            requires:
+              - build_image
+        - ric-orb/deploy_job:
+            name: deploy_prod
+            env: prod
+            context: prod
+            requires:
+              - deploy_dev
+
+    development_workflow:
+      jobs:
+        - ric-orb/quality_gate_job:
+            name: quality-gate
+            executor: jdk
+            context: dev
+            quality_checks:
+              - ric-orb/maven_auth
+              - run: mvn verify
+            filters:
+              branches:
+                ignore:
+                  - master
+        - request_branch_deployment_to_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            name: build_image
+            context: dev
+            requires:
+              - request_branch_deployment_to_dev
+              - quality-gate
+        - ric-orb/deploy_job:
+            env: dev
+            context: dev
+            requires:
+              - build_image
+
+  executors:
+    jdk:
+      docker:
+        - image: maven:3.6-jdk-11-slim
+          auth:
+            username: $DOCKER_HUB_USERNAME
+            password: $DOCKER_HUB_PASSWORD

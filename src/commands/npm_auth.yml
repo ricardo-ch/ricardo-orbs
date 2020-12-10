@@ -1,0 +1,12 @@
+description: >
+  Command for creating ${HOME}/.npmrc file. Expects content to be present in environment variable.
+  Content needs to be 64bit encoded. Input parameter `npm_credentials` is name environment/context
+  variable.
+parameters:
+  npm_credentials:
+    type: env_var_name
+    default: NPM_RC
+steps:
+  - run:
+      name: Set NPM credentials
+      command: echo -e ${<< parameters.npm_credentials >>} | base64 -d > .npmrc

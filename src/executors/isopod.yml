@@ -1,0 +1,21 @@
+description: >
+  Isopod executor
+docker:
+  - image: 'ric-docker.jfrog.io/ricardo-ch/isopod:<<parameters.tag>>'
+    auth:
+      username: <<parameters.username>>
+      password: <<parameters.password>>
+parameters:
+  tag:
+    default: latest
+    description: >
+      Pick a specific ricardo-ch/isopod image variant.
+    type: string
+  username:
+    type: string
+    description: >
+      Artifactory username.
+  password:
+    type: string
+    description: >
+      Artifactory password.

@@ -1,0 +1,94 @@
+description: >
+  This job builds and pushes Docker image to private Docker hub. It uses isopod for building and pushing.
+  As dependencies can be pulled from Docker HUB authentication is needed for it as well.
+executor:
+  name: isopod
+  tag: <<parameters.isopod_version>>
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
+parameters:
+  isopod_version:
+    type: string
+    default: latest
+  docker_hub_username:
+    type: string
+    default: $DOCKER_HUB_USERNAME
+  docker_hub_password:
+    type: string
+    default: $DOCKER_HUB_PASSWORD
+  private_hub_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  private_hub_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
+  private_hub_url:
+    type: string
+    default: $DOCKER_JFROG_REGISTRY_URL
+  cache_name:
+    type: string
+    default: ""
+  maven_credentials:
+    type: string
+    default: ARTIFACTORY_MAVEN_CREDENTIALS
+  npm_credentials:
+    type: string
+    default: NPM_RC
+  docker_layer_cashing:
+    type: boolean
+    default: false
+  docker_version:
+    type: string
+    default: "19.03.13"
+  prebuild_steps:
+    type: steps
+    description: "Steps that will run before build"
+    default: []
+  build_steps:
+    type: steps
+    description: "Steps that will run quality checks"
+    default:
+      - run:
+          name: Build the Docker image
+          command: isopod build
+  postbuild_steps:
+    type: steps
+    description: "Steps that will run after build"
+    default: []
+  lang:
+    type: enum
+    enum: [ "java", "node", "go" ]
+    default: "go"
+steps:
+  - checkout
+  - when:
+      condition:
+        equal: [ "java", << parameters.lang >> ]
+      steps:
+        - maven_auth:
+            maven_credentials: << parameters.maven_credentials >>
+  - when:
+      condition:
+        equal: [ "node", << parameters.lang >> ]
+      steps:
+        - npm_auth:
+            npm_credentials: << parameters.npm_credentials >>
+  - setup_remote_docker:
+      docker_layer_caching: << parameters.docker_layer_cashing >>
+      version: << parameters.docker_version >>
+  - login_docker_registry:
+      username: <<parameters.docker_hub_username>>
+      password: <<parameters.docker_hub_password>>
+  - login_docker_registry:
+      url: <<parameters.private_hub_url>>
+      username: <<parameters.private_hub_username>>
+      password: <<parameters.private_hub_password>>
+  - when:
+      condition: <<parameters.cache_name>>
+      steps:
+        - restore_cache:
+            name: restore the dependencies cache
+            key: <<parameters.cache_name>>
+  - steps: << parameters.prebuild_steps >>
+  - steps: << parameters.build_steps >>
+  - steps: << parameters.postbuild_steps >>

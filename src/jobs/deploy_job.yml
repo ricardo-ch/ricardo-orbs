@@ -1,0 +1,68 @@
+description: >
+  Job for deploying to GKE cluster for environment(dev|prod).
+executor:
+  name: isopod
+  tag: <<parameters.isopod_version>>
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
+parameters:
+  isopod_version:
+    type: string
+    default: latest
+  private_hub_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  private_hub_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
+  env:
+    type: string
+    default: dev
+  predeploy_steps:
+    type: steps
+    description: "Steps that will run before build"
+    default: [ ]
+  deploy_steps:
+    type: steps
+    description: "Steps that will run quality checks"
+    default: [ ]
+  postdeploy_steps:
+    type: steps
+    description: "Steps that will run after build"
+    default: [ ]
+  slack_ok_webhook:
+    type: string
+    default: ""
+  slack_ok_branches:
+    type: string
+    default: master
+  slack_fail_webhook:
+    type: string
+    default: ""
+  slack_fail_branches:
+    type: string
+    default: master
+steps:
+  - checkout
+  - steps: << parameters.predeploy_steps >>
+  - when:
+      condition: << parameters.deploy_steps >>
+      steps: << parameters.deploy_steps >>
+  - unless:
+      condition: << parameters.deploy_steps >>
+      steps:
+        - deploy:
+            to: <<parameters.env>>
+  - steps: << parameters.postdeploy_steps >>
+  - when:
+      condition: << parameters.slack_ok_webhook >>
+      steps:
+        - slack_failure:
+            branches: << parameters.slack_ok_branches >>
+            webhook: << parameters.slack_ok_webhook >>
+  - when:
+      condition: << parameters.slack_fail_webhook >>
+      steps:
+        - slack_success:
+            branches: << parameters.slack_fail_branches >>
+            webhook: << parameters.slack_fail_webhook >>
