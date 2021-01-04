@@ -25,7 +25,9 @@ parameters:
   deploy_steps:
     type: steps
     description: "Steps that will run deploy procedure"
-    default: [ ]
+  default_deploy:
+    type: boolean
+    default: true
   postdeploy_steps:
     type: steps
     description: "Steps that will run after deploy process"
@@ -45,15 +47,15 @@ parameters:
 steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
-  - when:
-      condition: << parameters.deploy_steps >>
-      steps:
-        - run: echo "default"
-        - << parameters.deploy_steps >>
   - unless:
-      condition: << parameters.deploy_steps >>
+      condition: << parameters.default_deploy >>
       steps:
-        - run: echo "non default"
+        - run: echo "custom deploy"
+        - << parameters.deploy_steps >>
+  - when:
+      condition: << parameters.default_deploy >>
+      steps:
+        - run: echo "default deploy"
         - deploy:
             to: <<parameters.env>>
   - steps: << parameters.postdeploy_steps >>
