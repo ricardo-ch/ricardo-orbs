@@ -46,10 +46,14 @@ steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
   - when:
-      condition: << parameters.deploy_steps >>
+      condition:
+        - not:
+            equal: [ [], << parameters.deploy_steps >> ]
       steps: << parameters.deploy_steps >>
-  - unless:
-      condition: << parameters.deploy_steps >>
+  - when:
+      condition:
+        - and:
+            equal: [ [ ], << parameters.deploy_steps >> ]
       steps:
         - deploy:
             to: <<parameters.env>>
