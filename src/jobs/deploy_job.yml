@@ -25,7 +25,7 @@ parameters:
   deploy_steps:
     type: steps
     description: "Steps that will run quality checks"
-    default: ""
+    default: [ ]
   postdeploy_steps:
     type: steps
     description: "Steps that will run after build"
