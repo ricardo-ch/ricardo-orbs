@@ -20,15 +20,15 @@ parameters:
     default: dev
   predeploy_steps:
     type: steps
-    description: "Steps that will run before build"
+    description: "Steps that will run before deploy process"
     default: [ ]
   deploy_steps:
     type: steps
-    description: "Steps that will run quality checks"
+    description: "Steps that will run deploy procedure"
     default: [ ]
   postdeploy_steps:
     type: steps
-    description: "Steps that will run after build"
+    description: "Steps that will run after deploy process"
     default: [ ]
   slack_ok_webhook:
     type: string
@@ -47,10 +47,13 @@ steps:
   - steps: << parameters.predeploy_steps >>
   - when:
       condition: << parameters.deploy_steps >>
-      steps: << parameters.deploy_steps >>
+      steps:
+        - run: echo "default"
+        - << parameters.deploy_steps >>
   - unless:
       condition: << parameters.deploy_steps >>
       steps:
+        - run: echo "non default"
         - deploy:
             to: <<parameters.env>>
   - steps: << parameters.postdeploy_steps >>
