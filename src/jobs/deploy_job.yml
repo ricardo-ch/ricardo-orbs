@@ -25,7 +25,6 @@ parameters:
   deploy_steps:
     type: steps
     description: "Steps that will run quality checks"
-    default: [ ]
   postdeploy_steps:
     type: steps
     description: "Steps that will run after build"
@@ -46,14 +45,10 @@ steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
   - when:
-      condition:
-        - not:
-            equal: [ [], << parameters.deploy_steps >> ]
+      condition: << parameters.deploy_steps >>
       steps: << parameters.deploy_steps >>
-  - when:
-      condition:
-        - and:
-            equal: [ [ ], << parameters.deploy_steps >> ]
+  - unless:
+      condition: << parameters.deploy_steps >>
       steps:
         - deploy:
             to: <<parameters.env>>
