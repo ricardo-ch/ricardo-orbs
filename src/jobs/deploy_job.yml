@@ -25,6 +25,7 @@ parameters:
   deploy_steps:
     type: steps
     description: "Steps that will run deploy procedure"
+    default: [ ]
   default_deploy:
     type: boolean
     default: true
