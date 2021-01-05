@@ -33,15 +33,23 @@ parameters:
     type: steps
     description: "Steps that will run after deploy process"
     default: [ ]
+  slack_notify_success:
+    type: boolean
+    description: "Flag to trigger sending slack notification on success"
+    default: false
   slack_ok_webhook:
     type: string
-    default: ""
+    default: ${SLACK_WEBHOOK}
   slack_ok_branches:
     type: string
     default: master
+  slack_notify_failure:
+    type: boolean
+    description: "Flag to trigger sending slack notification on failure"
+    default: false
   slack_fail_webhook:
     type: string
-    default: ""
+    default: ${SLACK_WEBHOOK}
   slack_fail_branches:
     type: string
     default: master
@@ -61,13 +69,13 @@ steps:
             to: <<parameters.env>>
   - steps: << parameters.postdeploy_steps >>
   - when:
-      condition: << parameters.slack_ok_webhook >>
+      condition: << parameters.slack_notify_success >>
       steps:
         - slack_failure:
             branches: << parameters.slack_ok_branches >>
             webhook: << parameters.slack_ok_webhook >>
   - when:
-      condition: << parameters.slack_fail_webhook >>
+      condition: << parameters.slack_notify_failure >>
       steps:
         - slack_success:
             branches: << parameters.slack_fail_branches >>
