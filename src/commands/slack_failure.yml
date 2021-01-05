@@ -10,6 +10,7 @@ parameters:
   webhook:
     type: string
     description: Slack webhook.
+    default: ${SLACK_WEBHOOK}
 steps:
   - slack/status:
       only_for_branches: << parameters.branches >>
