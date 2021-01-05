@@ -71,12 +71,12 @@ steps:
   - when:
       condition: << parameters.slack_notify_success >>
       steps:
-        - slack_failure:
+        - slack_success:
             branches: << parameters.slack_ok_branches >>
             webhook: << parameters.slack_ok_webhook >>
   - when:
       condition: << parameters.slack_notify_failure >>
       steps:
-        - slack_success:
+        - slack_failure:
             branches: << parameters.slack_fail_branches >>
             webhook: << parameters.slack_fail_webhook >>
