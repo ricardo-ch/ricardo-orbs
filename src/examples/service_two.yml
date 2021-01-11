@@ -1,13 +1,18 @@
 description: >
-  Sample example description.
-# Provide a use-case based example for using this orb.
-# Everything in the `usage` section will be displayed in the orb registry.
-# Comments are not retained.
+  In this example shows:
+   - using default values for:
+      - isopod version ( default: latest )
+      - public docker hub
+      - private docker hub
+   - this is for go application
+   - slack default config
+   - slack custom config
 usage:
   version: 2.1
 
   orbs:
-    ric-orb: ricardo/ric-orb@dev:db3895f
+    ric-orb: ricardo/ric-orb@1.0.0
+
 
   workflows:
     version: 2
@@ -31,6 +36,8 @@ usage:
             context: prod
             requires:
               - deploy_dev
+            slack_notify_success: true
+            slack_notify_fail: true
 
     development_workflow:
       jobs:
@@ -49,10 +56,12 @@ usage:
             requires:
               - request_branch_deployment_to_dev
         - ric-orb/deploy_job:
-            slack_ok_webhook: https://hooks.slack.com/...
-            slack_ok_branches: test-orb
-            slack_fail_webhook: https://hooks.slack.com/...
-            slack_fail_branches: test-orb
+            slack_notify_success: true
+            slack_ok_branches: $CIRCLE_BRANCH
+            slack_ok_webhook: <slack web hook>
+            slack_notify_fail: true
+            slack_fail_webhook: <slack web hook>
+            slack_fail_branches: $CIRCLE_BRANCH
             env: dev
             context: dev
             requires:
@@ -63,6 +72,6 @@ usage:
       docker:
         - image: circleci/golang:1.14
           auth:
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
-      working_directory: /go/src/github.com/ricardo-ch/orders-domain-api
+            username: $MY_DOCKER_HUB_USERNAME
+            password: $MY_DOCKER_HUB_PASSWORD
+      working_directory: /go/src/github.com/myapp

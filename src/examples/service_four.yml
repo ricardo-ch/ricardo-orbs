@@ -1,10 +1,17 @@
 description: |
-  Sample example description.
+  In this example shows:
+   - using default values for:
+      - isopod version ( default: latest )
+      - public docker hub
+      - private docker hub
+   - no slack
+   - node app
+   - custom deployment
 usage:
   version: 2.1
 
   orbs:
-    ric-orb: ricardo/ric-orb@dev:f105181
+    ric-orb: ricardo/ric-orb@1.0.0
 
   references:
     qa: &qa
@@ -15,27 +22,19 @@ usage:
             command: npm install newman --global
         - ric-orb/gke_port_forward:
             context: $GKE_CLUSTER_NAME
-            target: svc/marketplace-spa-svc
+            target: svc/myapp_service
             port: 3333
-            namespace: marketplace-spa
+            namespace: myapp_service
         - run:
             name: Run integration tests
             command: make test-integration
-
-      # This is the original deploy process
-      # - run:
-      #     name: Deploy to cluster
-      #     command: isopod deploy --environment << parameters.to >>
-
-      # This deploy process is a workaround for this issue: https://github.com/kubernetes/kubernetes/issues/72775
-      # We should be revert to the regular process, after we updated our clusters to Kubernetes 1.16
 
     pre_deploy:
       predeploy_steps: &predeploy
         - ric-orb/auth_gke
         - run:
             name: Removing HPA during deployment
-            command: kubectl delete  hpa -n marketplace-spa marketplace-spa || true
+            command: kubectl delete  hpa -n myapp_service myapp_service || true
 
     deploy_dev:
       deploy_steps: &deploy_dev
@@ -58,7 +57,7 @@ usage:
               for r in $(ls $K_PATH/ | grep -v autoscaler); do kubectl apply -f $K_PATH/$r; done
         - run:
             name: Wait for the deployment to finish for max 5min
-            command: kubectl rollout status deployment marketplace-spa -n marketplace-spa --timeout=300s || true
+            command: kubectl rollout status deployment myapp_service -n myapp_service --timeout=300s || true
         - run:
             name: Applying HPA resources
             command: |
@@ -85,6 +84,7 @@ usage:
         - ric-orb/deploy_job:
             context: dev
             name: dev_deploy
+            default_deploy: false
             predeploy_steps: *predeploy
             deploy_steps: *deploy_dev
             postdeploy_steps: *postdeploy
@@ -98,6 +98,7 @@ usage:
             requires:
               - dev_deploy
         - ric-orb/deploy_job:
+            default_deploy: false
             context: prod
             name: prod_deploy
             predeploy_steps: *predeploy
@@ -158,6 +159,7 @@ usage:
             requires:
               - request_branch_deployment_to_dev
         - ric-orb/deploy_job:
+            default_deploy: false
             env: dev
             context: dev
             name: dev_deploy
@@ -177,14 +179,14 @@ usage:
   executors:
     cypress-with-gcloud:
       docker:
-        - image: ric-docker.jfrog.io/ricardo-ch/node12-cypress-with-gcloud:latest
+        - image: someimage:latest
           auth:
-            username: $DOCKER_JFROG_USERNAME
-            password: $DOCKER_JFROG_PASSWORD
-      working_directory: /go/src/github.com/ricardo-ch/users-domain-api
+            username: $PDOCKER_USERNAME
+            password: $PDOCKER_PASSWORD
+      working_directory: /go/src/github.com/myapp_service
     js:
       docker:
         - image: circleci/node:erbium-buster
           auth:
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
+            username: $MY_DOCKER_HUB_USERNAME
+            password: $MY_DOCKER_HUB_PASSWORD

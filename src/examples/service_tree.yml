@@ -1,19 +1,23 @@
 description: >
-  Sample example description.
-# Provide a use-case based example for using this orb.
-# Everything in the `usage` section will be displayed in the orb registry.
-# Comments are not retained.
+  In this example shows:
+   - using default values for:
+      - isopod version ( default: latest )
+      - public docker hub
+      - private docker hub
+   - no slack
+   - java app
 usage:
   version: 2.1
 
   orbs:
-    ric-orb: ricardo/ric-orb@dev:0397e57
+    ric-orb: ricardo/ric-orb@1.0.0
 
   workflows:
     version: 2
     release_workflow:
       jobs:
         - ric-orb/build_push_image:
+            lang: java
             name: build_image
             context: prod
             filters:
@@ -53,6 +57,7 @@ usage:
                 ignore:
                   - master
         - ric-orb/build_push_image:
+            lang: java
             name: build_image
             context: dev
             requires:

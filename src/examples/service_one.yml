@@ -1,20 +1,30 @@
 description: |
-  Sample example description.
+  This example shows:
+   - Specific version of the isopod.
+   - specify username/password for docker hub (public) when not usig default
+   - specify username/password for private docker hub when not usig default
+   - this is for go application
+   - custom quality checks
 usage:
   version: 2.1
 
   references:
+    isopod_version: &iv
+      isopod_version: 0.16.1
+    docker_hub: &dhub
+      docker_hub_username: $MY_DOCKER_HUB_USERNAME
+      docker_hub_password: $MY_DOCKER_HUB_PASSWORD
+    private_hub: &phub
+      private_hub_username: $PDOCKER_USERNAME
+      private_hub_password: $PDOCKER_PASSWORD
     deploy_cfg: &deploy_cfg
-      isopod_version: 0.16.1
-      private_hub_username: $DOCKER_JFROG_USERNAME
-      private_hub_password: $DOCKER_JFROG_PASSWORD
+      <<: *iv
+      <<: *phub
     build_cfg: &build_cfg
-      isopod_version: 0.16.1
-      private_hub_username: $DOCKER_JFROG_USERNAME
-      private_hub_password: $DOCKER_JFROG_PASSWORD
-      docker_hub_username: $DOCKER_HUB_USERNAME
-      docker_hub_password: $DOCKER_HUB_PASSWORD
-      private_hub_url: $DOCKER_JFROG_REGISTRY_URL
+      <<: *iv
+      <<: *phub
+      <<: *dhub
+      private_hub_url: $PDOCKER_REGISTRY_URL
       cache_name: dependency-cache-{{ checksum "go.sum" }}
     qa: &qa
       quality_checks:
@@ -26,13 +36,14 @@ usage:
             context: $GKE_CLUSTER_NAME
             port: 8080
             namespace: payment
-            target: svc/payment-api-svc
+            target: svc/mysvc-api-svc
         - run:
             name: Run integration tests
             command: make test-integration
 
+
   orbs:
-    ric-orb: ricardo/ric-orb@dev:db3895f
+    ric-orb: ricardo/ric-orb@1.0.0
 
   workflows:
     version: 2
@@ -70,10 +81,15 @@ usage:
     development_workflow:
       jobs:
         - ric-orb/quality_gate_job:
+            name: quality-gate
             executor: go
             context: dev
             cache_name: dependency-cache-{{ checksum "go.sum" }}
             cache_path: "$GOPATH/pkg/mod"
+            filters:
+              branches:
+                ignore:
+                  - master
         - request_branch_deployment_to_dev:
             type: approval
             filters:
@@ -85,6 +101,7 @@ usage:
             context: dev
             requires:
               - request_branch_deployment_to_dev
+              - quality-gate
         - ric-orb/deploy_job:
             <<: *deploy_cfg
             env: dev
@@ -98,39 +115,20 @@ usage:
             context: dev
             <<: *qa
             requires:
-              - deploy_dev
+              - dev_deploy
 
   executors:
     cypress-with-gcloud:
       docker:
-        - image: node10-cypress-with-gcloud:latest
+        - image: someimage:latest
           auth:
-            username: $DOCKER_JFROG_USERNAME
-            password: $DOCKER_JFROG_PASSWORD
-      working_directory: somepath
+            username: $PDOCKER_USERNAME
+            password: $PDOCKER_PASSWORD
+      working_directory: /go/src/github.com/myapp
     go:
       docker:
         - image: circleci/golang:1.14
           auth:
             username: $DOCKER_HUB_USERNAME
             password: $DOCKER_HUB_PASSWORD
-      working_directory: somepath
-
-  jobs:
-
-    integration-test:
-      executor: cypress-with-gcloud
-      steps:
-        - checkout
-        - ric-orb/auth_gke
-        - run:
-            name: Install newman
-            command: npm install newman --global
-        - ric-orb/gke_port_forward:
-            context: $GKE_CLUSTER_NAME
-            port: 8080
-            namespace: payment
-            target: svc/target-svc
-        - run:
-            name: Run integration tests
-            command: make test-integration
+      working_directory: /go/src/github.com/myapp
