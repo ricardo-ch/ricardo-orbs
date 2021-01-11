@@ -9,21 +9,16 @@ usage:
   version: 2.1
 
   references:
-    isopod_version: &iv
+    deploy_cfg: &deploy_cfg
       isopod_version: 0.16.1
-    docker_hub: &dhub
-      docker_hub_username: $MY_DOCKER_HUB_USERNAME
-      docker_hub_password: $MY_DOCKER_HUB_PASSWORD
-    private_hub: &phub
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
-    deploy_cfg: &deploy_cfg
-      <<: *iv
-      <<: *phub
     build_cfg: &build_cfg
-      <<: *iv
-      <<: *phub
-      <<: *dhub
+      isopod_version: 0.16.1
+      private_hub_username: $PDOCKER_USERNAME
+      private_hub_password: $PDOCKER_PASSWORD
+      docker_hub_username: $MY_DOCKER_HUB_USERNAME
+      docker_hub_password: $MY_DOCKER_HUB_PASSWORD
       private_hub_url: $PDOCKER_REGISTRY_URL
       cache_name: dependency-cache-{{ checksum "go.sum" }}
     qa: &qa
@@ -129,6 +124,6 @@ usage:
       docker:
         - image: circleci/golang:1.14
           auth:
-            username: $DOCKER_HUB_USERNAME
-            password: $DOCKER_HUB_PASSWORD
+            username: $MY_DOCKER_HUB_USERNAME
+            password: $MY_DOCKER_HUB_PASSWORD
       working_directory: /go/src/github.com/myapp
