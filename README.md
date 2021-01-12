@@ -61,4 +61,4 @@ Usage, examples and docs:
 * [Jobs](src/jobs/README.md)
 * [Scripts](src/scripts/README.md)
 * [Orb](src/README.md)
-* [Examples](src/README.md)
+* [Examples](src/examples/README.md)
