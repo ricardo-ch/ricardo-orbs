@@ -9,7 +9,6 @@ A starter template for orb projects. Build, test, and publish orbs automatically
 Additional READMEs are available in each directory.
 
 
-
 ## Resources
 
 [CircleCI Orb Registry Page](https://circleci.com/orbs/registry/orb/ricardo/ricardo-orbs) - The official registry page of this orb for all versions, executors, commands, and jobs described.
@@ -39,3 +38,27 @@ Example: `[semver:major]`
 
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
 
+## Status
+
+This orb is not listed. To list it again use `circleci orb unlist <namespace>/<orb> <true|false> [flags]` or [see docs](https://circleci-public.github.io/circleci-cli/circleci_orb_unlist.html).
+
+A currently released version is 1.0.0.
+
+## Usage
+
+To use the orb add this:
+```yaml
+orbs:
+    ric-orb: ricardo/ric-orb@1.0.0
+```
+
+to your `.circleci/config.yml` file.
+
+Usage, examples and docs:
+
+* [Commands](src/commands/README.md)
+* [Executors](src/executors/README.md)
+* [Jobs](src/jobs/README.md)
+* [Scripts](src/scripts/README.md)
+* [Orb](src/README.md)
+* [Examples](src/examples/README.md)

@@ -1,3 +1,5 @@
+[Home](../../README.md)
+
 # Executors
 
 Easily author and add [Parameterized Executors](https://circleci.com/docs/2.0/reusing-config/#executors) to the `src/executors` directory.
@@ -8,20 +10,17 @@ Executors can be used to parameterize the same environment across many jobs. Orb
 
 View the included _[hello.yml](./hello.yml)_ example.
 
+### Isopod
 
-```yaml
-description: >
-  This is a sample executor using Docker and Node.
-docker:
-  - image: 'cimg/node:<<parameters.tag>>'
-parameters:
-  tag:
-    default: lts
-    description: >
-      Pick a specific circleci/node image variant:
-      https://hub.docker.com/r/cimg/node/tags
-    type: string
-```
+**Name**: isopod
+
+**Parameters**:
+
+- **tag** isopod version, default *master*
+- **username** username for docker registry
+- **password** password for docker registry
+
+**Isopod** executor is parametrised executor with [isopod](https://github.com/ricardo-ch/isopod) installed. It is used for running jobs in this orb.
 
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
