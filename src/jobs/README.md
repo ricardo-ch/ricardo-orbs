@@ -226,7 +226,7 @@ jobs:
       requires:
         - deploy_dev
       slack_notify_success: true
-      slack_notify_fail: true
+      slack_notify_failure: true
 ...
 ```
 
@@ -242,7 +242,7 @@ jobs:
       context: prod
       requires:
         - deploy_dev
-      slack_notify_fail: true
+      slack_notify_failure: true
       slack_fail_webhook: http://...ddd.d.
 ...
 ```

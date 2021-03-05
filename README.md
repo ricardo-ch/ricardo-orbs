@@ -1,4 +1,4 @@
-# Orb Project Template
+# Ricardo Orb
 
 [![CircleCI Build Status](https://circleci.com/gh/ricardo-ch/ricardo-orbs.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/ricardo-ch/ricardo-orbs) [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/ricardo/ric-orb)](https://circleci.com/orbs/registry/orb/ricardo/ric-orb) [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
 
@@ -42,14 +42,14 @@ For further questions/comments about this or other orbs, visit the Orb Category 
 
 This orb is not listed. To list it again use `circleci orb unlist <namespace>/<orb> <true|false> [flags]` or [see docs](https://circleci-public.github.io/circleci-cli/circleci_orb_unlist.html).
 
-A currently released version is 1.0.0.
+A currently released version is 1.0.1.
 
 ## Usage
 
 To use the orb add this:
 ```yaml
 orbs:
-    ric-orb: ricardo/ric-orb@1.0.0
+    ric-orb: ricardo/ric-orb@1.0.1
 ```
 
 to your `.circleci/config.yml` file.
