@@ -34,8 +34,9 @@ This command uses ricardo's tool **isopod** to deploy application to GKE. It is 
 
 **Parameters**:
 
-- **to :** environment to execute deployment. Valid values: *dev* and *prod*. It is passed to isopod. 
+- **to** environment to execute deployment. Valid values: *dev* and *prod*. It is passed to isopod. 
   *Default is dev.*
+- **config** the isopod configuration file. *Default is isopod.yml*
 
 Example:
 
@@ -44,6 +45,7 @@ Example:
 steps:
   - ric-orb/deploy:
       to: prod
+      config: foo/isopod.yml
 ...
 ```
 

@@ -4,8 +4,11 @@ parameters:
   to:
     type: string
     default: dev
+  config:
+    type: string
+    default: isopod.yml
 steps:
   - auth_gke
   - run:
       name: Deploy to cluster
-      command: isopod deploy --environment << parameters.to >>
+      command: isopod -f << parameters.config >> deploy --environment << parameters.to >>
