@@ -20,8 +20,7 @@ We welcome [issues](https://github.com/ricardo-ch/ricardo-orbs/issues) to and [p
 
 ### How to Publish
 * Create and push a branch with your new features.
-* When ready to publish a new production version, create a Pull Request from fore _feature branch_ to `master`.
-* The title of the pull request must contain a special semver tag: `[semver:<segement>]` where `<segment>` is replaced by one of the following values.
+* When ready to publish a new production version, squash and merge the changes into the main branch with a commit title including a special semver tag: `[semver:<segement>]` where `<segment>` is replaced by one of the following values.
 
 | Increment | Description|
 | ----------| -----------|
@@ -32,9 +31,7 @@ We welcome [issues](https://github.com/ricardo-ch/ricardo-orbs/issues) to and [p
 
 Example: `[semver:major]`
 
-* Squash and merge. Ensure the semver tag is preserved and entered as a part of the commit message.
-* On merge, after manual approval, the orb will automatically be published to the Orb Registry.
-
+* On CircleCi, ensure to manually approve the workflow. After approval, the orb will automatically be published to the Orb Registry.
 
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
 
@@ -42,7 +39,7 @@ For further questions/comments about this or other orbs, visit the Orb Category 
 
 This orb is not listed. To list it again use `circleci orb unlist <namespace>/<orb> <true|false> [flags]` or [see docs](https://circleci-public.github.io/circleci-cli/circleci_orb_unlist.html).
 
-A currently released version is 1.0.1.
+The currently released version is 1.1.0.
 
 ## Known Issue
 
@@ -64,7 +61,7 @@ circleci orb pack ./src | circleci orb publish -  ricardo/ric-orb@dev:alpha
 To use the orb add this:
 ```yaml
 orbs:
-    ric-orb: ricardo/ric-orb@1.0.1
+    ric-orb: ricardo/ric-orb@1.1.0
 ```
 
 to your `.circleci/config.yml` file.
