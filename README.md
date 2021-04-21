@@ -44,6 +44,21 @@ This orb is not listed. To list it again use `circleci orb unlist <namespace>/<o
 
 A currently released version is 1.0.1.
 
+## Known Issue
+
+You may get this error when pushing a new PR,
+
+```bash
+The dev version of ricardo/ric-orb@dev:alpha has expired. Dev versions of orbs are only valid for 90 days after publishing.
+```
+
+If you see this error, you need to publish a dev:alpha version manually. The fix is to run this:
+
+```bash
+circleci orb pack ./src | circleci orb validate -
+circleci orb pack ./src | circleci orb publish -  ricardo/ric-orb@dev:alpha
+```
+
 ## Usage
 
 To use the orb add this:
