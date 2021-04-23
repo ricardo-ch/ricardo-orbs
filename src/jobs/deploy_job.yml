@@ -53,6 +53,9 @@ parameters:
   slack_fail_branches:
     type: string
     default: master
+  working_directory:
+    type: string
+    default: .
 steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
@@ -67,6 +70,7 @@ steps:
         - run: echo "default deploy"
         - deploy:
             to: <<parameters.env>>
+            working_directory: <<parameters.working_directory>>
   - steps: << parameters.postdeploy_steps >>
   - when:
       condition: << parameters.slack_notify_success >>

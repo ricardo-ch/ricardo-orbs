@@ -8,6 +8,9 @@ parameters:
   cache_path:
     type: string
     default: ""
+  working_directory:
+    type: string
+    default: ""
   quality_checks:
     type: steps
     description: "Steps that will run quality checks"
@@ -29,7 +32,24 @@ steps:
         - restore_cache:
             name: restore the dependencies cache
             key: <<parameters.cache_name>>
-  - steps: << parameters.quality_checks >>
+  - when:
+      condition: <<parameters.working_directory>>
+      steps:
+        - run:
+            name: Installing dependencies
+            command: make install
+            working_directory: <<parameters.working_directory>>
+        - run:
+            name: Test that the app can successfully build
+            command: make build
+            working_directory: <<parameters.working_directory>>
+        - run:
+            name: Running tests
+            command: make test
+            working_directory: <<parameters.working_directory>>
+  - unless:
+      condition: <<parameters.working_directory>>
+      steps:  << parameters.quality_checks >>
   - when:
       condition:
         and: [ <<parameters.cache_name>>, <<parameters.cache_path>> ]
