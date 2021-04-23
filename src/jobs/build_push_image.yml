@@ -40,6 +40,9 @@ parameters:
   docker_version:
     type: string
     default: "19.03.13"
+  working_directory:
+    type: string
+    default: ""
   prebuild_steps:
     type: steps
     description: "Steps that will run before build"
@@ -90,5 +93,14 @@ steps:
             name: restore the dependencies cache
             key: <<parameters.cache_name>>
   - steps: << parameters.prebuild_steps >>
-  - steps: << parameters.build_steps >>
+  - when:
+      condition: <<parameters.working_directory>>
+      steps:
+        - run:
+            name: Build Docker image
+            command: isopod build
+            working_directory: <<parameters.working_directory>>
+  - unless:
+      condition: <<parameters.working_directory>>
+      steps: << parameters.build_steps >>
   - steps: << parameters.postbuild_steps >>
