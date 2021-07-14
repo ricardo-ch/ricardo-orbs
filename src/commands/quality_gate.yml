@@ -12,15 +12,7 @@ parameters:
     type: steps
     description: "Steps that will run quality checks"
     default:
-      - run:
-          name: Installing dependencies
-          command: make install
-      - run:
-          name: Test that the app can successfully build
-          command: make build
-      - run:
-          name: Running tests
-          command: make test
+      - install_build_test
 steps:
   - checkout
   - when:

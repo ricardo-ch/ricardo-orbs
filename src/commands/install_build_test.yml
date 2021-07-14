@@ -1,0 +1,19 @@
+description: >
+  Executes make command to install, build and test application
+parameters:
+  work_dir:
+    type: string
+    default: .
+steps:
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Installing dependencies
+      command: make install
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Test that the app can successfully build
+      command: make build
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Running tests
+      command: make test

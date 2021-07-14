@@ -18,30 +18,9 @@ parameters:
     type: steps
     description: "Steps that will run quality checks"
     default:
-      - run:
-          name: Installing dependencies
-          command: make install
-      - run:
-          name: Test that the app can successfully build
-          command: make build
-      - run:
-          name: Running tests
-          command: make test
+      - install_build_test
 steps:
-  - checkout
-  - when:
-      condition: <<parameters.cache_name>>
-      steps:
-        - restore_cache:
-            name: restore the dependencies cache
-            key: <<parameters.cache_name>>
-  - steps: << parameters.quality_checks >>
-  - when:
-      condition:
-        and: [ <<parameters.cache_name>>, <<parameters.cache_path>> ]
-      steps:
-        - save_cache:
-            name: save the dependencies cache
-            key: <<parameters.cache_name>>
-            paths:
-              - <<parameters.cache_path>>
+  - quality_gate:
+      cache_name: << parameters.cache_name >>
+      cache_path: << parameters.cache_path >>
+      quality_checks: << parameters.quality_checks >>
