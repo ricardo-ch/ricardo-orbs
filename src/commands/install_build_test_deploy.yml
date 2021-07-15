@@ -1,5 +1,5 @@
 description: >
-  Executes make command to install, build and test application
+  Executes make command to install, build, test and deploy application. Executor should have installed make tool.
 parameters:
   work_dir:
     type: string
@@ -17,3 +17,7 @@ steps:
       working_directory: << parameters.work_dir >>
       name: Running tests
       command: make test
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Deploy application
+      command: make deploy
