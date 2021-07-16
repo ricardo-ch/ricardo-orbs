@@ -7,8 +7,12 @@ parameters:
   config:
     type: string
     default: isopod.yml
+  work_dir:
+    type: string
+    default: .
 steps:
   - auth_gke
   - run:
+      working_directory: << parameters.work_dir >>
       name: Deploy to cluster
       command: isopod -f << parameters.config >> deploy --environment << parameters.to >>
