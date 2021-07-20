@@ -30,13 +30,16 @@ steps:
 
 **Name**: deploy
 
-This command uses ricardo's tool **isopod** to deploy application to GKE. It is dependant on **auth_gke** command.
+This command uses ricardo's tool **isopod** to deploy application to GKE. When `isopod.yml` file is not in project's root
+folder,monorepo for example, you can use parameter `config` to point to it or `work_dir` which will execute the isopod in
+the `work_dir`. It is depends on **auth_gke** command.
 
 **Parameters**:
 
 - **to** environment to execute deployment. Valid values: *dev* and *prod*. It is passed to isopod. 
   *Default is dev.*
 - **config** the isopod configuration file. *Default is isopod.yml*
+- **work_dir** working directory for isopod
 
 Example:
 
@@ -113,6 +116,18 @@ steps:
   - ric-orb/maven_auth:
       maven_credentials: MVN_CREDS
 ```
+### Install Build Test
+
+Name: install_build_test
+
+Parameters:
+
+* **work_dir** Not required. Default is `.`(current dir). Sets working directory for install, build, test commands.
+
+This command execute install, build, test make commands. So, to execute it there are two requirements:
+
+* executor have `make` tool installed
+* target project have Makefile with goals named: `install`, `build`, `test`
 
 ### Quality Gate
 
@@ -124,10 +139,12 @@ steps:
 - **cache_path** Not required. If not specified cache will not be created.
 - **quality_checks** is a list of steps to run. By default they are:
 
-```
-make install
-make build
-make test
+```yaml
+quality_checks:
+  type: steps
+  description: "Steps that will run quality checks"
+  default:
+    - install_build_test
 ```
 
 This command executes steps to verify application quality. It uses/creates [CircleCI cache](https://circleci.com/docs/2.0/caching/) if application dependencies are updated.

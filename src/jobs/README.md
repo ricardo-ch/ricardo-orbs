@@ -18,10 +18,7 @@ Jobs may invoke orb commands and other steps to fully automate tasks with minima
 - **executor**, [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
 - **cache_name** Not required. If not specified cache will not be used/created.
 - **cache_path** Not required. If not specified cache will not be created.
-- **quality_checks** is a list of steps to run. By default they are:
-    - make install
-    - make build
-    - make test
+- **quality_checks** is a list of steps to run. The default is: `install_build_test`
 
 For applications that already have defined *Makefile* and above defined targets usage is quite simple. Otherwise there are two paths to add custom steps to configuration or to add Makefile(recommended).
 
@@ -105,7 +102,7 @@ jobs:
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is no steps.
 - **build_steps,** the list of steps to build application/image. Default is `isopod build`
 - **postbuild_steps** the list of steps that are executed after building image/application
-- **lang,**  specify type of application to be built. Default is go.
+- **lang** specify type of application to be built. Default is go.
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb.
 
@@ -191,8 +188,9 @@ jobs:
 - **slack_notify_failure** flag to send slack message when job fails. Default is false.
 - **slack_fail_webhook** the slack webhook used to send slack message on failure. Default is value from context variable SLACK_WEBHOOK
 - **slack_fail_branches** comma separated list of branches for which failure slack message will be sent. Default is *master*
+- **work_dir** working directory for default deployment(with the isopod). Default is `.`. This should be relative to the job working directory.
 
-This job executes deployment on GKE. It sends slack message on success/failure if enabled.
+This job executes deployment on GKE. It sends Slack message on success/failure if enabled.
 
 Examples:
 
