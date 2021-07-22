@@ -1,0 +1,19 @@
+description: >
+  Executes make command to install, build, test and deploy application. Executor should have installed make tool.
+parameters:
+  work_dir:
+    type: string
+    default: .
+steps:
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Installing dependencies for << parameters.work_dir >>
+      command: make install
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Test that the app can successfully build for << parameters.work_dir >>
+      command: make build
+  - run:
+      working_directory: << parameters.work_dir >>
+      name: Running tests for << parameters.work_dir >>
+      command: make test
