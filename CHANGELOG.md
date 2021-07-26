@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - nothing
 
-## [1.2.0] - YYYY-MM-DD
+## [1.2.0] - 2021-07-22
 ### Added
  - `install_build_test` command
 ### Changed
