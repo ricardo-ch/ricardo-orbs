@@ -2,11 +2,13 @@ description: >
   This job sync ui assets with web assets to google storage bucket.
   Authentication is needed for creating/deleting storage objects.
 parameters:
+  bucket_name:
+    type: string
+    default: ${GCLOUD_WEB_ASSETS_BUCKET_NAME}
   app_name:
     type: string
   source:
     type: string
-    default: ./build/assets
 steps:
   - attach_workspace:
       at: .
@@ -17,4 +19,4 @@ steps:
         gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
   - run:
       name: Sync build content with bucket
-      command: gsutil -m rsync -r << parameters.source >> gs://${GCLOUD_WEB_ASSETS_BUCKET_NAME}/<< parameters.app_name >>
+      command: gsutil -m rsync -r << parameters.source >> gs://<< parameters.bucket_name >>/<< parameters.app_name >>
