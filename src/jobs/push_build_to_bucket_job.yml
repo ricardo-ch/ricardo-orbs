@@ -1,7 +1,21 @@
 description: >
   This job sync ui assets with web assets to google storage bucket.
   Authentication is needed for creating/deleting storage objects.
+executor:
+  name: isopod
+  tag: <<parameters.isopod_version>>
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
 parameters:
+  isopod_version:
+    type: string
+    default: latest
+  private_hub_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  private_hub_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
   bucket_name:
     type: string
     default: ${GCLOUD_WEB_ASSETS_BUCKET_NAME}
