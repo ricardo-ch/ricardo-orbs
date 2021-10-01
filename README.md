@@ -39,7 +39,7 @@ For further questions/comments about this or other orbs, visit the Orb Category 
 
 This orb is not listed. To list it again use `circleci orb unlist <namespace>/<orb> <true|false> [flags]` or [see docs](https://circleci-public.github.io/circleci-cli/circleci_orb_unlist.html).
 
-The currently released version is 1.4.0.
+The currently released version is 1.5.0.
 
 ## Known Issue
 
@@ -61,7 +61,7 @@ circleci orb pack ./src | circleci orb publish -  ricardo/ric-orb@dev:alpha
 To use the orb add this:
 ```yaml
 orbs:
-    ric-orb: ricardo/ric-orb@1.4.0
+    ric-orb: ricardo/ric-orb@1.5.0
 ```
 
 to your `.circleci/config.yml` file.
