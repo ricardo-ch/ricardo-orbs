@@ -19,6 +19,9 @@ parameters:
   bucket_name:
     type: string
     default: ${GCLOUD_WEB_ASSETS_BUCKET_NAME}
+  bucket_path:
+    type: string
+    default: /static-assets
   app_name:
     type: string
   source:
@@ -33,4 +36,4 @@ steps:
         gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
   - run:
       name: Sync build content with bucket
-      command: gsutil -m rsync -r << parameters.source >> gs://<< parameters.bucket_name >>/<< parameters.app_name >>
+      command: gsutil -m rsync -r << parameters.source >> gs://<< parameters.bucket_name >><< parameters.bucket_path >>/<< parameters.app_name >>
