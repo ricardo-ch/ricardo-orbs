@@ -9,7 +9,7 @@ executor:
 parameters:
   isopod_version:
     type: string
-    default: latest
+    default: ${ISOPOD_VERSION}
   private_hub_username:
     type: string
     default: $DOCKER_JFROG_USERNAME
