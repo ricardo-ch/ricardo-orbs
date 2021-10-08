@@ -7,7 +7,7 @@ docker:
       password: <<parameters.password>>
 parameters:
   tag:
-    default: latest
+    default: ${ISOPOD_VERSION}
     description: >
       Pick a specific ricardo-ch/isopod image variant.
     type: string

@@ -9,7 +9,7 @@ executor:
 parameters:
   isopod_version:
     type: string
-    default: latest
+    default: ${ISOPOD_VERSION}
   docker_hub_username:
     type: string
     default: $DOCKER_HUB_USERNAME
