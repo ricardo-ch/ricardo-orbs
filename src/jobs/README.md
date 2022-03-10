@@ -283,6 +283,56 @@ jobs:
         - docker
 ```
 
+### Push build to bucket Job
+
+**Name**: push_build_to_bucket_job
+
+**Parameters**:
+
+- **isopod_version** isopod version in executor. Not required. Default is **latest**
+- **private_hub_username** username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
+- **private_hub_password** password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
+- **bucket_name** name of the bucket where assets will be pushed, default is value of context variable GCLOUD_WEB_ASSETS_BUCKET_NAME
+- **bucket_path** bucket's path where assets will be pushed, default is /static-assets
+- **app_name** this is a folder name for application's assets, the convention is to use a github repo name
+- **source** path to source of assets
+
+**Examples**
+
+All default
+
+This will push static assets from `./build/assets` into  production bucket `ricardo-web-assets/static-assets/my-ricardo-spa`, the latest isopod version will be used.
+
+```yaml
+...
+jobs:
+...
+  - ric-orb/push_build_to_bucket_job:
+      context: prod
+      source: ./build/assets
+      app_name: my-ricardo-spa
+
+...
+```
+
+Custom isopod version and custom bucket 
+
+This will push static assets from `./build/assets` into  production bucket `custom-bucket/custom/path/my-ricardo-spa`, the v0.20.4 isopod version will be used.
+
+```yaml
+...
+jobs:
+...
+  - ric-orb/push_build_to_bucket_job:
+      context: prod
+      source: ./build/assets
+      app_name: my-ricardo-spa
+      isopod_version: 0.20.4
+      bucket_name: custom-bucket
+      bucket_path: /custom/path
+
+...
+```
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)
