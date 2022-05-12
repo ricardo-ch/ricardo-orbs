@@ -1,0 +1,51 @@
+description: >
+  Restores workspace, then bulds and pushes docker imahge to artifactory, using an executable jar under <workspace_path> folder
+executor:
+  name: isopod
+  tag: <<parameters.isopod_version>>
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
+parameters:
+  isopod_version:
+    type: string
+    default: ${ISOPOD_VERSION}
+  docker_hub_username:
+    type: string
+    default: $DOCKER_HUB_USERNAME
+  docker_hub_password:
+    type: string
+    default: $DOCKER_HUB_PASSWORD
+  private_hub_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  private_hub_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
+  private_hub_url:
+    type: string
+    default: $DOCKER_JFROG_REGISTRY_URL
+  workspace_path:
+    type: string
+    default: "."
+  docker_layer_cashing:
+    type: boolean
+    default: false
+  docker_version:
+    type: string
+    default: "19.03.13"
+steps:
+  - setup_remote_docker:
+      docker_layer_caching: << parameters.docker_layer_cashing >>
+      version: << parameters.docker_version >>
+  - login_docker_registry:
+      username: <<parameters.docker_hub_username>>
+      password: <<parameters.docker_hub_password>>
+  - login_docker_registry:
+      url: <<parameters.private_hub_url>>
+      username: <<parameters.private_hub_username>>
+      password: <<parameters.private_hub_password>>
+  - attach_workspace:
+      at: .
+  - run:
+      name: Build the Docker image
+      command: isopod build
