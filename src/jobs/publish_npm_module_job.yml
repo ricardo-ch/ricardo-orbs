@@ -1,0 +1,44 @@
+description: >
+  Publish npm module
+executor:
+  name: js
+parameters:
+  fingerprints:
+    description: SSH key fingerprint
+    type: string
+  before-publish:
+    type: steps
+    description: Steps to run before publish
+    default: []
+steps:
+  - checkout
+  - add_ssh_keys:
+      fingerprints:
+        - << parameters.fingerprints >>
+  - steps: << parameters.before-publish >>
+  - attach_workspace:
+      at: .
+  - run:
+      name: Try to extract version from last commit
+      command: |
+        lastCommitTitle=$(git log -1 --pretty="%s")
+        version=$(echo "$lastCommitTitle" | awk -F ':' '{ print tolower($1) }' | grep -Eo '^(patch|minor|major)' || true)
+        echo "VERSION_VAR=$version" >> "$BASH_ENV"
+        if [ -z "$version" ]
+        then
+          echo "No version detected. Make sure your last commit starts with patch|minor|major."
+          echo "Last commit title: '$lastCommitTitle'"
+        else
+          echo "Last commit: $lastCommitTitle"
+          echo "New '$version' version will be published..."
+        fi
+  - run:
+      name: Publish version
+      command: |
+        if [ -z "$VERSION_VAR" ]
+        then
+          echo "There will be no publish, semver was not detected"
+        else
+          echo "Publishing $VERSION_VAR version"
+          yarn np $VERSION_VAR --yolo --contents=build --no-release-draft
+        fi
