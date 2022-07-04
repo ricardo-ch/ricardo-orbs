@@ -1,0 +1,79 @@
+description: >
+  Deploy java app image to environment using isopod.
+  Supports app-module from monorepo as well as single app from single-app-repo.
+
+parameters:
+  appname:
+    description: "Name of maven module for the app, or blank for single-app-repo"
+    type: string
+    default: ""
+  to:
+    description: "Kubernetes cluster to deploy to"
+    type: enum
+    enum: [ "dev", "prod"]
+    default: "dev"
+  predeploy_steps:
+    description: "Steps that will run before deployment"
+    type: steps
+    default: [ ]
+  postdeploy_steps:
+    description: "Steps that will run after deployment"
+    type: steps
+    default: [ ]
+  private_hub_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  private_hub_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
+  isopod_version:
+    type: string
+    default: $ISOPOD_VERSION
+  slack_notify_success:
+    description: "Flag to send slack notification on success"
+    type: boolean
+    default: false
+  slack_ok_webhook:
+    type: string
+    default: $SLACK_WEBHOOK
+  slack_ok_branches:
+    description: "Comma separated list of branches for which notifications are sent"
+    type: string
+    default: "master"
+  slack_notify_failure:
+    description: "Flag to send slack notification on failure"
+    type: boolean
+    default: false
+  slack_fail_webhook:
+    type: string
+    default: $SLACK_WEBHOOK
+  slack_fail_branches:
+    description: "Comma separated list of branches for which notifications are sent"
+    type: string
+    default: "master"
+
+executor:
+  name: isopod
+  tag: << parameters.isopod_version >>
+  username: << parameters.private_hub_username >>
+  password: << parameters.private_hub_password >>
+
+steps:
+  - checkout
+  - steps: << parameters.predeploy_steps >>
+  - java_deploy_app:
+      appname: << parameters.appname >>
+      to: << parameters.to >>
+  - steps: << parameters.postdeploy_steps >>
+  - when:
+      condition: << parameters.slack_notify_success >>
+      steps:
+        - slack_success:
+            branches: << parameters.slack_ok_branches >>
+            webhook: << parameters.slack_ok_webhook >>
+  - when:
+      condition: << parameters.slack_notify_failure >>
+      steps:
+        - slack_failure:
+            branches: << parameters.slack_fail_branches >>
+            webhook: << parameters.slack_fail_webhook >>

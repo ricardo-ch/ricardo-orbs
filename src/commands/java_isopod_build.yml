@@ -1,0 +1,23 @@
+description: >
+  Build docker image for a java app using isopod, and push it to docker hub.
+  Supports app-module from monorepo as well as single app from single-app-repo.
+
+parameters:
+  appname:
+    description: "Name of maven module for the app, or blank for single-app-repo"
+    type: string
+    default: ""
+
+steps:
+  # build app image (maven module) from monorepo
+  - when:
+      condition: << parameters.appname >>
+      steps:
+        - run: |
+            isopod -f << parameters.appname >>/isopod.yml build
+  # build app image from single-app-repo
+  - unless:
+      condition: << parameters.appname >>
+      steps:
+        - run: |
+            isopod build

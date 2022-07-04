@@ -1,0 +1,20 @@
+description: >
+  Docker executor with JDK to build java applications.
+
+parameters:
+  java_version:
+    description: "Java version to install (or rather selecting an existing image accordingly)"
+    type: string
+    default: "11.0"
+  jfrog_username:
+    type: string
+    default: $DOCKER_JFROG_USERNAME
+  jfrog_password:
+    type: string
+    default: $DOCKER_JFROG_PASSWORD
+
+docker:
+  - image: "cimg/openjdk:<< parameters.java_version >>"
+    auth:
+      username: << parameters.jfrog_username >>
+      password: << parameters.jfrog_password >>

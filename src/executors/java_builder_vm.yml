@@ -1,0 +1,12 @@
+description: >
+  VM executor with JDK to build java applications.
+  Typically required if maven build needs docker for testcontainers.
+
+parameters:
+  vm_image:
+    description: "VM image to use"
+    type: string
+    default: "ubuntu-2004:202010-01"
+
+machine:
+  image: << parameters.vm_image >>
