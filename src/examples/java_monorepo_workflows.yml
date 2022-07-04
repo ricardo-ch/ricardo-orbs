@@ -1,0 +1,250 @@
+description: >
+  Java monorepo example.
+  Note: circleci-config typically consists of 2 files in this case (see also java_monorepo_setup.yml)
+
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+
+usage:
+
+  #############################################################################
+  # This is what you typically want to have in your .circleci/java_monorepo_workflows.yml
+  #############################################################################
+
+  version: 2.1
+
+  orbs:
+    compliance: ricardo/compliance-orb@2
+    ric-orb: ricardo/ric-orb@1.7.1
+
+  parameters:
+    modified-cci:
+      type: boolean
+      default: false
+    modified-mvnw:
+      type: boolean
+      default: false
+    modified-pom:
+      type: boolean
+      default: false
+    modified-common:
+      type: boolean
+      default: false
+    modified-app1:
+      type: boolean
+      default: false
+    modified-app2:
+      type: boolean
+      default: false
+
+  cfg-docker-version: &cfg-docker-version
+    docker_version: "19.03.13"
+  cfg-isopod-version: &cfg-isopod-version
+    isopod_version: "0.29.1"
+  cfg-maven-cache-key-prefix: &cfg-maven-cache-key-prefix
+    maven_cache_key_prefix: incidents-api
+
+  workflows:
+    version: 2
+
+    no-code-change:
+      when:
+        and:
+          - not: << pipeline.parameters.modified-app1 >>
+          - not: << pipeline.parameters.modified-app2 >>
+          - not: << pipeline.parameters.modified-common >>
+          - not: << pipeline.parameters.modified-pom >>
+          - not: << pipeline.parameters.modified-cci >>
+          - not: << pipeline.parameters.modified-mvnw >>
+
+      jobs:
+        - ric-orb/no_op
+
+    ###########################################################################
+    # workflow for maven module "app1"
+    ###########################################################################
+    app1:
+      when:
+        or:
+          - << pipeline.parameters.modified-app1 >>
+          - << pipeline.parameters.modified-common >>
+          - << pipeline.parameters.modified-pom >>
+          - << pipeline.parameters.modified-cci >>
+          - << pipeline.parameters.modified-mvnw >>
+
+      jobs:
+        - ric-orb/java_maven_build_test:
+            name: "maven-build"
+            context: dev
+            appname: "app1"
+            <<: *cfg-maven-cache-key-prefix
+            executor: java_docker
+              java_builder_docker_java_version: "11.0"
+#            executor: java_builder_vm
+#              java_builder_vm_image: "ubuntu-2004:202010-01"
+
+        # jobs for branch #####################################################
+        - approve_deploy_dev_branch:
+            name: "approve-deploy-dev-branch"
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - "master"
+
+        - ric-orb/java_isopod_build_push_image:
+            name: "build-push-image-branch"
+            context: dev
+            appname: "app1"
+            <<: *cfg-docker-version
+            <<: *cfg-isopod-version
+            requires:
+              - maven-build
+              - approve-deploy-dev-branch
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-branch"
+            context: dev
+            requires:
+              - build-push-image-branch
+
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-dev-branch"
+            context: dev
+            appname: "app1"
+            <<: *cfg-isopod-version
+            to: "dev"
+            requires:
+              - build-push-image-branch
+
+        # jobs for master #####################################################
+        - ric-orb/java_isopod_build_push_image:
+            name: "build-push-image-master"
+            context: dev
+            appname: "app1"
+            <<: *cfg-docker-version
+            <<: *cfg-isopod-version
+            filters:
+              branches:
+                only:
+                  - "master"
+            requires:
+              - maven-build
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-master"
+            context: dev
+            requires:
+              - build-push-image-master
+
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-dev-master"
+            context: dev
+            appname: "app1"
+            <<: *cfg-isopod-version
+            to: "dev"
+            requires:
+              - build-push-image-master
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-prod-branch"
+            context: prod
+            appname: "app1"
+            <<: *cfg-isopod-version
+            to: "prod"
+            requires:
+              - deploy-dev-master
+
+    ###########################################################################
+    # maven module: "app2"
+    ###########################################################################
+    app2:
+      when:
+        or:
+          - << pipeline.parameters.modified-app2 >>
+          - << pipeline.parameters.modified-common >>
+          - << pipeline.parameters.modified-pom >>
+          - << pipeline.parameters.modified-cci >>
+          - << pipeline.parameters.modified-mvnw >>
+
+      jobs:
+        - ric-orb/java_maven_build_test:
+            name: "maven-build"
+            context: dev
+            appname: "app2"
+            <<: *cfg-maven-cache-key-prefix
+#            executor: java_builder_docker
+#              java_builder_docker_java_version: "11.0"
+            executor: java_builder_vm
+              java_builder_vm_image: "ubuntu-2004:202010-01"
+
+        # jobs for branch #####################################################
+        - approve_deploy_dev_branch:
+            name: "approve-deploy-dev-branch"
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - "master"
+
+        - ric-orb/java_isopod_build_push_image:
+            name: "build-push-image-branch"
+            context: dev
+            appname: "app2"
+            <<: *cfg-docker-version
+            <<: *cfg-isopod-version
+            requires:
+              - maven-build
+              - approve-deploy-dev-branch
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-branch"
+            context: dev
+            requires:
+              - build-push-image-branch
+
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-dev-branch"
+            context: dev
+            appname: "app2"
+            <<: *cfg-isopod-version
+            to: "dev"
+            requires:
+              - build-push-image-branch
+
+        # jobs for master #####################################################
+        - ric-orb/java_isopod_build_push_image:
+            name: "build-push-image-master"
+            context: dev
+            appname: "app2"
+            <<: *cfg-docker-version
+            <<: *cfg-isopod-version
+            filters:
+              branches:
+                only:
+                  - "master"
+            requires:
+              - maven-build
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-master"
+            context: dev
+            requires:
+              - build-push-image-master
+
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-dev-master"
+            context: dev
+            appname: "app2"
+            <<: *cfg-isopod-version
+            to: "dev"
+            requires:
+              - build-push-image-master
+        - ric-orb/java_isopod_deploy:
+            name: "deploy-prod-branch"
+            context: prod
+            appname: "app2"
+            <<: *cfg-isopod-version
+            to: "prod"
+            requires:
+              - deploy-dev-master
