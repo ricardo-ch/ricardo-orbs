@@ -97,8 +97,7 @@ usage:
             name: "build-push-image-branch"
             context: dev
             appname: "app1"
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -123,8 +122,7 @@ usage:
             name: "build-push-image-master"
             context: dev
             appname: "app1"
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             filters:
               branches:
                 only:
@@ -191,8 +189,7 @@ usage:
             name: "build-push-image-branch"
             context: dev
             appname: "app2"
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -217,8 +214,7 @@ usage:
             name: "build-push-image-master"
             context: dev
             appname: "app2"
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             filters:
               branches:
                 only:

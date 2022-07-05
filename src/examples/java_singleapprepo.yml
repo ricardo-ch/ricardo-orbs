@@ -49,8 +49,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-branch"
             context: dev
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -73,8 +72,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-master"
             context: dev
-            <<: *cfg-docker-version
-            <<: *cfg-isopod-version
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
             filters:
               branches:
                 only:
