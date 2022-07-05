@@ -12,14 +12,6 @@ parameters:
     type: enum
     enum: [ "dev", "prod"]
     default: "dev"
-  predeploy_steps:
-    description: "Steps that will run before deployment"
-    type: steps
-    default: [ ]
-  postdeploy_steps:
-    description: "Steps that will run after deployment"
-    type: steps
-    default: [ ]
   artifactory_username:
     type: string
     default: $DOCKER_JFROG_USERNAME
@@ -60,11 +52,9 @@ executor:
 
 steps:
   - checkout
-  - steps: << parameters.predeploy_steps >>
   - java_isopod_deploy:
       appname: << parameters.appname >>
       to: << parameters.to >>
-  - steps: << parameters.postdeploy_steps >>
   - when:
       condition: << parameters.slack_notify_success >>
       steps:

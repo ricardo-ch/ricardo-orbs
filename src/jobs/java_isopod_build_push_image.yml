@@ -7,14 +7,6 @@ parameters:
     description: "Name of maven module for the app, or blank for single-app-repo"
     type: string
     default: ""
-  prebuild_steps:
-    description: "Steps that will run before build"
-    type: steps
-    default: [ ]
-  postbuild_steps:
-    description: "Steps that will run after build"
-    type: steps
-    default: [ ]
   docker_hub_username:
     type: string
     default: $DOCKER_HUB_USERNAME
@@ -60,7 +52,5 @@ steps:
       password: << parameters.private_hub_password >>
   - attach_workspace:
       at: .
-  - steps: << parameters.prebuild_steps >>
   - java_isopod_build:
       appname: << parameters.appname >>
-  - steps: << parameters.postbuild_steps >>

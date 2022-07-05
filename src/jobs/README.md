@@ -392,8 +392,6 @@ jobs:
 
 **Parameters**:
 - **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
-- **prebuild_steps** (Optional) Steps that will run before build. Default: *none*
-- **postbuild_steps** (Optional) Steps that will run after build. Default: *none*
 - **docker_hub_username** (Optional) Docker hub username. Default: *$DOCKER_HUB_USERNAME* from circleCI context
 - **docker_hub_password** (Optional) Docker hub password. Default: *$DOCKER_HUB_PASSWORD* from circleCI context
 - **private_hub_username** (Optional) Private docker hub (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
@@ -413,12 +411,6 @@ jobs:
       context: dev
       docker_version: "19.03.13"
       isopod_version: "0.29.1"
-      prebuild_steps:
-        - run: |
-            echo "start building..."
-      postbuild_steps:
-        - run: |
-            echo "done building..."
       requires:
         - java_maven_build_test
 ...
@@ -446,8 +438,6 @@ jobs:
 **Parameters**:
 - **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
 - **to** Kubernetes cluster to deploy to. Values: *prod*, *dev*. Default: *dev*
-- **predeploy_steps** (Optional) Steps that will run before deployment. Default: *none*
-- **postdeploy_steps** (Optional) Steps that will run after deployment. Default: *none*
 - **artifactory_username** (Optional) Artifactory (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
 - **artifactory_password** (Optional) Artifactory (typically jfrog) password. Default: *$DOCKER_JFROG_PASSWORD* from circleCI context
 - **isopod_version** (Optional) Isopod version to use for the build. Default: *$ISOPOD_VERSION* from circleCI context
