@@ -33,9 +33,9 @@ usage:
             context: dev
             <<: *cfg-maven-cache-key-prefix
             executor: java_builder_docker
-              java_builder_docker_java_version: "11.0"
+            java_builder_docker_java_version: "11.0"
 #            executor: java_builder_vm
-#              java_builder_vm_image: "ubuntu-2004:202010-01"
+#            java_builder_vm_image: "ubuntu-2004:202010-01"
 
         # jobs for branch #####################################################
         - approve_deploy_dev_branch:

@@ -356,7 +356,7 @@ jobs:
         context: dev
         maven_cache_key_prefix: "myrepo"
         executor: java_builder_docker
-          java_builder_docker_java_version: "11.0"
+        java_builder_docker_java_version: "11.0"
 ...
 ```
 Builds java sources using a VM builder
@@ -368,7 +368,7 @@ jobs:
       context: dev
       maven_cache_key_prefix: "myrepo"
       executor: java_builder_vm
-        java_builder_vm_image: "ubuntu-2004:202010-01"
+      java_builder_vm_image: "ubuntu-2004:202010-01"
 ...
 ```
 
@@ -382,7 +382,7 @@ jobs:
         appname: "myapp"
         maven_cache_key_prefix: "myrepo"
         executor: java_builder_docker
-          java_builder_docker_java_version: "11.0"
+        java_builder_docker_java_version: "11.0"
 ...
 ```
 
