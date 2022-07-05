@@ -8,7 +8,7 @@ parameters:
     type: string
     default: ""
   maven_cache_key_prefix:
-    description: "Prefix for the cache-key (used in combination with checksum of pom.xml); no caching with blank prefix"
+    description: "Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix"
     type: string
     default: ""
   executor:

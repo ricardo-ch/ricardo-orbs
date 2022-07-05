@@ -333,6 +333,180 @@ jobs:
 
 ...
 ```
+
+### Maven build and test job for Java applications
+
+**Name**: java_maven_build_test
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **maven_cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
+- **executor** Executor for the build. Values: *java_builder_docker*  (default; more lightweight), *java_builder_vm* (required by builds laveraging testcontainers and therefore depending on docker) 
+- **java_builder_docker_java_version** Java version for *java_builder_docker* (has no effect with *java_builder_vm*). Default: *11.0*
+- **java_builder_vm_image** VM image for *java_builder_vm* (has no effect with *java_builder_docker*). Default: *ubuntu-2004:202010-01*
+
+**Examples**
+
+Builds java sources using a docker builder
+```yaml
+...
+jobs:
+...
+    - ric-orb/java_maven_build_test:
+        context: dev
+        maven_cache_key_prefix: "myrepo"
+        executor: java_builder_docker
+          java_builder_docker_java_version: "11.0"
+...
+```
+Builds java sources using a VM builder
+```yaml
+...
+jobs:
+...
+  - ric-orb/java_maven_build_test:
+      context: dev
+      maven_cache_key_prefix: "myrepo"
+      executor: java_builder_vm
+        java_builder_vm_image: "ubuntu-2004:202010-01"
+...
+```
+
+Builds java sources for a specific app from a monorepo
+```yaml
+...
+jobs:
+...
+    - ric-orb/java_maven_build_test:
+        context: dev
+        appname: "myapp"
+        maven_cache_key_prefix: "myrepo"
+        executor: java_builder_docker
+          java_builder_docker_java_version: "11.0"
+...
+```
+
+### Isopod build and push image job for Java applications
+
+**Name**: java_isopod_build_push_image
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **prebuild_steps** (Optional) Steps that will run before build. Default: *none*
+- **postbuild_steps** (Optional) Steps that will run after build. Default: *none*
+- **docker_hub_username** (Optional) Docker hub username. Default: *$DOCKER_HUB_USERNAME* from circleCI context
+- **docker_hub_password** (Optional) Docker hub password. Default: *$DOCKER_HUB_PASSWORD* from circleCI context
+- **private_hub_username** (Optional) Private docker hub (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
+- **private_hub_password** (Optional) Private docker hub (typically jfrog) password. Default: *$DOCKER_JFROG_PASSWORD* from circleCI context
+- **private_hub_url** (Optional) Private docker hub (typically jfrog) url. Default: *$DOCKER_JFROG_REGISTRY_URL* from circleCI context
+- **isopod_version** (Optional) Isopod version to use for the build. Default: *$ISOPOD_VERSION* from circleCI context
+- **docker_version** (Optional) Docker version to use for the build. Default: *19.03.13*
+
+**Examples**
+
+Builds docker image from java build outputs
+```yaml
+...
+jobs:
+...
+  - ric-orb/java_isopod_build_push_image:
+      context: dev
+      docker_version: "19.03.13"
+      isopod_version: "0.29.1"
+      prebuild_steps:
+        - run: |
+            echo "start building..."
+      postbuild_steps:
+        - run: |
+            echo "done building..."
+      requires:
+        - java_maven_build_test
+...
+```
+
+Builds docker image from java build outputs for a specific app from a monorepo
+```yaml
+...
+jobs:
+...
+  - ric-orb/java_isopod_build_push_image:
+      context: dev
+      appname: "myapp"
+      docker_version: "19.03.13"
+      isopod_version: "0.29.1"
+      requires:
+        - java_maven_build_test
+...
+```
+
+### Isopod deploy job for Java applications
+
+**Name**: java_isopod_deploy
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **to** Kubernetes cluster to deploy to. Values: *prod*, *dev*. Default: *dev*
+- **predeploy_steps** (Optional) Steps that will run before deployment. Default: *none*
+- **postdeploy_steps** (Optional) Steps that will run after deployment. Default: *none*
+- **artifactory_username** (Optional) Artifactory (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
+- **artifactory_password** (Optional) Artifactory (typically jfrog) password. Default: *$DOCKER_JFROG_PASSWORD* from circleCI context
+- **isopod_version** (Optional) Isopod version to use for the build. Default: *$ISOPOD_VERSION* from circleCI context
+- **slack_notify_success** (Optional) Flag to send slack notification on success. Default: *false*
+- **slack_ok_webhook** (Optional) Slack webhook for success notification. Default: *$SLACK_WEBHOOK* from circleCI context
+- **slack_ok_branches** (Optional) Comma separated list of branches for which success notifications are sent. Default: *master*
+- **slack_notify_failure** (Optional) Flag to send slack notification on failure. Default: *false*
+- **slack_fail_webhook** (Optional) Slack webhook for failure notification. Default: *$SLACK_WEBHOOK* from circleCI context
+- **slack_fail_branches** (Optional) Comma separated list of branches for which failure notifications are sent. Default: *master*
+
+**Examples**
+
+Deploys java image to kubernetes
+```yaml
+...
+jobs:
+...
+  - ric-orb/java_isopod_deploy:
+      context: dev
+      isopod_version: "0.29.1"
+      to: "dev"
+      requires:
+        - java_isopod_build_push_image
+...
+```
+
+Deploys java image to kubernetes for a specific app from a monorepo
+```yaml
+...
+jobs:
+...
+  - ric-orb/java_isopod_deploy:
+      context: dev
+      appname: "myapp"
+      isopod_version: "0.29.1"
+      to: "dev"
+      requires:
+        - java_isopod_build_push_image
+...
+```
+
+### No-Op dummy job
+
+**Name**: no_op
+
+**Parameters**:
+none
+
+**Examples**
+
+Does nothing. Because sometimes you need a job but you have nothing to do…
+```yaml
+...
+jobs:
+...
+  - ric-orb/no_op
+...
+```
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)

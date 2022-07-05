@@ -22,6 +22,30 @@ View the included _[hello.yml](./hello.yml)_ example.
 
 **Isopod** executor is parametrised executor with [isopod](https://github.com/ricardo-ch/isopod) installed. It is used for running jobs in this orb.
 
+### Docker based Java Builder
+
+**Name**: java_builder_docker
+
+**Parameters**:
+
+- **java_version** java version to be installed on the builder, default *11.0*
+- **docker_hub_username** username for docker registry
+- **docker_hub_password** password for docker registry
+
+A parametrised docker executor with java installed (see also [Convenience Images: cimg/openjdk:\<tag>](https://circleci.com/developer/images/image/cimg/openjdk)). It is used for running java jobs in this orb.
+
+### VM based Java Builder
+
+**Name**: java_builder_vm
+
+**Parameters**:
+
+- **vm_image** image for the VM of the builder, default *ubuntu-2004:202010-01*
+
+A parametrised vm executor with java installed. It is used for running java jobs in this orb.
+
+This executor is required in case a build depends on a running docker instance to execute testcontainers.
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Executors](https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-executors)

@@ -167,7 +167,7 @@ steps:
 
 **Parameters**:
 
-- **branches** The list of comma separated branches for which notification should be sent. Default is *master.*
+- **branches** The list of comma separated branches for which notification should be sent. Default is *master*.
 - **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK(for channel circleci-deployments). Specify only if need to veride.
 
 This command sends notification for branches to the target webhook when job fails. This uses [the slack orb](https://circleci.com/developer/orbs/orb/circleci/slack?version=3.4.2).
@@ -189,7 +189,7 @@ steps:
 
 **Parameters**:
 
-- **branches** The list of comma separated branches for which notification should be sent. Default is *master.*
+- **branches** The list of comma separated branches for which notification should be sent. Default is *master*.
 - **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK(for channel circleci-deployments). Specify only if need to override.
 
 This command sends notification for branches to the target webhook when job is successful. This uses [the slack orb](https://circleci.com/developer/orbs/orb/circleci/slack?version=3.4.2).
@@ -203,6 +203,135 @@ steps:
       branches: $CIRCLE_BRANCH
       webhook: <slack web hook>
 ...
+```
+
+### Command to save maven artifacts to cache for Java applications
+**Name**: java_cache_maven_artifacts
+
+**Parameters**:
+- **maven_cache_key_prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
+
+Example:
+
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
+```yaml
+...
+steps:
+  - ric-orb/java_cache_maven_artifacts:
+      maven_cache_key_prefix: "myrepo"
+...
+```
+
+### Command to restore maven artifacts from cache for Java applications
+**Name**: java_restore_maven_artifacts
+
+**Parameters**:
+- **maven_cache_key_prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
+
+Example:
+
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
+```yaml
+...
+steps:
+  - ric-orb/java_restore_maven_artifacts:
+      maven_cache_key_prefix: "myrepo"
+...
+```
+
+### Command to save maven output to workspace for Java applications
+**Name**: java_save_maven_output
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+
+Example:
+
+Save maven output directory (target directory containing compiled app) to workspace.
+```yaml
+...
+steps:
+  - ric-orb/java_save_maven_output
+```
+
+Save maven output directory to workspace for a specific app from a monorepo.
+```yaml
+...
+steps:
+  - ric-orb/java_save_maven_output:
+      appname: "myapp"
+```
+
+### Command to build and test with maven for Java applications
+**Name**: java_maven_build_test
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+
+Example:
+
+Build and test java application.
+```yaml
+...
+steps:
+  - ric-orb/java_maven_build_test
+```
+
+Build and test java application from a monorepo.
+```yaml
+...
+steps:
+  - ric-orb/java_maven_build_test:
+      appname: "myapp"
+```
+
+### Command to build a docker image with isopod for Java applications
+**Name**: java_isopod_build
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+
+Example:
+
+Build docker image for java application.
+```yaml
+...
+steps:
+  - ric-orb/java_isopod_build
+```
+
+Build docker image for java application from a monorepo.
+```yaml
+...
+steps:
+  - ric-orb/java_isopod_build:
+      appname: "myapp"
+```
+
+### Command to deploy a docker image with isopod for Java applications
+**Name**: java_isopod_deploy
+
+**Parameters**:
+- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **to** Kubernetes cluster to deploy to. Values: *prod*, *dev*. Default: *dev*
+
+Example:
+
+Deploy docker image of java application.
+```yaml
+...
+steps:
+  - ric-orb/java_isopod_deploy:
+      to: "dev"
+```
+
+Deploy docker image of java application from a monorepo.
+```yaml
+...
+steps:
+  - ric-orb/java_isopod_deploy:
+      appname: "myapp"
+      to: "dev"
 ```
 
 ## See:

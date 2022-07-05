@@ -31,10 +31,13 @@ parameters:
     type: string
     default: $DOCKER_JFROG_REGISTRY_URL
   isopod_version:
+    description: "Isopod version to use for the build"
     type: string
     default: $ISOPOD_VERSION
   docker_version:
+    description: "Docker version to use for the build"
     type: string
+    default: "19.03.13"
 
 executor:
   name: isopod

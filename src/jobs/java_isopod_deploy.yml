@@ -20,10 +20,10 @@ parameters:
     description: "Steps that will run after deployment"
     type: steps
     default: [ ]
-  private_hub_username:
+  artifactory_username:
     type: string
     default: $DOCKER_JFROG_USERNAME
-  private_hub_password:
+  artifactory_password:
     type: string
     default: $DOCKER_JFROG_PASSWORD
   isopod_version:
@@ -55,13 +55,13 @@ parameters:
 executor:
   name: isopod
   tag: << parameters.isopod_version >>
-  username: << parameters.private_hub_username >>
-  password: << parameters.private_hub_password >>
+  username: << parameters.artifactory_username >>
+  password: << parameters.artifactory_password >>
 
 steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
-  - java_deploy_app:
+  - java_isopod_deploy:
       appname: << parameters.appname >>
       to: << parameters.to >>
   - steps: << parameters.postdeploy_steps >>

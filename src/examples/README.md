@@ -50,5 +50,22 @@ In this example shows:
 - node app
 - custom deployment (all steps)
 
+### Example Java Monorepo
+Files:
+- [java_monorepo_setup.yml](java_monorepo_setup.yml)
+- [java_monorepo_workflows.yml](java_monorepo_workflows.yml)
+
+Example configuration for a java monorepo shows how to:
+- use path-filtering to trigger workflow for specific maven module
+- configure the build/deployment workflow with minimal custom configuration 
+
+
+### Example Java Single-App Repo
+Files:
+- [java_singleapprepo.yml](java_singleapprepo.yml)
+
+Example configuration for a repo containing a single java app
+- configure the build/deployment workflow with minimal custom configuration
+
 ## See:
  - [Providing Usage examples](https://circleci.com/docs/2.0/orb-author/#providing-usage-examples-of-orbs)
