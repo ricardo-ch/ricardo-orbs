@@ -7,11 +7,13 @@ parameters:
     type: string
     default: "11.0"
   docker_hub_username:
+    description: "Docker hub credentials to download the executor image"
     type: string
-    default: $DOCKER_JFROG_USERNAME
+    default: $DOCKER_HUB_USERNAME
   docker_hub_password:
+    description: "Docker hub credentials to download the executor image"
     type: string
-    default: $DOCKER_JFROG_PASSWORD
+    default: $DOCKER_HUB_PASSWORD
 
 docker:
   - image: "cimg/openjdk:<< parameters.java_version >>"

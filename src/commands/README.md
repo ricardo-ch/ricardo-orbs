@@ -243,7 +243,7 @@ steps:
 **Name**: java_save_maven_output
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 
 Example:
 
@@ -259,14 +259,14 @@ Save maven output directory to workspace for a specific app from a monorepo.
 ...
 steps:
   - ric-orb/java_save_maven_output:
-      appname: "myapp"
+      app_path: "myapp"
 ```
 
 ### Command to build and test with maven for Java applications
 **Name**: java_maven_build_test
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or blank for single-app-repo. Default: *blank*
 
 Example:
 
@@ -282,14 +282,14 @@ Build and test java application from a monorepo.
 ...
 steps:
   - ric-orb/java_maven_build_test:
-      appname: "myapp"
+      app_path: "myapp"
 ```
 
 ### Command to build a docker image with isopod for Java applications
 **Name**: java_isopod_build
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 
 Example:
 
@@ -305,33 +305,7 @@ Build docker image for java application from a monorepo.
 ...
 steps:
   - ric-orb/java_isopod_build:
-      appname: "myapp"
-```
-
-### Command to deploy a docker image with isopod for Java applications
-**Name**: java_isopod_deploy
-
-**Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
-- **to** Kubernetes cluster to deploy to. Values: *prod*, *dev*. Default: *dev*
-
-Example:
-
-Deploy docker image of java application.
-```yaml
-...
-steps:
-  - ric-orb/java_isopod_deploy:
-      to: "dev"
-```
-
-Deploy docker image of java application from a monorepo.
-```yaml
-...
-steps:
-  - ric-orb/java_isopod_deploy:
-      appname: "myapp"
-      to: "dev"
+      app_path: "myapp"
 ```
 
 ## See:

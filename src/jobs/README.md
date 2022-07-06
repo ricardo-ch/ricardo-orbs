@@ -339,7 +339,7 @@ jobs:
 **Name**: java_maven_build_test
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **maven_cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
 - **executor** Executor for the build. Values: *java_builder_docker*  (default; more lightweight), *java_builder_vm* (required by builds laveraging testcontainers and therefore depending on docker) 
 - **java_builder_docker_java_version** Java version for *java_builder_docker* (has no effect with *java_builder_vm*). Default: *11.0*
@@ -379,7 +379,7 @@ jobs:
 ...
     - ric-orb/java_maven_build_test:
         context: dev
-        appname: "myapp"
+        app_path: "myapp"
         maven_cache_key_prefix: "myrepo"
         executor: java_builder_docker
         java_builder_docker_java_version: "11.0"
@@ -391,7 +391,7 @@ jobs:
 **Name**: java_isopod_build_push_image
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **docker_hub_username** (Optional) Docker hub username. Default: *$DOCKER_HUB_USERNAME* from circleCI context
 - **docker_hub_password** (Optional) Docker hub password. Default: *$DOCKER_HUB_PASSWORD* from circleCI context
 - **private_hub_username** (Optional) Private docker hub (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
@@ -423,7 +423,7 @@ jobs:
 ...
   - ric-orb/java_isopod_build_push_image:
       context: dev
-      appname: "myapp"
+      app_path: "myapp"
       docker_version: "19.03.13"
       isopod_version: "0.29.1"
       requires:
@@ -436,7 +436,7 @@ jobs:
 **Name**: java_isopod_deploy
 
 **Parameters**:
-- **appname** Name of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **to** Kubernetes cluster to deploy to. Values: *prod*, *dev*. Default: *dev*
 - **artifactory_username** (Optional) Artifactory (typically jfrog) username. Default: *$DOCKER_JFROG_USERNAME* from circleCI context
 - **artifactory_password** (Optional) Artifactory (typically jfrog) password. Default: *$DOCKER_JFROG_PASSWORD* from circleCI context
@@ -471,7 +471,7 @@ jobs:
 ...
   - ric-orb/java_isopod_deploy:
       context: dev
-      appname: "myapp"
+      app_path: "myapp"
       isopod_version: "0.29.1"
       to: "dev"
       requires:
@@ -488,7 +488,7 @@ none
 
 **Examples**
 
-Does nothing. Because sometimes you need a job but you have nothing to do…
+Does nothing. Because sometimes you need a job, but you have nothing to do…
 ```yaml
 ...
 jobs:

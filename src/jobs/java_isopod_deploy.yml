@@ -3,10 +3,10 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  appname:
-    description: "Name of maven module for the app, or blank for single-app-repo"
+  app_path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
-    default: ""
+    default: "."
   to:
     description: "Kubernetes cluster to deploy to"
     type: enum
@@ -52,9 +52,10 @@ executor:
 
 steps:
   - checkout
-  - java_isopod_deploy:
-      appname: << parameters.appname >>
+  - deploy:
       to: << parameters.to >>
+      config: << parameters.app_path >>/isopod.yml
+      work_dir: .
   - when:
       condition: << parameters.slack_notify_success >>
       steps:

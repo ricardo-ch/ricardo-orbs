@@ -77,7 +77,7 @@ usage:
         - ric-orb/java_maven_build_test:
             name: "maven-build"
             context: dev
-            appname: "app1"
+            app_path: "app1"
             <<: *cfg-maven-cache-key-prefix
             executor: java_docker
             java_builder_docker_java_version: "11.0"
@@ -96,7 +96,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-branch"
             context: dev
-            appname: "app1"
+            app_path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             requires:
               - maven-build
@@ -111,7 +111,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-dev-branch"
             context: dev
-            appname: "app1"
+            app_path: "app1"
             <<: *cfg-isopod-version
             to: "dev"
             requires:
@@ -121,7 +121,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-master"
             context: dev
-            appname: "app1"
+            app_path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             filters:
               branches:
@@ -139,7 +139,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-dev-master"
             context: dev
-            appname: "app1"
+            app_path: "app1"
             <<: *cfg-isopod-version
             to: "dev"
             requires:
@@ -147,7 +147,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-prod-branch"
             context: prod
-            appname: "app1"
+            app_path: "app1"
             <<: *cfg-isopod-version
             to: "prod"
             requires:
@@ -169,7 +169,7 @@ usage:
         - ric-orb/java_maven_build_test:
             name: "maven-build"
             context: dev
-            appname: "app2"
+            app_path: "app2"
             <<: *cfg-maven-cache-key-prefix
 #            executor: java_builder_docker
 #            java_builder_docker_java_version: "11.0"
@@ -188,7 +188,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-branch"
             context: dev
-            appname: "app2"
+            app_path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             requires:
               - maven-build
@@ -203,7 +203,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-dev-branch"
             context: dev
-            appname: "app2"
+            app_path: "app2"
             <<: *cfg-isopod-version
             to: "dev"
             requires:
@@ -213,7 +213,7 @@ usage:
         - ric-orb/java_isopod_build_push_image:
             name: "build-push-image-master"
             context: dev
-            appname: "app2"
+            app_path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             filters:
               branches:
@@ -231,7 +231,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-dev-master"
             context: dev
-            appname: "app2"
+            app_path: "app2"
             <<: *cfg-isopod-version
             to: "dev"
             requires:
@@ -239,7 +239,7 @@ usage:
         - ric-orb/java_isopod_deploy:
             name: "deploy-prod-branch"
             context: prod
-            appname: "app2"
+            app_path: "app2"
             <<: *cfg-isopod-version
             to: "prod"
             requires:

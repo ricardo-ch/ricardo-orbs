@@ -3,10 +3,10 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  appname:
-    description: "Name of maven module for the app, or blank for single-app-repo"
+  app_path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
-    default: ""
+    default: "."
   docker_hub_username:
     type: string
     default: $DOCKER_HUB_USERNAME
@@ -53,4 +53,4 @@ steps:
   - attach_workspace:
       at: .
   - java_isopod_build:
-      appname: << parameters.appname >>
+      app_path: << parameters.app_path >>

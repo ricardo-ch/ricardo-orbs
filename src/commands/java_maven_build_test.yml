@@ -3,21 +3,29 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  appname:
-    description: "Name of maven module for the app, or blank for single-app-repo"
+  app_path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
-    default: ""
+    default: "."
 
 steps:
   # build app (maven module) from monorepo
   - when:
-      condition: << parameters.appname >>
+      condition:
+        matches:
+          # check whether contains word-characters
+          pattern: "^.*\\w.*$"
+          value: << parameters.app_path >>
       steps:
         - run: |
-            ./mvnw clean verify -U -P integration-tests -pl << parameters.appname >> -am
+            ./mvnw clean verify -U -P integration-tests -pl << parameters.app_path >> -am
   # build app from single-app-repo
   - unless:
-      condition: << parameters.appname >>
+      condition:
+        matches:
+          # check whether contains word-characters
+          pattern: "^.*\\w.*$"
+          value: << parameters.app_path >>
       steps:
         - run: |
             ./mvnw clean verify -U -P integration-tests

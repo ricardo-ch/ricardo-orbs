@@ -3,25 +3,13 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  appname:
-    description: "Name of maven module for the app, or blank for single-app-repo"
+  app_path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
-    default: ""
+    default: "."
 
 steps:
-  # save compiled app (maven module) from monorepo
-  - when:
-      condition: << parameters.appname >>
-      steps:
-        - persist_to_workspace:
-            root: .
-            paths:
-              - ./<< parameters.appname >>/target
-  # save compiled app from single-app-repo
-  - unless:
-      condition: << parameters.appname >>
-      steps:
-        - persist_to_workspace:
-            root: .
-            paths:
-              - ./target
+  - persist_to_workspace:
+      root: .
+      paths:
+        - << parameters.app_path >>/target

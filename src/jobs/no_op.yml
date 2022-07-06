@@ -8,5 +8,5 @@ docker:
       password: $DOCKER_HUB_PASSWORD
 
 steps:
-  - print:
-      message: "No code change detected. No workflow is being triggered."
+  - run: |
+      echo "No code change detected - no workflows triggered."
