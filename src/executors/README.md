@@ -26,11 +26,11 @@ View the included _[hello.yml](./hello.yml)_ example.
 
 **Name**: java_builder_docker
 
-**Parameters**:
+**Parameters**: note that all java_builder_* have a shared set of parameters (signature) which allows mimicking polymorph behaviour
 
-- **java_version** java version to be installed on the builder, default *11.0*
-- **docker_hub_username** username for docker registry
-- **docker_hub_password** password for docker registry
+- **image** Docker image to use for the executor. Default *cimg/openjdk:11.0*
+- **docker_hub_username** Docker hub credentials to download the executor image
+- **docker_hub_password** Docker hub credentials to download the executor image
 
 A parametrised docker executor with java installed (see also [Convenience Images: cimg/openjdk:\<tag>](https://circleci.com/developer/images/image/cimg/openjdk)). It is used for running java jobs in this orb.
 
@@ -38,9 +38,11 @@ A parametrised docker executor with java installed (see also [Convenience Images
 
 **Name**: java_builder_vm
 
-**Parameters**:
+**Parameters**: note that all java_builder_* have a shared set of parameters (signature) which allows mimicking polymorph behaviour
 
-- **vm_image** image for the VM of the builder, default *ubuntu-2004:202010-01*
+- **image** VM image to use for the executor. Default *ubuntu-2004:202010-01*
+- **docker_hub_username** (Unused, but required to match java_builder_* signature which allows mimicking polymorph behaviour)
+- **docker_hub_password** (Unused, but required to match java_builder_* signature which allows mimicking polymorph behaviour)
 
 A parametrised vm executor with java installed. It is used for running java jobs in this orb.
 

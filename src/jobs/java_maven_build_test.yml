@@ -16,19 +16,24 @@ parameters:
     type: enum
     enum: [ "java_builder_docker", "java_builder_vm"]
     default: "java_builder_docker"
-  java_builder_docker_java_version:
-    description: "[required for java_builder_docker] Java version for docker-executor"
+  java_builder_image:
+    description: "Image to use for the executor"
     type: string
-    default: "11.0"
-  java_builder_vm_image:
-    description: "[required for java_builder_vm] VM-image for executor"
+    default: "cimg/openjdk:11.0"
+  java_builder_docker_hub_username:
+    description: "Docker hub credentials to download the executor image"
     type: string
-    default: "ubuntu-2004:202010-01"
+    default: $DOCKER_HUB_USERNAME
+  java_builder_docker_hub_password:
+    description: "Docker hub credentials to download the executor image"
+    type: string
+    default: $DOCKER_HUB_PASSWORD
 
 executor:
   name: << parameters.executor >>
-  java_version: << parameters.java_builder_docker_java_version >>
-  vm_image: << parameters.java_builder_vm_image >>
+  image: << parameters.java_builder_image >>
+  docker_hub_username: << parameters.java_builder_docker_hub_username >>
+  docker_hub_password: << parameters.java_builder_docker_hub_password >>
 
 steps:
   - checkout

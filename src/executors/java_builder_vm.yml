@@ -3,10 +3,19 @@ description: >
   Typically required if maven build needs docker for testcontainers.
 
 parameters:
-  vm_image:
-    description: "VM image to use"
+  # NOTE: all java_builder_* have a shared set of parameters (signature) which allows mimicking polymorph behaviour
+  image:
+    description: "VM image to use for the executor"
     type: string
     default: "ubuntu-2004:202010-01"
+  docker_hub_username:
+    description: "(Unused but required to match java_builder_* signature which allows mimicking polymorph behaviour)"
+    type: string
+    default: $DOCKER_HUB_USERNAME
+  docker_hub_password:
+    description: "(Unused but required to match java_builder_* signature which allows mimicking polymorph behaviour)"
+    type: string
+    default: $DOCKER_HUB_PASSWORD
 
 machine:
-  image: << parameters.vm_image >>
+  image: << parameters.image >>

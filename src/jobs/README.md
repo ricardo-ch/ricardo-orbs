@@ -341,9 +341,10 @@ jobs:
 **Parameters**:
 - **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **maven_cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
-- **executor** Executor for the build. Values: *java_builder_docker*  (default; more lightweight), *java_builder_vm* (required by builds laveraging testcontainers and therefore depending on docker) 
-- **java_builder_docker_java_version** Java version for *java_builder_docker* (has no effect with *java_builder_vm*). Default: *11.0*
-- **java_builder_vm_image** VM image for *java_builder_vm* (has no effect with *java_builder_docker*). Default: *ubuntu-2004:202010-01*
+- **executor** Executor for the build. Values: *java_builder_docker*  (default; more lightweight), *java_builder_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+- **java_builder_image** Image to use for the executor. Default: *cimg/openjdk:11.0*
+- **java_builder_docker_hub_username** Docker hub credentials to download the executor image. Default: *$DOCKER_HUB_USERNAME* from circleCI context
+- **java_builder_docker_hub_password** Docker hub credentials to download the executor image. Default: *$DOCKER_HUB_PASSWORD* from circleCI context
 
 **Examples**
 
@@ -352,11 +353,14 @@ Builds java sources using a docker builder
 ...
 jobs:
 ...
-    - ric-orb/java_maven_build_test:
-        context: dev
-        maven_cache_key_prefix: "myrepo"
-        executor: java_builder_docker
-        java_builder_docker_java_version: "11.0"
+  - ric-orb/java_maven_build_test:
+      context: dev
+      maven_cache_key_prefix: "myrepo"
+      executor: java_builder_docker
+      java_builder_image: "cimg/openjdk:11.0"
+      java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
+      java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
+
 ...
 ```
 Builds java sources using a VM builder
@@ -368,7 +372,9 @@ jobs:
       context: dev
       maven_cache_key_prefix: "myrepo"
       executor: java_builder_vm
-      java_builder_vm_image: "ubuntu-2004:202010-01"
+      java_builder_image: "ubuntu-2004:202010-01"
+      java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
+      java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
 ...
 ```
 
@@ -377,12 +383,10 @@ Builds java sources for a specific app from a monorepo
 ...
 jobs:
 ...
-    - ric-orb/java_maven_build_test:
-        context: dev
-        app_path: "myapp"
-        maven_cache_key_prefix: "myrepo"
-        executor: java_builder_docker
-        java_builder_docker_java_version: "11.0"
+  - ric-orb/java_maven_build_test:
+      context: dev
+      app_path: "myapp"
+      maven_cache_key_prefix: "myrepo"
 ...
 ```
 

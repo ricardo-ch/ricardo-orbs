@@ -79,10 +79,12 @@ usage:
             context: dev
             app_path: "app1"
             <<: *cfg-maven-cache-key-prefix
-            executor: java_docker
-            java_builder_docker_java_version: "11.0"
+            executor: java_builder_docker
+            java_builder_image: "cimg/openjdk:11.0"
 #            executor: java_builder_vm
-#            java_builder_vm_image: "ubuntu-2004:202010-01"
+#            java_builder_image: "ubuntu-2004:202010-01"
+            java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
+            java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
 
         # jobs for branch #####################################################
         - approve_deploy_dev_branch:
@@ -172,9 +174,11 @@ usage:
             app_path: "app2"
             <<: *cfg-maven-cache-key-prefix
 #            executor: java_builder_docker
-#            java_builder_docker_java_version: "11.0"
+#            java_builder_image: "cimg/openjdk:11.0"
             executor: java_builder_vm
-            java_builder_vm_image: "ubuntu-2004:202010-01"
+            java_builder_image: "ubuntu-2004:202010-01"
+            java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
+            java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
 
         # jobs for branch #####################################################
         - approve_deploy_dev_branch:
