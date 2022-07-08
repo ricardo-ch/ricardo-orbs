@@ -27,7 +27,7 @@ steps:
       prefix: << parameters.cache_key_prefix >>
   - maven_build_test:
       path: << parameters.path >>
-  - java_cache_maven_artifacts:
+  - maven_cache_artifacts:
       prefix: << parameters.cache_key_prefix >>
   - maven_save_output:
       path: << parameters.path >>
