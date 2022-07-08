@@ -240,7 +240,7 @@ steps:
 ```
 
 ### Command to save maven output to workspace for Java applications
-**Name**: java_save_maven_output
+**Name**: maven_save_output
 
 **Parameters**:
 - **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
@@ -251,14 +251,14 @@ Save maven output directory (target directory containing compiled app) to worksp
 ```yaml
 ...
 steps:
-  - ric-orb/java_save_maven_output
+  - ric-orb/maven_save_output
 ```
 
 Save maven output directory to workspace for a specific app from a monorepo.
 ```yaml
 ...
 steps:
-  - ric-orb/java_save_maven_output:
+  - ric-orb/maven_save_output:
       path: "myapp"
 ```
 

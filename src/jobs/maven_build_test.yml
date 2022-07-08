@@ -29,5 +29,5 @@ steps:
       path: << parameters.path >>
   - java_cache_maven_artifacts:
       prefix: << parameters.cache_key_prefix >>
-  - java_save_maven_output:
+  - maven_save_output:
       path: << parameters.path >>
