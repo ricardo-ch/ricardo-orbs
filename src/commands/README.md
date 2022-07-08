@@ -206,7 +206,7 @@ steps:
 ```
 
 ### Command to save maven artifacts to cache for Java applications
-**Name**: java_cache_maven_artifacts
+**Name**: maven_cache_artifacts
 
 **Parameters**:
 - **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
@@ -217,13 +217,13 @@ Note that you typically want to use a shared prefix for the entire repository in
 ```yaml
 ...
 steps:
-  - ric-orb/java_cache_maven_artifacts:
+  - ric-orb/maven_cache_artifacts:
       prefix: "myrepo"
 ...
 ```
 
 ### Command to restore maven artifacts from cache for Java applications
-**Name**: java_restore_maven_artifacts
+**Name**: maven_restore_artifacts
 
 **Parameters**:
 - **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
@@ -234,7 +234,7 @@ Note that you typically want to use a shared prefix for the entire repository in
 ```yaml
 ...
 steps:
-  - ric-orb/java_restore_maven_artifacts:
+  - ric-orb/maven_restore_artifacts:
       prefix: "myrepo"
 ...
 ```

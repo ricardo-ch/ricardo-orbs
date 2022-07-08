@@ -23,7 +23,7 @@ executor:
 steps:
   - checkout
   - maven_auth
-  - java_restore_maven_artifacts:
+  - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
   - maven_build_test:
       path: << parameters.path >>
