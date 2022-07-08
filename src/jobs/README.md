@@ -372,7 +372,7 @@ jobs:
       context: dev
       maven_cache_key_prefix: "myrepo"
       executor: java_builder_vm
-      java_builder_image: "ubuntu-2004:202010-01"
+      java_builder_image: "ubuntu-2204:current"
       java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
       java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
 ...

@@ -33,10 +33,7 @@ usage:
             # 3-column, whitespace-delimited mapping. One mapping per line:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
             mapping: |
-              .circleci/.*  modified-cci      true
-              .mvnw/.*      modified-mvnw     true
-              pom.xml       modified-pom      true
-              common/.*     modified-common   true
-              app1/.*       modified-app1     true
-              app2/.*       modified-app2     true
+              .circleci/.*|.mvn/.*|pom.xml|common/.* modified-common true
+              app1/.* modified-app1 true
+              app2/.* modified-app2 true
             config-path: .circleci/java-monorepo-workflows.yml

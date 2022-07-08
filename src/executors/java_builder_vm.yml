@@ -7,7 +7,7 @@ parameters:
   image:
     description: "VM image to use for the executor"
     type: string
-    default: "ubuntu-2004:202010-01"
+    default: "ubuntu-2204:current"
   docker_hub_username:
     description: "(Unused but required to match java_builder_* signature which allows mimicking polymorph behaviour)"
     type: string

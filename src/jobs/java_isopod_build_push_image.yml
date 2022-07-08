@@ -41,7 +41,7 @@ steps:
   - checkout
   - maven_auth
   - setup_remote_docker:
-      docker_layer_caching: false
+      docker_layer_caching: true
       version: << parameters.docker_version >>
   - login_docker_registry:
       username: << parameters.docker_hub_username >>
