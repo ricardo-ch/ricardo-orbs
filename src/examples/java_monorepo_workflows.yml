@@ -59,7 +59,7 @@ usage:
           - << pipeline.parameters.modified-common >>
 
       jobs:
-        - ric-orb/java_maven_build_test:
+        - ric-orb/maven_build_test:
             name: "maven-build"
             context: dev
             path: "app1"
@@ -146,7 +146,7 @@ usage:
           - << pipeline.parameters.modified-common >>
 
       jobs:
-        - ric-orb/java_maven_build_test:
+        - ric-orb/maven_build_test:
             name: "maven-build"
             context: dev
             path: "app2"

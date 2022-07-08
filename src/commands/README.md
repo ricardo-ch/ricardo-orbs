@@ -263,7 +263,7 @@ steps:
 ```
 
 ### Command to build and test with maven for Java applications
-**Name**: java_maven_build_test
+**Name**: maven_build_test
 
 **Parameters**:
 - **path** Path of maven module for the app, or blank for single-app-repo. Default: *blank*
@@ -274,14 +274,14 @@ Build and test java application.
 ```yaml
 ...
 steps:
-  - ric-orb/java_maven_build_test
+  - ric-orb/maven_build_test
 ```
 
 Build and test java application from a monorepo.
 ```yaml
 ...
 steps:
-  - ric-orb/java_maven_build_test:
+  - ric-orb/maven_build_test:
       path: "myapp"
 ```
 

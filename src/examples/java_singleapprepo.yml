@@ -28,7 +28,7 @@ usage:
 
     java_single_app_repo:
       jobs:
-        - ric-orb/java_maven_build_test:
+        - ric-orb/maven_build_test:
             name: "maven-build"
             context: dev
             <<: *cfg-cache-key-prefix

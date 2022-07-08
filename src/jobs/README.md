@@ -336,7 +336,7 @@ jobs:
 
 ### Maven build and test job for Java applications
 
-**Name**: java_maven_build_test
+**Name**: maven_build_test
 
 **Parameters**:
 - **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
@@ -350,7 +350,7 @@ Builds java sources using a docker builder
 ...
 jobs:
 ...
-  - ric-orb/java_maven_build_test:
+  - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_docker
@@ -362,7 +362,7 @@ Builds java sources using a VM builder
 ...
 jobs:
 ...
-  - ric-orb/java_maven_build_test:
+  - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_vm
@@ -374,7 +374,7 @@ Builds java sources for a specific app from a monorepo
 ...
 jobs:
 ...
-  - ric-orb/java_maven_build_test:
+  - ric-orb/maven_build_test:
       context: dev
       path: "myapp"
       cache_key_prefix: "myrepo"
@@ -407,7 +407,7 @@ jobs:
       docker_version: "19.03.13"
       isopod_version: "0.29.1"
       requires:
-        - java_maven_build_test
+        - maven_build_test
 ...
 ```
 
@@ -422,7 +422,7 @@ jobs:
       docker_version: "19.03.13"
       isopod_version: "0.29.1"
       requires:
-        - java_maven_build_test
+        - maven_build_test
 ...
 ```
 

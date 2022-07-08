@@ -25,7 +25,7 @@ steps:
   - maven_auth
   - java_restore_maven_artifacts:
       prefix: << parameters.cache_key_prefix >>
-  - java_maven_build_test:
+  - maven_build_test:
       path: << parameters.path >>
   - java_cache_maven_artifacts:
       prefix: << parameters.cache_key_prefix >>
