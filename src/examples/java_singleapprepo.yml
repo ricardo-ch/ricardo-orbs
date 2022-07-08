@@ -32,12 +32,8 @@ usage:
             name: "maven-build"
             context: dev
             <<: *cfg-maven-cache-key-prefix
-            executor: java_builder_docker
-            java_builder_image: "cimg/openjdk:11.0"
-#            executor: java_builder_vm
-#            java_builder_image: "ubuntu-2204:current"
-            java_builder_docker_hub_username: $DOCKER_HUB_USERNAME
-            java_builder_docker_hub_password: $DOCKER_HUB_PASSWORD
+            executor: maven_docker
+#            executor: maven_vm
 
         # jobs for branch #####################################################
         - approve_deploy_dev_branch:

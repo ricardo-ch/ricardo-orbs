@@ -14,26 +14,11 @@ parameters:
   executor:
     description: "Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)"
     type: enum
-    enum: [ "java_builder_docker", "java_builder_vm"]
-    default: "java_builder_docker"
-  java_builder_image:
-    description: "Image to use for the executor"
-    type: string
-    default: "cimg/openjdk:11.0"
-  java_builder_docker_hub_username:
-    description: "Docker hub credentials to download the executor image"
-    type: string
-    default: $DOCKER_HUB_USERNAME
-  java_builder_docker_hub_password:
-    description: "Docker hub credentials to download the executor image"
-    type: string
-    default: $DOCKER_HUB_PASSWORD
+    enum: [ "maven_docker", "maven_vm"]
+    default: "maven_docker"
 
 executor:
   name: << parameters.executor >>
-  image: << parameters.java_builder_image >>
-  docker_hub_username: << parameters.java_builder_docker_hub_username >>
-  docker_hub_password: << parameters.java_builder_docker_hub_password >>
 
 steps:
   - checkout
