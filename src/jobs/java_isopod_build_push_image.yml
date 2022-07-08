@@ -3,7 +3,7 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  app_path:
+  path:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
@@ -53,4 +53,4 @@ steps:
   - attach_workspace:
       at: .
   - java_isopod_build:
-      app_path: << parameters.app_path >>
+      path: << parameters.path >>

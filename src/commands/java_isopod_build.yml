@@ -3,11 +3,11 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  app_path:
+  path:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
 
 steps:
   - run: |
-      isopod -f << parameters.app_path >>/isopod.yml build
+      isopod -f << parameters.path >>/isopod.yml build

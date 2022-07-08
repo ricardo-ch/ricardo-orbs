@@ -3,7 +3,7 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  app_path:
+  path:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
@@ -15,17 +15,17 @@ steps:
         matches:
           # check whether contains word-characters
           pattern: "^.*\\w.*$"
-          value: << parameters.app_path >>
+          value: << parameters.path >>
       steps:
         - run: |
-            ./mvnw clean verify -U -P integration-tests -pl << parameters.app_path >> -am
+            ./mvnw clean verify -U -P integration-tests -pl << parameters.path >> -am
   # build app from single-app-repo
   - unless:
       condition:
         matches:
           # check whether contains word-characters
           pattern: "^.*\\w.*$"
-          value: << parameters.app_path >>
+          value: << parameters.path >>
       steps:
         - run: |
             ./mvnw clean verify -U -P integration-tests

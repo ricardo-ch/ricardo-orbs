@@ -3,7 +3,7 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  app_path:
+  path:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
@@ -41,8 +41,8 @@ steps:
   - java_restore_maven_artifacts:
       maven_cache_key_prefix: << parameters.maven_cache_key_prefix >>
   - java_maven_build_test:
-      app_path: << parameters.app_path >>
+      path: << parameters.path >>
   - java_cache_maven_artifacts:
       maven_cache_key_prefix: << parameters.maven_cache_key_prefix >>
   - java_save_maven_output:
-      app_path: << parameters.app_path >>
+      path: << parameters.path >>

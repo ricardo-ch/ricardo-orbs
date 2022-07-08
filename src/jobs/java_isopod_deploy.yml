@@ -3,7 +3,7 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
-  app_path:
+  path:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
@@ -54,7 +54,7 @@ steps:
   - checkout
   - deploy:
       to: << parameters.to >>
-      config: << parameters.app_path >>/isopod.yml
+      config: << parameters.path >>/isopod.yml
       work_dir: .
   - when:
       condition: << parameters.slack_notify_success >>

@@ -243,7 +243,7 @@ steps:
 **Name**: java_save_maven_output
 
 **Parameters**:
-- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 
 Example:
 
@@ -259,14 +259,14 @@ Save maven output directory to workspace for a specific app from a monorepo.
 ...
 steps:
   - ric-orb/java_save_maven_output:
-      app_path: "myapp"
+      path: "myapp"
 ```
 
 ### Command to build and test with maven for Java applications
 **Name**: java_maven_build_test
 
 **Parameters**:
-- **app_path** Path of maven module for the app, or blank for single-app-repo. Default: *blank*
+- **path** Path of maven module for the app, or blank for single-app-repo. Default: *blank*
 
 Example:
 
@@ -282,14 +282,14 @@ Build and test java application from a monorepo.
 ...
 steps:
   - ric-orb/java_maven_build_test:
-      app_path: "myapp"
+      path: "myapp"
 ```
 
 ### Command to build a docker image with isopod for Java applications
 **Name**: java_isopod_build
 
 **Parameters**:
-- **app_path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 
 Example:
 
@@ -305,7 +305,7 @@ Build docker image for java application from a monorepo.
 ...
 steps:
   - ric-orb/java_isopod_build:
-      app_path: "myapp"
+      path: "myapp"
 ```
 
 ## See:
