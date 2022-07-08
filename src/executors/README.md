@@ -24,29 +24,22 @@ View the included _[hello.yml](./hello.yml)_ example.
 
 ### Docker based Java Builder
 
-**Name**: java_builder_docker
+**Name**: maven_docker
 
-**Parameters**: note that all java_builder_* have a shared set of parameters (signature) which allows mimicking polymorph behaviour
+**Parameters**: none
 
-- **image** Docker image to use for the executor. Default *cimg/openjdk:11.0*
-- **docker_hub_username** Docker hub credentials to download the executor image
-- **docker_hub_password** Docker hub credentials to download the executor image
-
-A parametrised docker executor with java installed (see also [Convenience Images: cimg/openjdk:\<tag>](https://circleci.com/developer/images/image/cimg/openjdk)). It is used for running java jobs in this orb.
+A docker executor with java 11 installed (see also [Convenience Images: cimg/openjdk:11.0](https://circleci.com/developer/images/image/cimg/openjdk)). It is used for running java jobs in this orb.
 
 ### VM based Java Builder
 
-**Name**: java_builder_vm
+**Name**: maven_vm
 
-**Parameters**: note that all java_builder_* have a shared set of parameters (signature) which allows mimicking polymorph behaviour
+**Parameters**: none
 
-- **image** VM image to use for the executor. Default *ubuntu-2204:current*
-- **docker_hub_username** (Unused, but required to match java_builder_* signature which allows mimicking polymorph behaviour)
-- **docker_hub_password** (Unused, but required to match java_builder_* signature which allows mimicking polymorph behaviour)
-
-A parametrised vm executor with java installed. It is used for running java jobs in this orb.
+A vm executor with java 11 installed. It is used for running java jobs in this orb.
 
 This executor is required in case a build depends on a running docker instance to execute testcontainers.
+
 
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
