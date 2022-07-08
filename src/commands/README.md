@@ -209,7 +209,7 @@ steps:
 **Name**: java_cache_maven_artifacts
 
 **Parameters**:
-- **maven_cache_key_prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
 
 Example:
 
@@ -218,7 +218,7 @@ Note that you typically want to use a shared prefix for the entire repository in
 ...
 steps:
   - ric-orb/java_cache_maven_artifacts:
-      maven_cache_key_prefix: "myrepo"
+      prefix: "myrepo"
 ...
 ```
 
@@ -226,7 +226,7 @@ steps:
 **Name**: java_restore_maven_artifacts
 
 **Parameters**:
-- **maven_cache_key_prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
 
 Example:
 
@@ -235,7 +235,7 @@ Note that you typically want to use a shared prefix for the entire repository in
 ...
 steps:
   - ric-orb/java_restore_maven_artifacts:
-      maven_cache_key_prefix: "myrepo"
+      prefix: "myrepo"
 ...
 ```
 

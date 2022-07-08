@@ -7,7 +7,7 @@ parameters:
     description: "Path of maven module for the app, or \".\" for single-app-repo"
     type: string
     default: "."
-  maven_cache_key_prefix:
+  cache_key_prefix:
     description: "Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix"
     type: string
     default: ""
@@ -24,10 +24,10 @@ steps:
   - checkout
   - maven_auth
   - java_restore_maven_artifacts:
-      maven_cache_key_prefix: << parameters.maven_cache_key_prefix >>
+      prefix: << parameters.cache_key_prefix >>
   - java_maven_build_test:
       path: << parameters.path >>
   - java_cache_maven_artifacts:
-      maven_cache_key_prefix: << parameters.maven_cache_key_prefix >>
+      prefix: << parameters.cache_key_prefix >>
   - java_save_maven_output:
       path: << parameters.path >>

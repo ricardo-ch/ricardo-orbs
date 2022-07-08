@@ -340,7 +340,7 @@ jobs:
 
 **Parameters**:
 - **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
-- **maven_cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
+- **cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
 - **executor** Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
 
 **Examples**
@@ -352,7 +352,7 @@ jobs:
 ...
   - ric-orb/java_maven_build_test:
       context: dev
-      maven_cache_key_prefix: "myrepo"
+      cache_key_prefix: "myrepo"
       executor: maven_docker
 
 ...
@@ -364,7 +364,7 @@ jobs:
 ...
   - ric-orb/java_maven_build_test:
       context: dev
-      maven_cache_key_prefix: "myrepo"
+      cache_key_prefix: "myrepo"
       executor: maven_vm
 ...
 ```
@@ -377,7 +377,7 @@ jobs:
   - ric-orb/java_maven_build_test:
       context: dev
       path: "myapp"
-      maven_cache_key_prefix: "myrepo"
+      cache_key_prefix: "myrepo"
 ...
 ```
 

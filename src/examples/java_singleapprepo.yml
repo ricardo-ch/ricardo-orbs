@@ -20,8 +20,8 @@ usage:
     docker_version: "19.03.13"
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: "0.29.1"
-  cfg-maven-cache-key-prefix: &cfg-maven-cache-key-prefix
-    maven_cache_key_prefix: my-repo
+  cfg-cache-key-prefix: &cfg-cache-key-prefix
+    cache_key_prefix: my-repo
 
   workflows:
     version: 2
@@ -31,7 +31,7 @@ usage:
         - ric-orb/java_maven_build_test:
             name: "maven-build"
             context: dev
-            <<: *cfg-maven-cache-key-prefix
+            <<: *cfg-cache-key-prefix
             executor: maven_docker
 #            executor: maven_vm
 
