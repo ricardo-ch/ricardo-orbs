@@ -76,11 +76,12 @@ usage:
                 ignore:
                   - "master"
 
-        - ric-orb/java_isopod_build_push_image:
+        - ric-orb/build_push_image:
             name: "build-push-image-branch"
             context: dev
             path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -91,21 +92,22 @@ usage:
             requires:
               - build-push-image-branch
 
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-dev-branch"
             context: dev
             path: "app1"
             <<: *cfg-isopod-version
-            to: "dev"
+            env: "dev"
             requires:
               - build-push-image-branch
 
         # jobs for master #####################################################
-        - ric-orb/java_isopod_build_push_image:
+        - ric-orb/build_push_image:
             name: "build-push-image-master"
             context: dev
             path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
             filters:
               branches:
                 only:
@@ -119,20 +121,20 @@ usage:
             requires:
               - build-push-image-master
 
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-dev-master"
             context: dev
             path: "app1"
             <<: *cfg-isopod-version
-            to: "dev"
+            env: "dev"
             requires:
               - build-push-image-master
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-prod-branch"
             context: prod
             path: "app1"
             <<: *cfg-isopod-version
-            to: "prod"
+            env: "prod"
             requires:
               - deploy-dev-master
 
@@ -163,11 +165,12 @@ usage:
                 ignore:
                   - "master"
 
-        - ric-orb/java_isopod_build_push_image:
+        - ric-orb/build_push_image:
             name: "build-push-image-branch"
             context: dev
             path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -178,21 +181,22 @@ usage:
             requires:
               - build-push-image-branch
 
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-dev-branch"
             context: dev
             path: "app2"
             <<: *cfg-isopod-version
-            to: "dev"
+            env: "dev"
             requires:
               - build-push-image-branch
 
         # jobs for master #####################################################
-        - ric-orb/java_isopod_build_push_image:
+        - ric-orb/build_push_image:
             name: "build-push-image-master"
             context: dev
             path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
             filters:
               branches:
                 only:
@@ -206,19 +210,19 @@ usage:
             requires:
               - build-push-image-master
 
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-dev-master"
             context: dev
             path: "app2"
             <<: *cfg-isopod-version
-            to: "dev"
+            env: "dev"
             requires:
               - build-push-image-master
-        - ric-orb/java_isopod_deploy:
+        - ric-orb/deploy_job:
             name: "deploy-prod-branch"
             context: prod
             path: "app2"
             <<: *cfg-isopod-version
-            to: "prod"
+            env: "prod"
             requires:
               - deploy-dev-master
