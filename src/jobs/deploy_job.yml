@@ -1,76 +1,77 @@
 description: >
   Job for deploying to GKE cluster for environment(dev|prod).
+
 executor:
   name: isopod
   tag: <<parameters.isopod_version>>
   username: <<parameters.private_hub_username>>
   password: <<parameters.private_hub_password>>
+
 parameters:
+  path:
+    description: "Path to directory containing isopod.yml file"
+    type: string
+    default: "."
+  env:
+    description: "Kubernetes cluster to deploy to"
+    type: enum
+    enum: [ "dev", "prod"]
+    default: "dev"
   isopod_version:
     type: string
     default: ${ISOPOD_VERSION}
   private_hub_username:
     type: string
-    default: $DOCKER_JFROG_USERNAME
+    default: ${DOCKER_JFROG_USERNAME}
   private_hub_password:
     type: string
-    default: $DOCKER_JFROG_PASSWORD
-  env:
-    type: string
-    default: dev
+    default: ${DOCKER_JFROG_PASSWORD}
   predeploy_steps:
-    type: steps
     description: "Steps that will run before deploy process"
+    type: steps
     default: [ ]
   deploy_steps:
-    type: steps
     description: "Steps that will run deploy procedure"
-    default: [ ]
-  default_deploy:
-    type: boolean
-    default: true
-  postdeploy_steps:
     type: steps
+    default:
+      - deploy:
+          config: << parameters.path >>/isopod.yml
+          to: <<parameters.env>>
+          work_dir: << parameters.work_dir >>
+  postdeploy_steps:
     description: "Steps that will run after deploy process"
+    type: steps
     default: [ ]
   slack_notify_success:
-    type: boolean
     description: "Flag to trigger sending slack notification on success"
+    type: boolean
     default: false
   slack_ok_webhook:
     type: string
     default: ${SLACK_WEBHOOK}
   slack_ok_branches:
+    description: "Comma separated list of branches for which notifications are sent"
     type: string
-    default: master
+    default: "master"
   slack_notify_failure:
-    type: boolean
     description: "Flag to trigger sending slack notification on failure"
+    type: boolean
     default: false
   slack_fail_webhook:
     type: string
     default: ${SLACK_WEBHOOK}
   slack_fail_branches:
+    description: "Comma separated list of branches for which notifications are sent"
     type: string
-    default: master
+    default: "master"
   work_dir:
     type: string
-    default: .
+    default: "."
+
 steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
-  - unless:
-      condition: << parameters.default_deploy >>
-      steps:
-        - run: echo "custom deploy"
-        - << parameters.deploy_steps >>
-  - when:
-      condition: << parameters.default_deploy >>
-      steps:
-        - run: echo "default deploy"
-        - deploy:
-            to: <<parameters.env>>
-            work_dir: << parameters.work_dir >>
+  - steps: << parameters.deploy_steps >>
   - steps: << parameters.postdeploy_steps >>
   - when:
       condition: << parameters.slack_notify_success >>

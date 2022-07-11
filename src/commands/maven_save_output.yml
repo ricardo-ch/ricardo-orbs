@@ -1,0 +1,15 @@
+description: >
+  Save maven output directory (target directory containing compiled app) to workspace.
+  Supports app-module from monorepo as well as single app from single-app-repo.
+
+parameters:
+  path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
+    type: string
+    default: "."
+
+steps:
+  - persist_to_workspace:
+      root: .
+      paths:
+        - << parameters.path >>/target

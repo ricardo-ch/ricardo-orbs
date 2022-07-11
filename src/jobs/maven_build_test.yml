@@ -1,0 +1,33 @@
+description: >
+  Build and test java app using maven; update circleCI caches and workspace.
+  Supports app-module from monorepo as well as single app from single-app-repo.
+
+parameters:
+  path:
+    description: "Path of maven module for the app, or \".\" for single-app-repo"
+    type: string
+    default: "."
+  cache_key_prefix:
+    description: "Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix"
+    type: string
+    default: ""
+  executor:
+    description: "Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)"
+    type: enum
+    enum: [ "maven_docker", "maven_vm"]
+    default: "maven_docker"
+
+executor:
+  name: << parameters.executor >>
+
+steps:
+  - checkout
+  - maven_auth
+  - maven_restore_artifacts:
+      prefix: << parameters.cache_key_prefix >>
+  - maven_build_test:
+      path: << parameters.path >>
+  - maven_cache_artifacts:
+      prefix: << parameters.cache_key_prefix >>
+  - maven_save_output:
+      path: << parameters.path >>

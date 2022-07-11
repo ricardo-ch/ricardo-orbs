@@ -1,0 +1,102 @@
+description: >
+  Java single-app-repo example.
+
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+usage:
+
+  #############################################################################
+  # This is what you typically want to have in your .circleci/config.yml
+  #############################################################################
+
+  version: 2.1
+
+  orbs:
+    compliance: ricardo/compliance-orb@2
+    ric-orb: ricardo/ric-orb@1.7.1
+
+  cfg-docker-version: &cfg-docker-version
+    docker_version: "19.03.13"
+  cfg-isopod-version: &cfg-isopod-version
+    isopod_version: "0.29.1"
+  cfg-cache-key-prefix: &cfg-cache-key-prefix
+    cache_key_prefix: my-repo
+
+  workflows:
+    version: 2
+
+    java_single_app_repo:
+      jobs:
+        - ric-orb/maven_build_test:
+            name: "maven-build"
+            context: dev
+            <<: *cfg-cache-key-prefix
+            executor: maven_docker
+#            executor: maven_vm
+
+        # jobs for branch #####################################################
+        - approve_deploy_dev_branch:
+            name: "approve-deploy-dev-branch"
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  - "master"
+
+        - ric-orb/build_push_image:
+            name: "build-push-image-branch"
+            context: dev
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
+            requires:
+              - maven-build
+              - approve-deploy-dev-branch
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-branch"
+            context: dev
+            requires:
+              - build-push-image-branch
+
+        - ric-orb/deploy_job:
+            name: "deploy-dev-branch"
+            context: dev
+            <<: *cfg-isopod-version
+            env: "dev"
+            requires:
+              - build-push-image-branch
+
+        # jobs for master #####################################################
+        - ric-orb/build_push_image:
+            name: "build-push-image-master"
+            context: dev
+            <<: [ *cfg-docker-version, *cfg-isopod-version ]
+            docker_layer_caching: true
+            filters:
+              branches:
+                only:
+                  - "master"
+            requires:
+              - maven-build
+
+        - compliance/sre_compliance_checks:
+            name: "sre-compliance-checks-master"
+            context: dev
+            requires:
+              - build-push-image-master
+
+        - ric-orb/deploy_job:
+            name: "deploy-dev-master"
+            context: dev
+            <<: *cfg-isopod-version
+            env: "dev"
+            requires:
+              - build-push-image-master
+        - ric-orb/deploy_job:
+            name: "deploy-prod-branch"
+            context: prod
+            <<: *cfg-isopod-version
+            env: "prod"
+            requires:
+              - deploy-dev-master

@@ -82,65 +82,58 @@ jobs:
 ...
 ```
 
-### Build And Push Docker Image Job
+### Build and Push Docker Image Job
 
 **Name**: build_push_image
 
 **Parameters**:
 
+- **path** Path to directory containing isopod.yml file. Default is "*.*"
 - **isopod_version** isopod version in executor. Not required. Default is **latest**
-- **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable DOCKER_HUB_USERNAME
-- **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable DOCKER_HUB_PASSWORD
-- **private_hub_username** username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
-- **private_hub_password** password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
-- **private_hub_url** url for private docker registry, default is value of context variable DOCKER_JFROG_REGISTRY_URL
+- **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable **$DOCKER_HUB_USERNAME**
+- **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable **$DOCKER_HUB_PASSWORD**
+- **private_hub_username** username for private docker registry, default is value of context variable **$DOCKER_JFROG_USERNAME**
+- **private_hub_password** password for private docker registry, default is value of context variable **$DOCKER_JFROG_PASSWORD**
+- **private_hub_url** url for private docker registry, default is value of context variable **$DOCKER_JFROG_REGISTRY_URL**
 - **cache_name** Not required. If not specified cache will not be used/created
-- **maven_credentials** environment/context variable which holds base64 encoded content for .m2/settings.xml file. Default is ARTIFACTORY_MAVEN_CREDENTIALS which already defined in our contexts
-- **npm_credentials** environment/context variable which holds base64 encoded content for .npmrc file. Default is NPM_RC which already defined in our contexts
-- **docker_layer_cashing**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/), default is *false.* Add to the build costs(money) but docker image building can be faster.
-- **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is 19.03.13
-- **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is no steps.
-- **build_steps,** the list of steps to build application/image. Default is `isopod build`
-- **postbuild_steps** the list of steps that are executed after building image/application
-- **lang** specify type of application to be built. Default is go.
+- **maven_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is **ARTIFACTORY_MAVEN_CREDENTIALS** which already defined in our contexts
+- **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is **NPM_RC** which already defined in our contexts
+- **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *false.* Add to the build costs (money), but docker image building can be faster
+- **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is **19.03.13**
+- **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
+- **build_steps,** the list of steps to build application/image. Default is `isopod -f << parameters.path >>/isopod.yml build`
+- **postbuild_steps** the list of steps that are executed after building image/application. Default is none
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb.
 
 **Examples**
 
-This example:
-
+Example with:
 - custom pre-build steps
-- enabling docker_layer_cashing
-- lang is node
-
+- enabling docker_layer_caching
 ```yaml
 ...
 jobs:
 ...
   - ric-orb/build_push_image:
-      lang: node
+      name: docker
       prebuild_steps:
         - run:
             name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
             command: printenv > .env.sentry
-      docker_layer_cashing: true
-      name: docker
+      docker_layer_caching: true
       context: dev
       requires:
         - request_branch_deployment_to_dev
 ...
 ```
 
-All default except lang:
-
+All default:
 ```yaml
 ...
 jobs:
 ...
   - ric-orb/build_push_image:
-      lang: java
-      name: build_image
       context: dev
       requires:
         - request_branch_deployment_to_dev
@@ -148,23 +141,39 @@ jobs:
 ```
 
 Custom properties:
-
 ```yaml
 ...
 jobs:
 ...
   - ric-orb/build_push_image:
-      isopod_version: 0.16.1
-      private_hub_username: $PDOCKER_USERNAME
-      private_hub_password: $PDOCKER_PASSWORD
-      docker_hub_username: $MY_DOCKER_HUB_USERNAME
-      docker_hub_password: $MY_DOCKER_HUB_PASSWORD
-      private_hub_url: $PDOCKER_REGISTRY_URL
+      isopod_version: "0.29.1"
+      docker_version: "19.03.13"
+      private_hub_username: ${PDOCKER_USERNAME}
+      private_hub_password: ${PDOCKER_PASSWORD}
+      docker_hub_username: ${MY_DOCKER_HUB_USERNAME}
+      docker_hub_password: ${MY_DOCKER_HUB_PASSWORD}
+      private_hub_url: ${PDOCKER_REGISTRY_URL}
       cache_name: dependency-cache-{{ checksum "go.sum" }}
       context: dev
       requires:
         - request_branch_deployment_to_dev
         - quality-gate
+...
+```
+
+Builds docker image from java build outputs (as saved to workspace by maven_build_test job) for a specific app from a monorepo:
+```yaml
+...
+jobs:
+...
+  - ric-orb/build_push_image:
+      context: dev
+      path: "myapp"
+      docker_version: "19.03.13"
+      isopod_version: "0.29.1"
+      docker_layer_caching: true
+      requires:
+        - maven_build_test
 ...
 ```
 
@@ -174,35 +183,34 @@ jobs:
 
 **Parameters**:
 
+- **path** Path to directory containing isopod.yml file. Default is "*.*"
 - **isopod_version** isopod version in executor. Not required. Default is **latest**
-- **private_hub_username** username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
-- **private_hub_password** password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
-- **env** environment for which deployment is executed. Can be *dev* or *prod.* Default is dev.
-- **predeploy_steps** steps that are executed to prepare deployment. Default is no steps.
-- **deploy_steps** steps to be executed during deployment. Default is *ric-orb/deploy*
-- **default_deploy** flag to run default deployment or custom. Default is true.
-- **postdeploy_steps** steps that are executed after deployment. Default is no steps.
-- **slack_notify_success** flag to send slack message if job is successful. Default is false.
-- **slack_ok_webhook** the slack webhook used to send slack message on success. Default is value from context variable SLACK_WEBHOOK.
-- **slack_ok_branches** comma separated list of branches for which successful slack message will be sent. Default is *master*.
-- **slack_notify_failure** flag to send slack message when job fails. Default is false.
-- **slack_fail_webhook** the slack webhook used to send slack message on failure. Default is value from context variable SLACK_WEBHOOK
+- **private_hub_username** username for private docker registry. Default is value of context variable ${DOCKER_JFROG_USERNAME}
+- **private_hub_password** password for private docker registry. Default is value of context variable ${DOCKER_JFROG_PASSWORD}
+- **env** environment for which deployment is executed. Values: *prod*, *dev*. Default is *dev*
+- **predeploy_steps** steps that are executed to prepare deployment. Default is none
+- **postdeploy_steps** steps that are executed after deployment. Default is none
+- **slack_notify_success** flag to send slack message if job is successful. Default is false
+- **slack_ok_webhook** the slack webhook used to send slack message on success. Default is value from context variable $SLACK_WEBHOOK
+- **slack_ok_branches** comma separated list of branches for which successful slack message will be sent. Default is *master*
+- **slack_notify_failure** flag to send slack message when job fails. Default is false
+- **slack_fail_webhook** the slack webhook used to send slack message on failure. Default is value from context variable $SLACK_WEBHOOK
 - **slack_fail_branches** comma separated list of branches for which failure slack message will be sent. Default is *master*
-- **work_dir** working directory for default deployment(with the isopod). Default is `.`. This should be relative to the job working directory.
+- **work_dir** working directory for default deployment (with the isopod). This should be relative to the job working directory. Default is `.`
 
-This job executes deployment on GKE. It sends Slack message on success/failure if enabled.
+This job executes deployment on GKE.
+It can send Slack message on success/failure.
 
 Examples:
 
-Deployment to prod with specific isopod version.
-
+Deployment to prod with specific isopod version:
 ```yaml
 ...
 jobs:
 ...
   - ric-orb/deploy_job:
       name: prod
-      isopod_version: 0.16.1
+      isopod_version: 0.29.1
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
       env: prod
@@ -211,8 +219,7 @@ jobs:
           - integration-test
 ```
 
-Deployment with slack notifications.
-
+Deployment with slack notifications:
 ```yaml
 ...
 jobs:
@@ -229,7 +236,6 @@ jobs:
 ```
 
 Slack failure on team channel:
-
 ```yaml
 ...
 jobs:
@@ -245,17 +251,15 @@ jobs:
 ...
 ```
 
-Custom steps.
-
+Custom steps:
 ```yaml
 ...
 jobs:
 ...
   - ric-orb/deploy_job:
-      default_deploy: false
+      name: dev_deploy
       env: dev
       context: dev
-      name: dev_deploy
       predeploy_steps:
         - ric-orb/auth_gke
         - run:
@@ -281,6 +285,21 @@ jobs:
               kubectl apply -f $K_PATH/$(ls $K_PATH | grep autoscaler)
       requires:
         - docker
+```
+
+Deploys java image for a specific app from a monorepo:
+```yaml
+...
+jobs:
+...
+  - ric-orb/deploy_job:
+      context: dev
+      path: "myapp"
+      isopod_version: "0.29.1"
+      env: "dev"
+      requires:
+        - build_push_image
+...
 ```
 
 ### Push build to bucket Job
@@ -333,6 +352,71 @@ jobs:
 
 ...
 ```
+
+### Maven build and test job for Java applications
+
+**Name**: maven_build_test
+
+**Parameters**:
+- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
+- **executor** Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+
+**Examples**
+
+Builds java sources using a docker builder
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_build_test:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: maven_docker
+
+...
+```
+Builds java sources using a VM builder
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_build_test:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: maven_vm
+...
+```
+
+Builds java sources for a specific app from a monorepo
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_build_test:
+      context: dev
+      path: "myapp"
+      cache_key_prefix: "myrepo"
+...
+```
+
+### No-Op dummy job
+
+**Name**: no_op
+
+**Parameters**: none
+
+**Examples**
+
+Does nothing. Because sometimes you need a job, but you have nothing to do…
+```yaml
+...
+jobs:
+...
+  - ric-orb/no_op
+...
+```
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)

@@ -1,0 +1,39 @@
+description: >
+  Java monorepo example.
+  Note: circleci-config typically consists of 2 files in this case (see also java_monorepo_workflows.yml)
+
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+
+usage:
+
+  #############################################################################
+  # This is what you typically want to have in your .circleci/config.yml
+  #############################################################################
+
+  version: 2.1
+
+  orbs:
+    path-filtering: circleci/path-filtering@0.1.3
+
+  ###############################################################################
+  # Use of setup workflows must be enabled in circleCI project settings
+  # (Project settings > Advanced -> Dynamic config using setup workflows)
+  ###############################################################################
+
+  # this allows you to use CircleCI's dynamic configuration feature
+  setup: true
+
+  workflows:
+    setup:
+      jobs:
+        - path-filtering/filter:
+            base-revision: master
+            # 3-column, whitespace-delimited mapping. One mapping per line:
+            # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
+            mapping: |
+              .circleci/.*|.mvn/.*|pom.xml|common/.* modified-common true
+              app1/.* modified-app1 true
+              app2/.* modified-app2 true
+            config-path: .circleci/java-monorepo-workflows.yml
