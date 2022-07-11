@@ -51,7 +51,7 @@ parameters:
   prebuild_steps:
     description: 'Steps that will run before build'
     type: steps
-    default: []
+    default: [ ]
   build_steps:
     type: steps
     description: 'Steps that will run quality checks'
@@ -61,7 +61,7 @@ parameters:
   postbuild_steps:
     type: steps
     description: 'Steps that will run after build'
-    default: []
+    default: [ ]
 
 steps:
   - checkout

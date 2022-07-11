@@ -1,5 +1,5 @@
 description: >
-  todo
+  Build the docker image using isopod
 
 parameters:
   path:
@@ -8,7 +8,7 @@ parameters:
 
 steps:
   - run:
-      name: 'Build the Docker image'
+      name: 'Build the Docker image using isopod'
       command: |
         echo << parameters.path >>/isopod.yml
         isopod -f << parameters.path >>/isopod.yml build
