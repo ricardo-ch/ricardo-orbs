@@ -9,29 +9,29 @@ executor:
 
 parameters:
   path:
-    description: "Path to directory containing isopod.yml file"
+    description: 'Path to directory containing isopod.yml file'
     type: string
-    default: "."
+    default: .
   env:
-    description: "Kubernetes cluster to deploy to"
+    description: 'Kubernetes cluster to deploy to'
     type: enum
-    enum: [ "dev", "prod"]
-    default: "dev"
+    enum: [ 'dev', 'prod']
+    default: 'dev'
   isopod_version:
     type: string
-    default: ${ISOPOD_VERSION}
+    default: $ISOPOD_VERSION
   private_hub_username:
     type: string
-    default: ${DOCKER_JFROG_USERNAME}
+    default: $DOCKER_JFROG_USERNAME
   private_hub_password:
     type: string
-    default: ${DOCKER_JFROG_PASSWORD}
+    default: $DOCKER_JFROG_PASSWORD
   predeploy_steps:
-    description: "Steps that will run before deploy process"
+    description: 'Steps that will run before deploy process'
     type: steps
     default: [ ]
   deploy_steps:
-    description: "Steps that will run deploy procedure"
+    description: 'Steps that will run deploy procedure'
     type: steps
     default:
       - deploy:
@@ -39,34 +39,34 @@ parameters:
           to: <<parameters.env>>
           work_dir: << parameters.work_dir >>
   postdeploy_steps:
-    description: "Steps that will run after deploy process"
+    description: 'Steps that will run after deploy process'
     type: steps
     default: [ ]
   slack_notify_success:
-    description: "Flag to trigger sending slack notification on success"
+    description: 'Flag to trigger sending slack notification on success'
     type: boolean
     default: false
   slack_ok_webhook:
     type: string
-    default: ${SLACK_WEBHOOK}
+    default: $SLACK_WEBHOOK
   slack_ok_branches:
-    description: "Comma separated list of branches for which notifications are sent"
+    description: 'Comma separated list of branches for which notifications are sent'
     type: string
-    default: "master"
+    default: 'master'
   slack_notify_failure:
-    description: "Flag to trigger sending slack notification on failure"
+    description: 'Flag to trigger sending slack notification on failure'
     type: boolean
     default: false
   slack_fail_webhook:
     type: string
-    default: ${SLACK_WEBHOOK}
+    default: $SLACK_WEBHOOK
   slack_fail_branches:
-    description: "Comma separated list of branches for which notifications are sent"
+    description: 'Comma separated list of branches for which notifications are sent'
     type: string
-    default: "master"
+    default: 'master'
   work_dir:
     type: string
-    default: "."
+    default: .
 
 steps:
   - checkout

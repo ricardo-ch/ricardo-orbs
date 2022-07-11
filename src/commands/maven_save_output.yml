@@ -4,9 +4,9 @@ description: >
 
 parameters:
   path:
-    description: "Path of maven module for the app, or \".\" for single-app-repo"
+    description: 'Path of maven module for the app, or "." for single-app-repo'
     type: string
-    default: "."
+    default: .
 
 steps:
   - persist_to_workspace:

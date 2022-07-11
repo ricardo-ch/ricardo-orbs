@@ -1,0 +1,13 @@
+description: >
+  todo
+
+parameters:
+  path:
+    description: 'Path to directory containing isopod.yml file'
+    type: string
+    default: '.'
+
+steps:
+  - run:
+      name: 'Build the Docker image'
+      command: isopod -f << parameters.path >>/isopod.yml build

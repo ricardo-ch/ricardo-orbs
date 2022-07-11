@@ -1,5 +1,6 @@
 description: >
   Deploy to a GKE cluster to given environment. Use Isopod. Environment can be dev or prod.
+
 parameters:
   to:
     type: string
@@ -10,6 +11,7 @@ parameters:
   work_dir:
     type: string
     default: .
+
 steps:
   - auth_gke
   - run:

@@ -4,18 +4,18 @@ description: >
 
 parameters:
   path:
-    description: "Path of maven module for the app, or \".\" for single-app-repo"
+    description: 'Path of maven module for the app, or "." for single-app-repo'
     type: string
-    default: "."
+    default: .
   cache_key_prefix:
-    description: "Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix"
+    description: 'Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix'
     type: string
-    default: ""
+    default: ''
   executor:
-    description: "Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)"
+    description: 'Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)'
     type: enum
-    enum: [ "maven_docker", "maven_vm"]
-    default: "maven_docker"
+    enum: [ 'maven_docker', 'maven_vm' ]
+    default: 'maven_docker'
 
 executor:
   name: << parameters.executor >>
