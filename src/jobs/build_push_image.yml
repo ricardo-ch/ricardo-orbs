@@ -9,7 +9,7 @@ executor:
   password: <<parameters.private_hub_password>>
 
 parameters:
-  path:
+  apppath:
     description: 'Path to directory containing isopod.yml file'
     type: string
     default: .
@@ -57,7 +57,7 @@ parameters:
     description: 'Steps that will run quality checks'
     default:
       - build_push:
-          path: << parameters.path >>
+          path: << parameters.apppath >>
   postbuild_steps:
     type: steps
     description: 'Steps that will run after build'
