@@ -1,9 +1,9 @@
 description: >
-  Build the docker image using isopod
+  Build the docker image with isopod.
 
 parameters:
   path:
-    description: 'Path to directory containing isopod.yml file'
+    description: 'Path to directory containing "isopod.yml" file'
     type: string
 
 steps:
