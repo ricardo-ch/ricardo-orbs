@@ -52,12 +52,12 @@ parameters:
     description: 'Steps that will run before build'
     type: steps
     default: [ ]
-  build_steps:
-    type: steps
-    description: 'Steps that will run quality checks'
-    default:
-      - build_push:
-          path: << parameters.apppath >>
+#  build_steps:
+#    type: steps
+#    description: 'Steps that will run quality checks'
+#    default:
+#      - build_push:
+#          path: << parameters.apppath >>
   postbuild_steps:
     type: steps
     description: 'Steps that will run after build'
@@ -88,5 +88,7 @@ steps:
             name: restore the dependencies cache
             key: <<parameters.cache_name>>
   - steps: << parameters.prebuild_steps >>
-  - steps: << parameters.build_steps >>
+#  - steps: << parameters.build_steps >>
+  - build_push:
+      path: << parameters.apppath >>
   - steps: << parameters.postbuild_steps >>
