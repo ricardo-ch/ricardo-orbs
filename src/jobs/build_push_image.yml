@@ -52,12 +52,10 @@ parameters:
     description: 'Steps that will run before build'
     type: steps
     default: [ ]
-#  build_steps:
-#    description: 'Steps that will run quality checks'
-#    type: steps
-#    default:
-#      - build_push:
-#          path: << parameters.path >>
+  build_steps:
+    description: 'Steps that will run quality checks'
+    type: steps
+    default: [ ]
   postbuild_steps:
     description: 'Steps that will run after build'
     type: steps
@@ -87,8 +85,15 @@ steps:
         - restore_cache:
             name: restore the dependencies cache
             key: <<parameters.cache_name>>
+  - attach_workspace:
+      at: .
   - steps: << parameters.prebuild_steps >>
-#  - steps: << parameters.build_steps >>
-  - build_push:
-      path: << parameters.path >>
+  - unless:
+      condition: << parameters.build_steps >>
+      steps:
+        - build_push:
+            path: << parameters.path >>
+  - when:
+      condition: << parameters.build_steps >>
+      steps: << parameters.build_steps >>
   - steps: << parameters.postbuild_steps >>
