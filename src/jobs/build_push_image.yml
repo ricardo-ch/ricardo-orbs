@@ -55,7 +55,9 @@ parameters:
   build_steps:
     description: 'Steps that will run quality checks'
     type: steps
-    default: null
+    default:
+      - build_push:
+          path: << parameters.path >>
   postbuild_steps:
     description: 'Steps that will run after build'
     type: steps
@@ -88,12 +90,5 @@ steps:
   - attach_workspace:
       at: .
   - steps: << parameters.prebuild_steps >>
-  - unless:
-      condition: << parameters.build_steps >>
-      steps:
-        - build_push:
-            path: << parameters.path >>
-  - when:
-      condition: << parameters.build_steps >>
-      steps: << parameters.build_steps >>
+  - steps: << parameters.build_steps >>
   - steps: << parameters.postbuild_steps >>
