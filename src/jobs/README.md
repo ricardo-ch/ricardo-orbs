@@ -89,22 +89,21 @@ jobs:
 **Parameters**:
 
 - **path** Path to directory containing isopod.yml file. Default is "*.*"
-- **isopod_version** isopod version in executor. Not required. Default is **latest**
-- **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable **$DOCKER_HUB_USERNAME**
-- **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable **$DOCKER_HUB_PASSWORD**
-- **private_hub_username** username for private docker registry, default is value of context variable **$DOCKER_JFROG_USERNAME**
-- **private_hub_password** password for private docker registry, default is value of context variable **$DOCKER_JFROG_PASSWORD**
-- **private_hub_url** url for private docker registry, default is value of context variable **$DOCKER_JFROG_REGISTRY_URL**
+- **isopod_version** isopod version in executor. Not required. Default is *latest*
+- **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
+- **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
+- **private_hub_username** username for private docker registry, default is value of context variable *$DOCKER_JFROG_USERNAME*
+- **private_hub_password** password for private docker registry, default is value of context variable *$DOCKER_JFROG_PASSWORD*
+- **private_hub_url** url for private docker registry, default is value of context variable *$DOCKER_JFROG_REGISTRY_URL*
 - **cache_name** Not required. If not specified cache will not be used/created
-- **maven_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is **ARTIFACTORY_MAVEN_CREDENTIALS** which already defined in our contexts
-- **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is **NPM_RC** which already defined in our contexts
+- **maven_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
+- **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
 - **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *false.* Add to the build costs (money), but docker image building can be faster
-- **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is **19.03.13**
+- **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
-- **build_steps,** the list of steps to build application/image. Default is `isopod -f << parameters.path >>/isopod.yml build`
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
 
-This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb.
+This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 
 **Examples**
 
@@ -261,28 +260,11 @@ jobs:
       env: dev
       context: dev
       predeploy_steps:
-        - ric-orb/auth_gke
         - run:
-            name: Removing HPA during deployment
-            command: kubectl delete  hpa -n myapp_service myapp_service || true
-      deploy_steps:
-        - run:
-            name: Generating all Kubernetes resources
-            command: isopod deploy --environment dev --dry-run
+            command: echo hello world
       postdeploy_steps:
         - run:
-            name: Applying all resources except HPA
-            command: |
-              K_PATH=/tmp/$(ls /tmp/ | grep -e "-k8s-m")
-              for r in $(ls $K_PATH/ | grep -v autoscaler); do kubectl apply -f $K_PATH/$r; done
-        - run:
-            name: Wait for the deployment to finish for max 5min
-            command: kubectl rollout status deployment myapp_service -n myapp_service --timeout=300s || true
-        - run:
-            name: Applying HPA resources
-            command: |
-              K_PATH=/tmp/$(ls /tmp/ | grep -e "-k8s-m")
-              kubectl apply -f $K_PATH/$(ls $K_PATH | grep autoscaler)
+            command: echo adieu world
       requires:
         - docker
 ```
