@@ -88,14 +88,17 @@ steps:
   - attach_workspace:
       at: .
   - steps: << parameters.prebuild_steps >>
-  - unless:
+  - when:
       condition:
         # no build steps passed
-        equals: [<< parameters.build_steps >>, []]
+        equals: [<< parameters.build_steps >>, [] ]
       steps:
         - build_push:
             path: << parameters.path >>
   - when:
-      condition: << parameters.build_steps >>
+      condition:
+        # custom build steps passed
+        not:
+          equals: [ << parameters.build_steps >>, [] ]
       steps: << parameters.build_steps >>
   - steps: << parameters.postbuild_steps >>
