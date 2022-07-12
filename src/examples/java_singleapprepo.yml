@@ -17,9 +17,9 @@ usage:
     ric-orb: ricardo/ric-orb@1.7.1
 
   cfg-docker-version: &cfg-docker-version
-    docker_version: "19.03.13"
+    docker_version: '19.03.13'
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: "0.29.1"
+    isopod_version: '0.29.1'
   cfg-cache-key-prefix: &cfg-cache-key-prefix
     cache_key_prefix: my-repo
 
@@ -29,7 +29,7 @@ usage:
     java_single_app_repo:
       jobs:
         - ric-orb/maven_build_test:
-            name: "maven-build"
+            name: 'maven-build'
             context: dev
             <<: *cfg-cache-key-prefix
             executor: maven_docker
@@ -37,15 +37,15 @@ usage:
 
         # jobs for branch #####################################################
         - approve_deploy_dev_branch:
-            name: "approve-deploy-dev-branch"
+            name: 'approve-deploy-dev-branch'
             type: approval
             filters:
               branches:
                 ignore:
-                  - "master"
+                  - 'master'
 
         - ric-orb/build_push_image:
-            name: "build-push-image-branch"
+            name: 'build-push-image-branch'
             context: dev
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             docker_layer_caching: true
@@ -54,49 +54,49 @@ usage:
               - approve-deploy-dev-branch
 
         - compliance/sre_compliance_checks:
-            name: "sre-compliance-checks-branch"
+            name: 'sre-compliance-checks-branch'
             context: dev
             requires:
               - build-push-image-branch
 
         - ric-orb/deploy_job:
-            name: "deploy-dev-branch"
+            name: 'deploy-dev-branch'
             context: dev
             <<: *cfg-isopod-version
-            env: "dev"
+            env: 'dev'
             requires:
               - build-push-image-branch
 
         # jobs for master #####################################################
         - ric-orb/build_push_image:
-            name: "build-push-image-master"
+            name: 'build-push-image-master'
             context: dev
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
             docker_layer_caching: true
             filters:
               branches:
                 only:
-                  - "master"
+                  - 'master'
             requires:
               - maven-build
 
         - compliance/sre_compliance_checks:
-            name: "sre-compliance-checks-master"
+            name: 'sre-compliance-checks-master'
             context: dev
             requires:
               - build-push-image-master
 
         - ric-orb/deploy_job:
-            name: "deploy-dev-master"
+            name: 'deploy-dev-master'
             context: dev
             <<: *cfg-isopod-version
-            env: "dev"
+            env: 'dev'
             requires:
               - build-push-image-master
         - ric-orb/deploy_job:
-            name: "deploy-prod-branch"
+            name: 'deploy-prod-branch'
             context: prod
             <<: *cfg-isopod-version
-            env: "prod"
+            env: 'prod'
             requires:
               - deploy-dev-master

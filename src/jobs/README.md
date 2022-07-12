@@ -103,7 +103,7 @@ jobs:
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
 
-This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb.
+This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 
 **Examples**
 
