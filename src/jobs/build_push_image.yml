@@ -85,5 +85,5 @@ steps:
       at: .
   - steps: << parameters.prebuild_steps >>
   - build_push:
-      path: << parameters.path >>
+      config: << parameters.path >>/isopod.yml
   - steps: << parameters.postbuild_steps >>

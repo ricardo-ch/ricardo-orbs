@@ -26,18 +26,13 @@ parameters:
   private_hub_password:
     type: string
     default: $DOCKER_JFROG_PASSWORD
+  work_dir:
+    type: string
+    default: .
   predeploy_steps:
     description: 'Steps that will run before deploy process'
     type: steps
     default: [ ]
-  deploy_steps:
-    description: 'Steps that will run deploy procedure'
-    type: steps
-    default:
-      - deploy:
-          config: << parameters.path >>/isopod.yml
-          to: <<parameters.env>>
-          work_dir: << parameters.work_dir >>
   postdeploy_steps:
     description: 'Steps that will run after deploy process'
     type: steps
@@ -64,14 +59,14 @@ parameters:
     description: 'Comma separated list of branches for which notifications are sent'
     type: string
     default: 'master'
-  work_dir:
-    type: string
-    default: .
 
 steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
-  - steps: << parameters.deploy_steps >>
+  - deploy:
+      config: << parameters.path >>/isopod.yml
+      to: <<parameters.env>>
+      work_dir: << parameters.work_dir >>
   - steps: << parameters.postdeploy_steps >>
   - when:
       condition: << parameters.slack_notify_success >>
