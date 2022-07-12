@@ -89,7 +89,9 @@ steps:
       at: .
   - steps: << parameters.prebuild_steps >>
   - unless:
-      condition: << parameters.build_steps >>
+      condition:
+        # no build steps passed
+        equals: [<< parameters.build_steps >>, []]
       steps:
         - build_push:
             path: << parameters.path >>
