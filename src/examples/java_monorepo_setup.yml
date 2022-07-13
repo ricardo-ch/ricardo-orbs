@@ -32,6 +32,7 @@ usage:
             base-revision: master
             # 3-column, whitespace-delimited mapping. One mapping per line:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
+            # TODO: replace with your actual module paths
             mapping: |
               .circleci/.*|.mvn/.*|pom.xml|common/.* modified-common true
               app1/.* modified-app1 true
