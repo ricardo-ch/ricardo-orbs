@@ -16,7 +16,7 @@ usage:
 
   orbs:
     compliance: ricardo/compliance-orb@2
-    ric-orb: ricardo/ric-orb@1.7.1
+    ric-orb: ricardo/ric-orb@2.0
 
   parameters:
     modified-common:
