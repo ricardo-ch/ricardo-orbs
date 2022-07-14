@@ -9,4 +9,4 @@ parameters:
 steps:
   - run:
       name: Set NPM credentials
-      command: echo -e ${<< parameters.npm_credentials >>} | base64 -d > .npmrc
+      command: echo -e ${<< parameters.npm_credentials >>} | base64 -d > ${HOME}/.npmrc
