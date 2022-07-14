@@ -1,15 +1,21 @@
 description: >
   This job builds and pushes Docker image to private Docker hub. It uses isopod for building and pushing.
   As dependencies can be pulled from Docker HUB authentication is needed for it as well.
+
 executor:
   name: isopod
   tag: <<parameters.isopod_version>>
   username: <<parameters.private_hub_username>>
   password: <<parameters.private_hub_password>>
+
 parameters:
+  path:
+    description: 'Path to directory containing isopod.yml file'
+    type: string
+    default: .
   isopod_version:
     type: string
-    default: ${ISOPOD_VERSION}
+    default: $ISOPOD_VERSION
   docker_hub_username:
     type: string
     default: $DOCKER_HUB_USERNAME
@@ -27,54 +33,40 @@ parameters:
     default: $DOCKER_JFROG_REGISTRY_URL
   cache_name:
     type: string
-    default: ""
+    default: ''
   maven_credentials:
+    # NOTE that this is the context variable name, not the context variable itself (i.e. ARTIFACTORY_MAVEN_CREDENTIALS, not ${ARTIFACTORY_MAVEN_CREDENTIALS})
     type: string
-    default: ARTIFACTORY_MAVEN_CREDENTIALS
+    default: 'ARTIFACTORY_MAVEN_CREDENTIALS'
   npm_credentials:
+    # NOTE that this is the context variable name, not the context variable itself (i.e. ARTIFACTORY_MAVEN_CREDENTIALS, not ${ARTIFACTORY_MAVEN_CREDENTIALS})
     type: string
-    default: NPM_RC
-  docker_layer_cashing:
+    default: 'NPM_RC'
+  docker_layer_caching:
     type: boolean
     default: false
   docker_version:
     type: string
-    default: "19.03.13"
+    default: '19.03.13'
   prebuild_steps:
+    description: 'Steps that will run before build'
     type: steps
-    description: "Steps that will run before build"
-    default: []
-  build_steps:
-    type: steps
-    description: "Steps that will run quality checks"
-    default:
-      - run:
-          name: Build the Docker image
-          command: isopod build
+    default: [ ]
   postbuild_steps:
+    description: 'Steps that will run after build'
     type: steps
-    description: "Steps that will run after build"
-    default: []
-  lang:
-    type: enum
-    enum: [ "java", "node", "go" ]
-    default: "go"
+    default: [ ]
+
 steps:
   - checkout
-  - when:
-      condition:
-        equal: [ "java", << parameters.lang >> ]
-      steps:
-        - maven_auth:
-            maven_credentials: << parameters.maven_credentials >>
-  - when:
-      condition:
-        equal: [ "node", << parameters.lang >> ]
-      steps:
-        - npm_auth:
-            npm_credentials: << parameters.npm_credentials >>
+  # only really needed for maven/java, but less painful to just do it than to configure it in each java build config
+  - maven_auth:
+      maven_credentials: << parameters.maven_credentials >>
+  # only really needed for npm/node, but less painful to just do it than to configure it in each node build config
+  - npm_auth:
+      npm_credentials: << parameters.npm_credentials >>
   - setup_remote_docker:
-      docker_layer_caching: << parameters.docker_layer_cashing >>
+      docker_layer_caching: << parameters.docker_layer_caching >>
       version: << parameters.docker_version >>
   - login_docker_registry:
       username: <<parameters.docker_hub_username>>
@@ -89,6 +81,9 @@ steps:
         - restore_cache:
             name: restore the dependencies cache
             key: <<parameters.cache_name>>
+  - attach_workspace:
+      at: .
   - steps: << parameters.prebuild_steps >>
-  - steps: << parameters.build_steps >>
+  - build_push:
+      config: << parameters.path >>/isopod.yml
   - steps: << parameters.postbuild_steps >>

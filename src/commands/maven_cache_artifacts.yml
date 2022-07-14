@@ -1,0 +1,14 @@
+description: >
+  Cache maven artifacts.
+  Works with monorepo as well as single-app-repo.
+
+parameters:
+  prefix:
+    description: 'Prefix for the cache-key (used in combination with checksum of pom.xml)'
+    type: string
+
+steps:
+  - save_cache:
+      paths:
+        - ~/.m2
+      key: << parameters.prefix >>-{{ checksum "pom.xml" }}

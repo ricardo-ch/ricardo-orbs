@@ -1,0 +1,18 @@
+description: >
+  Restore cached maven artifacts.
+  Works with monorepo as well as single-app-repo.
+
+parameters:
+  prefix:
+    description: 'Prefix for the cache-key (used in combination with checksum of pom.xml); no-op with blank prefix'
+    type: string
+    default: ''
+
+steps:
+  - when:
+      condition: << parameters.prefix >>
+      steps:
+        - restore_cache:
+            keys:
+              - << parameters.prefix >>-{{ checksum "pom.xml" }}
+              - << parameters.prefix >>-
