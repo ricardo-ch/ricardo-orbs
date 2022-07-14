@@ -1,0 +1,12 @@
+description: >
+  Dummy job printing a message to console for cases where nothing is to do.
+
+docker:
+  - image: 'cimg/base:2020.01'
+    auth:
+      username: $DOCKER_HUB_USERNAME
+      password: $DOCKER_HUB_PASSWORD
+
+steps:
+  - run: |
+      echo "No code change detected - no workflows triggered."

@@ -74,7 +74,7 @@ usage:
               - run:
                   name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
                   command: printenv > .env.sentry
-            docker_layer_cashing: true
+            docker_layer_caching: true
             name: docker
             context: dev
             filters:
@@ -153,7 +153,7 @@ usage:
               - run:
                   name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
                   command: printenv > .env.sentry
-            docker_layer_cashing: true
+            docker_layer_caching: true
             name: docker
             context: dev
             requires:

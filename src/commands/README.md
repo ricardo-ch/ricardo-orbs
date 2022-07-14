@@ -26,6 +26,27 @@ steps:
 ...
 ```
 
+### Build & Push
+
+**Name**: build_push
+
+This command uses ricardo's tool **isopod** to build and push a docker image. When `isopod.yml` file is not in project's root
+folder (e.g. monorepo), you can use the parameter `config` to point to it or `work_dir` which will execute the isopod in
+the `work_dir`.
+
+**Parameters**:
+- **config** the isopod configuration file. Default is *isopod.yml*
+- **work_dir** working directory for isopod. Default is *"."*
+
+Example:
+```yaml
+...
+steps:
+  - ric-orb/build_push:
+      config: myapp/isopod.yml
+...
+```
+
 ### Deploy
 
 **Name**: deploy
@@ -35,14 +56,12 @@ folder,monorepo for example, you can use parameter `config` to point to it or `w
 the `work_dir`. It is depends on **auth_gke** command.
 
 **Parameters**:
-
 - **to** environment to execute deployment. Valid values: *dev* and *prod*. It is passed to isopod. 
   *Default is dev.*
-- **config** the isopod configuration file. *Default is isopod.yml*
-- **work_dir** working directory for isopod
+- **config** the isopod configuration file. Default is *isopod.yml*
+- **work_dir** working directory for isopod. Default is *"."*
 
 Example:
-
 ```yaml
 ...
 steps:
@@ -167,7 +186,7 @@ steps:
 
 **Parameters**:
 
-- **branches** The list of comma separated branches for which notification should be sent. Default is *master.*
+- **branches** The list of comma separated branches for which notification should be sent. Default is *master*.
 - **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK(for channel circleci-deployments). Specify only if need to veride.
 
 This command sends notification for branches to the target webhook when job fails. This uses [the slack orb](https://circleci.com/developer/orbs/orb/circleci/slack?version=3.4.2).
@@ -189,7 +208,7 @@ steps:
 
 **Parameters**:
 
-- **branches** The list of comma separated branches for which notification should be sent. Default is *master.*
+- **branches** The list of comma separated branches for which notification should be sent. Default is *master*.
 - **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK(for channel circleci-deployments). Specify only if need to override.
 
 This command sends notification for branches to the target webhook when job is successful. This uses [the slack orb](https://circleci.com/developer/orbs/orb/circleci/slack?version=3.4.2).
@@ -203,6 +222,63 @@ steps:
       branches: $CIRCLE_BRANCH
       webhook: <slack web hook>
 ...
+```
+
+### Command to save maven artifacts to cache for Java applications
+**Name**: maven_cache_artifacts
+
+**Parameters**:
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
+
+Example:
+
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
+```yaml
+...
+steps:
+  - ric-orb/maven_cache_artifacts:
+      prefix: "myrepo"
+...
+```
+
+### Command to restore maven artifacts from cache for Java applications
+**Name**: maven_restore_artifacts
+
+**Parameters**:
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
+
+Example:
+
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
+```yaml
+...
+steps:
+  - ric-orb/maven_restore_artifacts:
+      prefix: "myrepo"
+...
+```
+
+### Command to save maven output to workspace for Java applications
+**Name**: maven_save_output
+
+**Parameters**:
+- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+
+Example:
+
+Save maven output directory (target directory containing compiled app) to workspace.
+```yaml
+...
+steps:
+  - ric-orb/maven_save_output
+```
+
+Save maven output directory to workspace for a specific app from a monorepo.
+```yaml
+...
+steps:
+  - ric-orb/maven_save_output:
+      path: "myapp"
 ```
 
 ## See:
