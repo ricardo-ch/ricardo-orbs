@@ -1,4 +1,4 @@
-description: Run frontend tests
+description: Run any npm script (like ESLint, TS lint, phrase merge, dead code detection, ...)
 executor: js
 parameters:
   resource_class:
