@@ -22,11 +22,11 @@ usage:
     modified-common:
       type: boolean
       default: false
-    # TODO: replace with your actual app name
+    # FIXME: replace with your actual app name
     modified-app1:
       type: boolean
       default: false
-    # TODO: replace with your actual app name
+    # FIXME: replace with your actual app name
     modified-app2:
       type: boolean
       default: false
@@ -34,7 +34,7 @@ usage:
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: '0.29.1'
   cfg-cache-key-prefix: &cfg-cache-key-prefix
-    # TODO: replace with your actual repo name
+    # FIXME: replace with your actual repo name
     cache_key_prefix: my-repo
 
   workflows:
@@ -53,7 +53,7 @@ usage:
     ###########################################################################
     # workflow for maven module 'app1'
     ###########################################################################
-    # TODO: replace with your actual app name
+    # FIXME: replace with your actual app name
     app1:
       when:
         or:
@@ -64,6 +64,7 @@ usage:
         - ric-orb/maven_build_test:
             name: 'maven-build-test'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app1'
             <<: *cfg-cache-key-prefix
             executor: maven_docker
@@ -79,6 +80,7 @@ usage:
         - ric-orb/build_push_image:
             name: 'build-push-image'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             docker_layer_caching: true
@@ -95,6 +97,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-dev'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             env: 'dev'
@@ -104,6 +107,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-prod'
             context: prod
+            # FIXME: replace with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             env: 'prod'
@@ -117,7 +121,7 @@ usage:
     ###########################################################################
     # maven module: 'app2'
     ###########################################################################
-    # TODO: replace with your actual app name
+    # FIXME: replace with your actual app name
     app2:
       when:
         or:
@@ -128,6 +132,7 @@ usage:
         - ric-orb/maven_build_test:
             name: 'maven-build-test'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app2'
             <<: *cfg-cache-key-prefix
 #            executor: maven_docker
@@ -143,6 +148,7 @@ usage:
         - ric-orb/build_push_image:
             name: 'build-push-image'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             docker_layer_caching: true
@@ -159,6 +165,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-dev'
             context: dev
+            # FIXME: replace with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             env: 'dev'
@@ -168,6 +175,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-prod'
             context: prod
+            # FIXME: replace with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             env: 'prod'

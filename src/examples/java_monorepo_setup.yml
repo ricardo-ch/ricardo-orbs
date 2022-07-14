@@ -32,7 +32,8 @@ usage:
             base-revision: master
             # 3-column, whitespace-delimited mapping. One mapping per line:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
-            # TODO: replace with your actual module paths
+            # FIXME: replace common module path(s) with your actual paths
+            # FIXME: replace app paths and names with your actual names/paths
             mapping: |
               .circleci/.*|.mvn/.*|pom.xml|common/.* modified-common true
               app1/.* modified-app1 true
