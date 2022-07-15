@@ -98,7 +98,7 @@ jobs:
 - **cache_name** Not required. If not specified cache will not be used/created
 - **maven_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
 - **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
-- **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *false*
+- **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
 - **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
