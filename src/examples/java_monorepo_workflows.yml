@@ -81,7 +81,6 @@ usage:
             context: dev
             path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -107,7 +106,6 @@ usage:
             context: dev
             path: "app1"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             filters:
               branches:
                 only:
@@ -170,7 +168,6 @@ usage:
             context: dev
             path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -196,7 +193,6 @@ usage:
             context: dev
             path: "app2"
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             filters:
               branches:
                 only:

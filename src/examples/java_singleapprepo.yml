@@ -48,7 +48,6 @@ usage:
             name: "build-push-image-branch"
             context: dev
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             requires:
               - maven-build
               - approve-deploy-dev-branch
@@ -72,7 +71,6 @@ usage:
             name: "build-push-image-master"
             context: dev
             <<: [ *cfg-docker-version, *cfg-isopod-version ]
-            docker_layer_caching: true
             filters:
               branches:
                 only:
