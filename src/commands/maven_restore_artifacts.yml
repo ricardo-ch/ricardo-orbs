@@ -4,9 +4,9 @@ description: >
 
 parameters:
   prefix:
-    description: "Prefix for the cache-key (used in combination with checksum of pom.xml); no-op with blank prefix"
+    description: 'Prefix for the cache-key (used in combination with checksum of pom.xml); no-op with blank prefix'
     type: string
-    default: ""
+    default: ''
 
 steps:
   - when:

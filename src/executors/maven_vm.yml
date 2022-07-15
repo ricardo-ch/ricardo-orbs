@@ -3,4 +3,4 @@ description: >
   Typically required if maven build needs docker for testcontainers.
 
 machine:
-  image: "ubuntu-2204:current"
+  image: 'ubuntu-2204:current'

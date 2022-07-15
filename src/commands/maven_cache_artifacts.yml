@@ -4,7 +4,7 @@ description: >
 
 parameters:
   prefix:
-    description: "Prefix for the cache-key (used in combination with checksum of pom.xml)"
+    description: 'Prefix for the cache-key (used in combination with checksum of pom.xml)'
     type: string
 
 steps:

@@ -26,6 +26,27 @@ steps:
 ...
 ```
 
+### Build & Push
+
+**Name**: build_push
+
+This command uses ricardo's tool **isopod** to build and push a docker image. When `isopod.yml` file is not in project's root
+folder (e.g. monorepo), you can use the parameter `config` to point to it or `work_dir` which will execute the isopod in
+the `work_dir`.
+
+**Parameters**:
+- **config** the isopod configuration file. Default is *isopod.yml*
+- **work_dir** working directory for isopod. Default is *"."*
+
+Example:
+```yaml
+...
+steps:
+  - ric-orb/build_push:
+      config: myapp/isopod.yml
+...
+```
+
 ### Deploy
 
 **Name**: deploy
@@ -35,14 +56,12 @@ folder,monorepo for example, you can use parameter `config` to point to it or `w
 the `work_dir`. It is depends on **auth_gke** command.
 
 **Parameters**:
-
 - **to** environment to execute deployment. Valid values: *dev* and *prod*. It is passed to isopod. 
   *Default is dev.*
-- **config** the isopod configuration file. *Default is isopod.yml*
-- **work_dir** working directory for isopod
+- **config** the isopod configuration file. Default is *isopod.yml*
+- **work_dir** working directory for isopod. Default is *"."*
 
 Example:
-
 ```yaml
 ...
 steps:
