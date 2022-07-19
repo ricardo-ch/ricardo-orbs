@@ -46,7 +46,6 @@ usage:
             name: 'build-push-image'
             context: dev
             <<: *cfg-isopod-version
-            docker_layer_caching: true
             requires:
               - maven-build-test
               # note semantic of 'requires': on master this is ignored

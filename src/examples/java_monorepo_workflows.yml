@@ -83,7 +83,6 @@ usage:
             # FIXME: replace with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
-            docker_layer_caching: true
             requires:
               - maven-build-test
               # note semantic of 'requires': on master this is ignored
@@ -151,7 +150,6 @@ usage:
             # FIXME: replace with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
-            docker_layer_caching: true
             requires:
               - maven-build-test
               # note semantic of 'requires': on master this is ignored
