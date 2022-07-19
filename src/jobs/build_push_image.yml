@@ -56,6 +56,10 @@ parameters:
     description: 'Steps that will run after build'
     type: steps
     default: [ ]
+  work_dir:
+    description: 'Working directory for build_push step'
+    type: string
+    default: .
 
 steps:
   - checkout
@@ -86,4 +90,5 @@ steps:
   - steps: << parameters.prebuild_steps >>
   - build_push:
       config: << parameters.path >>/isopod.yml
+      work_dir: << parameters.work_dir>>
   - steps: << parameters.postbuild_steps >>
