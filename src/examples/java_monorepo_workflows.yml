@@ -59,7 +59,9 @@ usage:
           - not: << pipeline.parameters.modified-app1 >>
           - not: << pipeline.parameters.modified-common >>
       jobs:
-        # github status check typically checks this job (name must match name of the actual build job for the app!)
+        # github status check typically checks this job
+        # NOTE: job name must match name of apps actual build job so that github can stay agnostic!
+        # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
             # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
             name: 'maven-build-test-app1'
@@ -72,7 +74,9 @@ usage:
           - not: << pipeline.parameters.modified-app2 >>
           - not: << pipeline.parameters.modified-common >>
       jobs:
-        # github status check typically checks this job (name must match name of the actual build job for the app!)
+        # github status check typically checks this job
+        # NOTE: job name must match name of apps actual build job so that github can stay agnostic!
+        # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
             # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
             name: 'maven-build-test-app2'
