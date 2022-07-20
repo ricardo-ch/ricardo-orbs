@@ -22,11 +22,11 @@ usage:
     modified-common:
       type: boolean
       default: false
-    # FIXME: replace with your actual app name
+    # FIXME: replace suffix with your actual app name
     modified-app1:
       type: boolean
       default: false
-    # FIXME: replace with your actual app name
+    # FIXME: replace suffix with your actual app name
     modified-app2:
       type: boolean
       default: false
@@ -34,7 +34,7 @@ usage:
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: '0.29.1'
   cfg-cache-key-prefix: &cfg-cache-key-prefix
-    # FIXME: replace with your actual repo name
+    # FIXME: replace value with your actual repo name
     cache_key_prefix: my-repo
 
   workflows:
@@ -43,17 +43,44 @@ usage:
     no-code-change:
       when:
         and:
+          # FIXME: replace suffix with your actual app name
           - not: << pipeline.parameters.modified-app1 >>
+          # FIXME: replace suffix with your actual app name
           - not: << pipeline.parameters.modified-app2 >>
           - not: << pipeline.parameters.modified-common >>
-
       jobs:
         - ric-orb/no_op
+
+    # FIXME: replace infix with your actual app name
+    no-app1-change:
+      when:
+        and:
+          # FIXME: replace suffix with your actual app name
+          - not: << pipeline.parameters.modified-app1 >>
+          - not: << pipeline.parameters.modified-common >>
+      jobs:
+        # github status check typically checks this job (name must match name of the actual build job for the app!)
+        - ric-orb/no_op:
+            # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
+            name: 'maven-build-test-app1'
+
+    # FIXME: replace infix with your actual app name
+    no-app2-change:
+      when:
+        and:
+          # FIXME: replace suffix with your actual app name
+          - not: << pipeline.parameters.modified-app2 >>
+          - not: << pipeline.parameters.modified-common >>
+      jobs:
+        # github status check typically checks this job (name must match name of the actual build job for the app!)
+        - ric-orb/no_op:
+            # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
+            name: 'maven-build-test-app2'
 
     ###########################################################################
     # workflow for maven module 'app1'
     ###########################################################################
-    # FIXME: replace with your actual app name
+    # FIXME: replace name with your actual app name
     app1:
       when:
         or:
@@ -62,9 +89,11 @@ usage:
 
       jobs:
         - ric-orb/maven_build_test:
-            name: 'maven-build-test'
+            # github status check typically checks this job
+            # FIXME: replace suffix with your actual app name
+            name: 'maven-build-test-app1'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app1'
             <<: *cfg-cache-key-prefix
             executor: maven_docker
@@ -80,11 +109,12 @@ usage:
         - ric-orb/build_push_image:
             name: 'build-push-image'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             requires:
-              - maven-build-test
+              # FIXME: replace suffix with your actual app name
+              - maven-build-test-app1
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev_branch
 
@@ -96,7 +126,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-dev'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             env: 'dev'
@@ -106,7 +136,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-prod'
             context: prod
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app1'
             <<: *cfg-isopod-version
             env: 'prod'
@@ -120,7 +150,7 @@ usage:
     ###########################################################################
     # maven module: 'app2'
     ###########################################################################
-    # FIXME: replace with your actual app name
+    # FIXME: replace name with your actual app name
     app2:
       when:
         or:
@@ -129,9 +159,11 @@ usage:
 
       jobs:
         - ric-orb/maven_build_test:
-            name: 'maven-build-test'
+            # github status check typically checks this job
+            # FIXME: replace suffix with your actual app name
+            name: 'maven-build-test-app2'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app2'
             <<: *cfg-cache-key-prefix
 #            executor: maven_docker
@@ -147,11 +179,12 @@ usage:
         - ric-orb/build_push_image:
             name: 'build-push-image'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             requires:
-              - maven-build-test
+              # FIXME: replace suffix with your actual app name
+              - maven-build-test-app2
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev_branch
 
@@ -163,7 +196,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-dev'
             context: dev
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             env: 'dev'
@@ -173,7 +206,7 @@ usage:
         - ric-orb/deploy_job:
             name: 'deploy-prod'
             context: prod
-            # FIXME: replace with your actual app path
+            # FIXME: replace value with your actual app path
             path: 'app2'
             <<: *cfg-isopod-version
             env: 'prod'
