@@ -28,8 +28,8 @@ usage:
     # FIXME: replace name with your actual app name
     java_single_app_repo:
       jobs:
+        # github status check typically checks this job
         - ric-orb/maven_build_test:
-            # github status check typically checks this job
             name: 'maven-build-test'
             context: dev
             <<: *cfg-cache-key-prefix

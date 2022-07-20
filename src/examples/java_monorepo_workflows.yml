@@ -37,6 +37,12 @@ usage:
     # FIXME: replace value with your actual repo name
     cache_key_prefix: my-repo
 
+  # NOTE: job name of no-op build jobs must match respective name of apps actual build jobs so that github can stay agnostic!
+  # FIXME: replace suffix with your actual app name
+  maven-build-test-app1: &maven-build-test-app1 'maven-build-test-app1'
+  # FIXME: replace suffix with your actual app name
+  maven-build-test-app2: &maven-build-test-app2 'maven-build-test-app2'
+
   workflows:
     version: 2
 
@@ -60,11 +66,10 @@ usage:
           - not: << pipeline.parameters.modified-common >>
       jobs:
         # github status check typically checks this job
-        # NOTE: job name must match name of apps actual build job so that github can stay agnostic!
         # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
             # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
-            name: 'maven-build-test-app1'
+            name: *maven-build-test-app1
 
     # FIXME: replace infix with your actual app name
     no-app2-change:
@@ -75,11 +80,10 @@ usage:
           - not: << pipeline.parameters.modified-common >>
       jobs:
         # github status check typically checks this job
-        # NOTE: job name must match name of apps actual build job so that github can stay agnostic!
         # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
-            # FIXME: replace suffix with your actual app name (name must match name of the actual build job for the app!)
-            name: 'maven-build-test-app2'
+            # FIXME: replace suffix with your actual app name
+            name: *maven-build-test-app2
 
     ###########################################################################
     # workflow for maven module 'app1'
@@ -92,10 +96,10 @@ usage:
           - << pipeline.parameters.modified-common >>
 
       jobs:
+        # github status check typically checks this job
         - ric-orb/maven_build_test:
-            # github status check typically checks this job
             # FIXME: replace suffix with your actual app name
-            name: 'maven-build-test-app1'
+            name: *maven-build-test-app1
             context: dev
             # FIXME: replace value with your actual app path
             path: 'app1'
@@ -118,7 +122,7 @@ usage:
             <<: *cfg-isopod-version
             requires:
               # FIXME: replace suffix with your actual app name
-              - maven-build-test-app1
+              - *maven-build-test-app1
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev_branch
 
@@ -162,10 +166,10 @@ usage:
           - << pipeline.parameters.modified-common >>
 
       jobs:
+        # github status check typically checks this job
         - ric-orb/maven_build_test:
-            # github status check typically checks this job
             # FIXME: replace suffix with your actual app name
-            name: 'maven-build-test-app2'
+            name: *maven-build-test-app2
             context: dev
             # FIXME: replace value with your actual app path
             path: 'app2'
@@ -188,7 +192,7 @@ usage:
             <<: *cfg-isopod-version
             requires:
               # FIXME: replace suffix with your actual app name
-              - maven-build-test-app2
+              - *maven-build-test-app2
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev_branch
 
