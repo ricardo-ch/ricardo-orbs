@@ -102,6 +102,7 @@ jobs:
 - **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
+- **work_dir** working directory for building image (with the isopod). Default is `.`
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 
