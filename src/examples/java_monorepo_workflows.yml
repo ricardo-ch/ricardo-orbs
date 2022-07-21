@@ -46,17 +46,6 @@ usage:
   workflows:
     version: 2
 
-    no-code-change:
-      when:
-        and:
-          # FIXME: replace suffix with your actual app name
-          - not: << pipeline.parameters.modified-app1 >>
-          # FIXME: replace suffix with your actual app name
-          - not: << pipeline.parameters.modified-app2 >>
-          - not: << pipeline.parameters.modified-common >>
-      jobs:
-        - ric-orb/no_op
-
     # FIXME: replace infix with your actual app name
     no-app1-change:
       when:
