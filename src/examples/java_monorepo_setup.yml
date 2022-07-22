@@ -29,11 +29,12 @@ usage:
     setup:
       jobs:
         - path-filtering/filter:
+            # FIXME: replace master branch name with your actual master/main branch name
             base-revision: master
             # 3-column, whitespace-delimited mapping. One mapping per line:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
-            # FIXME: replace common module path(s) with your actual paths
-            # FIXME: replace app paths and names with your actual names/paths
+            # FIXME: replace common module paths with your actual paths
+            # FIXME: replace app paths and suffix with your actual paths/names
             mapping: |
               .circleci/.*|.mvn/.*|pom.xml|common/.* modified-common true
               app1/.* modified-app1 true
