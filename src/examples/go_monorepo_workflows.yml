@@ -8,10 +8,10 @@ usage:
 
   orbs:
     go: circleci/go@1.7.1
-    ric-orb: ricardo/ric-orb@dev:e4c7a02
+    ric-orb: ricardo/ric-orb@2
 
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: 0.29.1
+    isopod_version: 0.29.4
   cfg-go-version: &cfg-go-version
     tag: '1.17'
 
@@ -64,9 +64,6 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: prod
-            prebuild_steps:
-              - attach_workspace:
-                  at: .
             work_dir: './api'
             name: docker-master
             filters:
@@ -128,9 +125,6 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: prod
-            prebuild_steps:
-              - attach_workspace:
-                  at: .
             work_dir: './worker'
             name: docker-master
             filters:
