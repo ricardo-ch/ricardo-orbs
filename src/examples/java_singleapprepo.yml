@@ -41,6 +41,7 @@ usage:
             filters:
               branches:
                 ignore:
+                  # FIXME: replace value with your actual main/master branch name
                   - 'master'
 
         - ric-orb/build_push_image:
@@ -73,6 +74,7 @@ usage:
             filters:
               branches:
                 only:
+                  # FIXME: replace value with your actual main/master branch name
                   - 'master'
             requires:
               - deploy-dev
