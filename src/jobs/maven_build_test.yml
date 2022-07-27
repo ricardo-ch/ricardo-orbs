@@ -25,6 +25,10 @@ steps:
   - maven_auth
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
+  - login_docker_registry:
+      url: ${DOCKER_JFROG_REGISTRY_URL}
+      username: ${DOCKER_JFROG_USERNAME}
+      password: ${DOCKER_JFROG_PASSWORD}
   - maven_build_test:
       path: << parameters.path >>
   - maven_cache_artifacts:
