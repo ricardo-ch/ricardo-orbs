@@ -14,6 +14,13 @@ usage:
     isopod_version: 0.29.4
   cfg-go-version: &cfg-go-version
     tag: '1.17'
+  cfg-quality-gate-executor: &cfg-quality-gate-executor
+    name: go/default
+    <<: *cfg-go-version
+
+  #name of the job that github is looking for
+  build-test-api: &build-test-api 'build-test-api'
+  build-test-worker: &build-test-worker 'build-test-worker'
 
   parameters:
     api:
@@ -34,9 +41,15 @@ usage:
           - << pipeline.parameters.api >>
           - << pipeline.parameters.common >>
       jobs:
-        - quality-gate:
-            context: dev
-            appname: api
+        - ric-orb/build_quality_gate:
+            work_dir: './worker'
+            executor: *cfg-quality-gate-executor
+            additional_tests:
+              - run:
+                name: Running tests on common
+                command: make test
+                working_directory: common
+            name: *build-test-api
         - request_branch_deploy_dev:
             type: approval
             name: request-deploy
@@ -51,7 +64,7 @@ usage:
             name: docker-branch
             requires:
               - request-deploy
-              - quality-gate
+              - *build-test-api
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
@@ -71,7 +84,7 @@ usage:
                 only:
                   - master
             requires:
-              - quality-gate
+              - *build-test-api
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
@@ -95,9 +108,16 @@ usage:
           - << pipeline.parameters.worker >>
           - << pipeline.parameters.common >>
       jobs:
-        - quality-gate:
-            context: dev
-            appname: worker
+        - ric-orb/build_quality_gate:
+            work_dir: './worker'
+            executor:
+              <<: *cfg-quality-gate-executor
+            additional_tests:
+              - run:
+                name: Running tests on common
+                command: make test
+                working_directory: common
+            name: *build-test-worker
         - request_branch_deploy_dev:
             type: approval
             name: request-deploy
@@ -112,7 +132,7 @@ usage:
             name: docker-branch
             requires:
               - request-deploy
-              - quality-gate
+              - *build-test-worker
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
@@ -132,7 +152,7 @@ usage:
                 only:
                   - master
             requires:
-              - quality-gate
+              - *build-test-worker
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
@@ -150,32 +170,21 @@ usage:
             requires:
               - deploy-master-dev
 
-    no-code-change:
+    #dummy jobs, when there is no code change on api/worker, but github check needs to see that job with that name is done
+    no-code-change-api:
       when:
         and:
           - not: << pipeline.parameters.api >>
+          - not: << pipeline.parameters.common >>
+      jobs:
+        - ric-orb/no_op:
+            name: *build-test-api
+
+    no-code-change-worker:
+      when:
+        and:
           - not: << pipeline.parameters.worker >>
           - not: << pipeline.parameters.common >>
       jobs:
-        - ric-orb/no_op
-
-  jobs:
-    quality-gate:
-      parameters:
-        appname:
-          type: string
-      executor:
-        name: go/default
-        <<: *cfg-go-version
-      steps:
-        - checkout
-        - ric-orb/install_build_test:
-            work_dir: << parameters.appname >>
-        - run:
-            name: Running tests on common
-            command: make test
-            working_directory: common
-        - persist_to_workspace:
-            root: .
-            paths:
-              - ./<< parameters.appname >>/app
+        - ric-orb/no_op:
+            name: *build-test-worker

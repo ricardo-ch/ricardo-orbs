@@ -1,0 +1,25 @@
+description: >
+  Job for executing tests
+
+parameters:
+  executor:
+    type: executor
+  work_dir:
+    type: string
+    default: .
+  additional_tests:
+    description: 'Steps with additional tests e.g. tests on common'
+    type: steps
+    default: [ ]
+
+executor: << parameters.executor >>
+
+steps:
+  - checkout
+  - install_build_test:
+      work_dir: << parameters.work_dir >>
+  - steps: << parameters.additional_tests >>
+  - persist_to_workspace:
+      root: .
+      paths:
+        - << parameters.work_dir >>/app
