@@ -399,6 +399,57 @@ jobs:
 ...
 ```
 
+### Build & Quality Gate Job
+
+**Name**: build_quality_gate
+
+**Parameters**:
+
+- **executor**, [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
+- **additional_tests** is a list of additional steps to run, e.g. run tests on common. The default is: empty list
+- **work_dir** working directory for executing build and test commands
+
+Job runs install_build_test step, runs additional steps if there are any, and persist resulting `app` filet to workspace (to be used by following jobs) 
+
+**Examples**
+
+In this example:
+
+- user defined executor is used
+- custom steps
+
+```yaml
+...
+jobs:
+...
+- ric-orb/build_quality_gate_job:
+    executor:
+      name: go/default
+      tag: '1.17'
+    context: dev
+    additional_tests:
+      - run:
+          name: Running tests on common
+          command: make test
+          working_directory: common
+...
+```
+
+In this example is default setting, only required is added:
+
+```yaml
+...
+jobs:
+...
+  - ric-orb/quality_gate_job:
+      executor:
+        name: go/default
+        tag: '1.17'
+      context: dev
+...
+```
+
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)
