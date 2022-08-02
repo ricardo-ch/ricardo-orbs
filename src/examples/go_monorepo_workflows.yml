@@ -10,15 +10,19 @@ usage:
     go: circleci/go@1.7.1
     ric-orb: ricardo/ric-orb@2
 
+  #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: 0.29.4
-  cfg-go-version: &cfg-go-version
-    tag: '1.17'
-  cfg-quality-gate-executor: &cfg-quality-gate-executor
+  #FIXME: go executor version to be used (from circleci's go-orb)
+  cfg-go-build-test-executor: &cfg-go-build-test-executor
     name: go/default
-    <<: *cfg-go-version
+    tag: '1.17'
 
-  #name of the job that github is looking for
+  #FIXME: change with working dirs of your apps
+  cfg-work-dir-worker: &cfg-work-dir-worker './worker'
+  cfg-work-dir-api: &cfg-work-dir-api './api'
+
+  #FIXME: name of the job that github check is looking for
   build-test-api: &build-test-api 'build-test-api'
   build-test-worker: &build-test-worker 'build-test-worker'
 
@@ -33,6 +37,10 @@ usage:
       type: boolean
       default: false
 
+  #below there are two workflows, api uses 5 jobs and worker uses 7 jobs to get same thing done
+  #the difference comes from the fact that api uses same docker image for master branch and other branches
+  #while worker builds one image for branch, and one for master, only difference is context.
+  #If you need different context for any reason use worker's approach
   workflows:
     version: 2
     api:
@@ -41,9 +49,10 @@ usage:
           - << pipeline.parameters.api >>
           - << pipeline.parameters.common >>
       jobs:
-        - ric-orb/build_quality_gate:
-            work_dir: './worker'
-            executor: *cfg-quality-gate-executor
+        - ric-orb/go_build_test:
+            work_dir: *cfg-work-dir-api
+            executor: *cfg-go-build-test-executor
+            #run additional tests on common package
             additional_tests:
               - run:
                 name: Running tests on common
@@ -60,45 +69,26 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: dev
-            work_dir: './api'
-            name: docker-branch
+            work_dir: *cfg-work-dir-api
+            name: docker
             requires:
+              #when workflow is triggered for master branch request-deploy is not considered, because in that job there is filter that ignores master branch
               - request-deploy
               - *build-test-api
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
             context: dev
-            name: deploy-dev
-            work_dir: './api'
-            requires:
-              - docker-branch
-        #master branch
-        - ric-orb/build_push_image:
-            <<: *cfg-isopod-version
-            context: prod
-            work_dir: './api'
-            name: docker-master
-            filters:
-              branches:
-                only:
-                  - master
-            requires:
-              - *build-test-api
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
-            env: dev
-            context: dev
             name: deploy-master-dev
-            work_dir: './api'
+            work_dir: *cfg-work-dir-api
             requires:
-              - docker-master
+              - docker
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: prod
             context: prod
             name: deploy-prod
-            work_dir: './api'
+            work_dir: *cfg-work-dir-api
             requires:
               - deploy-master-dev
 
@@ -108,10 +98,10 @@ usage:
           - << pipeline.parameters.worker >>
           - << pipeline.parameters.common >>
       jobs:
-        - ric-orb/build_quality_gate:
-            work_dir: './worker'
+        - ric-orb/go_build_test:
+            work_dir: *cfg-work-dir-worker
             executor:
-              <<: *cfg-quality-gate-executor
+              <<: *cfg-go-build-test-executor
             additional_tests:
               - run:
                 name: Running tests on common
@@ -128,7 +118,7 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: dev
-            work_dir: './worker'
+            work_dir: *cfg-work-dir-worker
             name: docker-branch
             requires:
               - request-deploy
@@ -138,14 +128,14 @@ usage:
             env: dev
             context: dev
             name: deploy-dev
-            work_dir: './worker'
+            work_dir: *cfg-work-dir-worker
             requires:
               - docker-branch
         #master branch
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: prod
-            work_dir: './worker'
+            work_dir: *cfg-work-dir-worker
             name: docker-master
             filters:
               branches:
@@ -158,7 +148,7 @@ usage:
             env: dev
             context: dev
             name: deploy-master-dev
-            work_dir: './worker'
+            work_dir: *cfg-work-dir-worker
             requires:
               - docker-master
         - ric-orb/deploy_job:
@@ -166,7 +156,7 @@ usage:
             env: prod
             context: prod
             name: deploy-prod
-            work_dir: './worker'
+            work_dir: *cfg-work-dir-worker
             requires:
               - deploy-master-dev
 

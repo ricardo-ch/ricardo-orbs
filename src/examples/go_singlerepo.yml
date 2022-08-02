@@ -1,0 +1,50 @@
+description: |
+  This example shows:
+   - Specific version of the isopod.
+   - this is for go application
+usage:
+  version: 2.1
+
+  orbs:
+    go: circleci/go@1.7.1
+    ric-orb: ricardo/ric-orb@2
+
+  #FIXME: isopod version that you want to use
+  cfg-isopod-version: &cfg-isopod-version
+    isopod_version: 0.29.4
+
+  workflows:
+    version: 2
+    #FIXME: replace with app name
+    singlerepo-app:
+      jobs:
+        - ric-orb/go_build_test:
+            name: build-test
+        - request_branch_deploy_dev:
+            type: approval
+            name: request-deploy
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            <<: *cfg-isopod-version
+            context: dev
+            name: docker
+            requires:
+              - request-deploy
+              - build-test
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: dev
+            context: dev
+            name: deploy-master-dev
+            requires:
+              - docker
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: prod
+            context: prod
+            name: deploy-prod
+            requires:
+              - deploy-master-dev
