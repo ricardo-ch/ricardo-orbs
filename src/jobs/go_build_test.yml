@@ -4,7 +4,7 @@ description: >
 parameters:
   executor:
     type: executor
-    deafault:
+    default:
       name: go/default
       tag: '1.17'
   work_dir:
