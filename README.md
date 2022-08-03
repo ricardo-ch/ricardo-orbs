@@ -61,7 +61,7 @@ circleci orb pack ./src | circleci orb publish -  ricardo/ric-orb@dev:alpha
 To use the orb add this:
 ```yaml
 orbs:
-    ric-orb: ricardo/ric-orb@1.7.0
+    ric-orb: ricardo/ric-orb@3
 ```
 
 to your `.circleci/config.yml` file.
