@@ -4,9 +4,7 @@ description: >
 parameters:
   executor:
     type: executor
-    default:
-      name: go/default
-      tag: '1.17'
+    description: 'Executor to be used for this job. go/default form circleci go-orb'
   work_dir:
     type: string
     default: .

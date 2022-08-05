@@ -100,8 +100,7 @@ usage:
       jobs:
         - ric-orb/go_build_test:
             work_dir: *cfg-work-dir-worker
-            executor:
-              <<: *cfg-go-build-test-executor
+            executor: *cfg-go-build-test-executor
             additional_tests:
               - run:
                 name: Running tests on common
