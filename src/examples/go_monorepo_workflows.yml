@@ -72,14 +72,14 @@ usage:
             work_dir: *cfg-work-dir-api
             name: docker
             requires:
-              #when workflow is triggered for master branch request-deploy is not considered, because in that job there is filter that ignores master branch
+              # request-deploy is only defined for non-master branches, so when workflow is triggered for master branch request-deploy is ignored because it does not exist (circleCI will skip the entire job if *all* required jobs are missing though)
               - request-deploy
               - *build-test-api
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
             env: dev
             context: dev
-            name: deploy-master-dev
+            name: deploy-dev
             work_dir: *cfg-work-dir-api
             requires:
               - docker
@@ -90,7 +90,7 @@ usage:
             name: deploy-prod
             work_dir: *cfg-work-dir-api
             requires:
-              - deploy-master-dev
+              - deploy-dev
 
     worker:
       when:
@@ -107,6 +107,7 @@ usage:
                 command: make test
                 working_directory: common
             name: *build-test-worker
+        # non-master branches
         - request_branch_deploy_dev:
             type: approval
             name: request-deploy
