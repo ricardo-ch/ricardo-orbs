@@ -88,7 +88,7 @@ jobs:
 
 **Parameters**:
 
-- **path** Path to directory containing isopod.yml file. Default is `.`
+- **path** Path to directory containing isopod.yml file. NOTE: this directory will be the working directory for isopod (i.e. dockerfile is also expected there, and should be executable directly from that directory). Default is `.`
 - **isopod_version** isopod version in executor. Not required. Default is *latest*
 - **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
