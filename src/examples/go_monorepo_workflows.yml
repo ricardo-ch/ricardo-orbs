@@ -50,6 +50,7 @@ usage:
           - << pipeline.parameters.common >>
       jobs:
         - ric-orb/go_build_test:
+            context: dev
             work_dir: *cfg-work-dir-api
             executor: *cfg-go-build-test-executor
             #run additional tests on common package
@@ -99,6 +100,7 @@ usage:
           - << pipeline.parameters.common >>
       jobs:
         - ric-orb/go_build_test:
+            context: dev
             work_dir: *cfg-work-dir-worker
             executor: *cfg-go-build-test-executor
             additional_tests:

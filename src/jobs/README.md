@@ -398,9 +398,9 @@ jobs:
 ...
 ```
 
-### Build & Quality Gate Job
+### Build & Quality Gate Job for Go Applications
 
-**Name**: build_quality_gate
+**Name**: go_build_test
 
 **Parameters**:
 
@@ -408,7 +408,7 @@ jobs:
 - **additional_tests** is a list of additional steps to run, e.g. run tests on common. The default is: empty list
 - **work_dir** working directory for executing build and test commands
 
-Job runs install_build_test step, runs additional steps if there are any, and persist resulting `app` filet to workspace (to be used by following jobs) 
+Job runs install_build_test step, runs additional steps if there are any, and persist resulting `app` file to workspace (to be used by following jobs) 
 
 **Examples**
 
@@ -421,7 +421,7 @@ In this example:
 ...
 jobs:
 ...
-- ric-orb/build_quality_gate_job:
+- ric-orb/go_build_test:
     executor:
       name: go/default
       tag: '1.17'
@@ -434,7 +434,7 @@ jobs:
 ...
 ```
 
-In this example is default setting, only required is added:
+This example uses default settings and only the minimum required configuration is added:
 
 ```yaml
 ...

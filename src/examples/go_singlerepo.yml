@@ -20,6 +20,7 @@ usage:
       jobs:
         - ric-orb/go_build_test:
             name: build-test
+            context: dev
         - request_branch_deploy_dev:
             type: approval
             name: request-deploy
@@ -38,7 +39,7 @@ usage:
             <<: *cfg-isopod-version
             env: dev
             context: dev
-            name: deploy-master-dev
+            name: deploy-dev
             requires:
               - docker
         - ric-orb/deploy_job:
@@ -47,4 +48,4 @@ usage:
             context: prod
             name: deploy-prod
             requires:
-              - deploy-master-dev
+              - deploy-dev
