@@ -8,7 +8,7 @@ usage:
 
   orbs:
     go: circleci/go@1.7.1
-    ric-orb: ricardo/ric-orb@2
+    ric-orb: ricardo/ric-orb@3
 
   #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
@@ -69,7 +69,7 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: dev
-            work_dir: *cfg-work-dir-api
+            path: *cfg-work-dir-api
             name: docker
             requires:
               # request-deploy is only defined for non-master branches, so when workflow is triggered for master branch request-deploy is ignored because it does not exist (circleCI will skip the entire job if *all* required jobs are missing though)
@@ -118,7 +118,7 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: dev
-            work_dir: *cfg-work-dir-worker
+            path: *cfg-work-dir-worker
             name: docker-branch
             requires:
               - request-deploy
@@ -135,7 +135,7 @@ usage:
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: prod
-            work_dir: *cfg-work-dir-worker
+            path: *cfg-work-dir-worker
             name: docker-master
             filters:
               branches:

@@ -88,7 +88,7 @@ jobs:
 
 **Parameters**:
 
-- **path** Path to directory containing isopod.yml file. Default is `.`
+- **path** Path to directory containing isopod.yml file. NOTE: this directory will be the working directory for isopod (i.e. dockerfile is also expected there, and should be executable directly from that directory). Default is `.`
 - **isopod_version** isopod version in executor. Not required. Default is *latest*
 - **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
@@ -102,7 +102,6 @@ jobs:
 - **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
 - **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
-- **work_dir** working directory for building image (with the isopod). Default is `.`
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 

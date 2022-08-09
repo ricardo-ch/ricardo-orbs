@@ -7,7 +7,7 @@ usage:
 
   orbs:
     go: circleci/go@1.7.1
-    ric-orb: ricardo/ric-orb@2
+    ric-orb: ricardo/ric-orb@3
 
   #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
