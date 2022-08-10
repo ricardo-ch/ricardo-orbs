@@ -24,6 +24,7 @@ steps:
   - restore_cache:
       keys:
         - 'go-mod-{{ arch }}-{{ checksum "<< parameters.work_dir >>/go.sum"  }}'
+        - 'go-mod-{{ arch }}-'
   - install_build_test:
       work_dir: << parameters.work_dir >>
   - save_cache:
