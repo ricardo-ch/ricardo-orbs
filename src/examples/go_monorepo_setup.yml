@@ -35,6 +35,6 @@ usage:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
             # FIXME: replace app paths and names with your actual names/paths
             mapping: |
-              worker/.*|.circleci/.* worker true
-              api/.*|.circleci/.* api true
+              worker/.* worker true
+              api/.* api true
               common/.*|.circleci/.* common true
