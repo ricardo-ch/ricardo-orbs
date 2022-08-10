@@ -1,0 +1,175 @@
+description: |
+  This example shows:
+   - Specific version of the isopod.
+   - this is for go application
+   - custom quality checks
+usage:
+  version: 2.1
+
+  orbs:
+    go: circleci/go@1.7.1
+    ric-orb: ricardo/ric-orb@3
+
+  #FIXME: isopod version that you want to use
+  cfg-isopod-version: &cfg-isopod-version
+    isopod_version: 0.29.4
+  #FIXME: go executor version to be used (from circleci's go-orb)
+  cfg-go-build-test-executor: &cfg-go-build-test-executor
+    name: go/default
+    tag: '1.17'
+
+  #FIXME: change with working dirs of your apps
+  cfg-work-dir-worker: &cfg-work-dir-worker './worker'
+  cfg-work-dir-api: &cfg-work-dir-api './api'
+
+  #FIXME: name of the job that github check is looking for
+  build-test-api: &build-test-api 'build-test-api'
+  build-test-worker: &build-test-worker 'build-test-worker'
+
+  parameters:
+    api:
+      type: boolean
+      default: false
+    worker:
+      type: boolean
+      default: false
+    common:
+      type: boolean
+      default: false
+
+  #below there are two workflows, api uses 5 jobs and worker uses 7 jobs to get same thing done
+  #the difference comes from the fact that api uses same docker image for master branch and other branches
+  #while worker builds one image for branch, and one for master, only difference is context.
+  #If you need different context for any reason use worker's approach
+  workflows:
+    version: 2
+    api:
+      when:
+        or:
+          - << pipeline.parameters.api >>
+          - << pipeline.parameters.common >>
+      jobs:
+        - ric-orb/go_build_test:
+            context: dev
+            work_dir: *cfg-work-dir-api
+            executor: *cfg-go-build-test-executor
+            #run additional tests on common package
+            additional_tests:
+              - run:
+                name: Running tests on common
+                command: make test
+                working_directory: common
+            name: *build-test-api
+        - request_branch_deploy_dev:
+            type: approval
+            name: request-deploy
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            <<: *cfg-isopod-version
+            context: dev
+            path: *cfg-work-dir-api
+            name: docker
+            requires:
+              # request-deploy is only defined for non-master branches, so when workflow is triggered for master branch request-deploy is ignored because it does not exist (circleCI will skip the entire job if *all* required jobs are missing though)
+              - request-deploy
+              - *build-test-api
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: dev
+            context: dev
+            name: deploy-dev
+            work_dir: *cfg-work-dir-api
+            requires:
+              - docker
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: prod
+            context: prod
+            name: deploy-prod
+            work_dir: *cfg-work-dir-api
+            requires:
+              - deploy-dev
+
+    worker:
+      when:
+        or:
+          - << pipeline.parameters.worker >>
+          - << pipeline.parameters.common >>
+      jobs:
+        - ric-orb/go_build_test:
+            context: dev
+            work_dir: *cfg-work-dir-worker
+            executor: *cfg-go-build-test-executor
+            additional_tests:
+              - run:
+                name: Running tests on common
+                command: make test
+                working_directory: common
+            name: *build-test-worker
+        #dev builds
+        - request_branch_deploy_dev:
+            type: approval
+            name: request-deploy
+            filters:
+              branches:
+                ignore:
+                  - master
+        - ric-orb/build_push_image:
+            <<: *cfg-isopod-version
+            context: dev
+            path: *cfg-work-dir-worker
+            name: docker-dev
+            requires:
+              - request-deploy
+              - *build-test-worker
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: dev
+            context: dev
+            name: deploy-dev
+            work_dir: *cfg-work-dir-worker
+            requires:
+              - docker-dev
+        #prod builds
+        - ric-orb/build_push_image:
+            <<: *cfg-isopod-version
+            context: prod
+            path: *cfg-work-dir-worker
+            name: docker-prod
+            filters:
+              branches:
+                only:
+                  - master
+            requires:
+              - *build-test-worker
+        - ric-orb/deploy_job:
+            <<: *cfg-isopod-version
+            env: prod
+            context: prod
+            name: deploy-prod
+            work_dir: *cfg-work-dir-worker
+            requires:
+              - docker-prod
+              - deploy-dev
+
+    #dummy jobs, when there is no code change on api/worker, but github check needs to see that job with that name is done
+    no-code-change-api:
+      when:
+        and:
+          - not: << pipeline.parameters.api >>
+          - not: << pipeline.parameters.common >>
+      jobs:
+        - ric-orb/no_op:
+            name: *build-test-api
+
+    no-code-change-worker:
+      when:
+        and:
+          - not: << pipeline.parameters.worker >>
+          - not: << pipeline.parameters.common >>
+      jobs:
+        - ric-orb/no_op:
+            name: *build-test-worker

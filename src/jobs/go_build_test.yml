@@ -1,0 +1,38 @@
+description: >
+  Job for building and testing go app
+
+parameters:
+  executor:
+    type: executor
+    description: 'Executor to be used for this job. go/default form circleci go-orb'
+  work_dir:
+    type: string
+    default: .
+  additional_tests:
+    description: 'Steps with additional tests e.g. tests on common'
+    type: steps
+    default: [ ]
+  go_mod_cache_path:
+    default: /home/circleci/go/pkg/mod
+    description: 'Path to cache. Default path works for default executor (cimg/go)'
+    type: string
+
+executor: << parameters.executor >>
+
+steps:
+  - checkout
+  - restore_cache:
+      keys:
+        - 'go-mod-{{ arch }}-{{ checksum "<< parameters.work_dir >>/go.sum"  }}'
+        - 'go-mod-{{ arch }}-'
+  - install_build_test:
+      work_dir: << parameters.work_dir >>
+  - save_cache:
+      key: 'go-mod-{{ arch }}-{{ checksum "<< parameters.work_dir >>/go.sum"  }}'
+      paths:
+        - << parameters.go_mod_cache_path >>
+  - steps: << parameters.additional_tests >>
+  - persist_to_workspace:
+      root: .
+      paths:
+        - << parameters.work_dir >>/app
