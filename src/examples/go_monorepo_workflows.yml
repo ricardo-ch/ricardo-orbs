@@ -109,7 +109,7 @@ usage:
                 command: make test
                 working_directory: common
             name: *build-test-worker
-        # non-master branches
+        #dev builds
         - request_branch_deploy_dev:
             type: approval
             name: request-deploy
@@ -121,7 +121,7 @@ usage:
             <<: *cfg-isopod-version
             context: dev
             path: *cfg-work-dir-worker
-            name: docker-branch
+            name: docker-dev
             requires:
               - request-deploy
               - *build-test-worker
@@ -132,13 +132,13 @@ usage:
             name: deploy-dev
             work_dir: *cfg-work-dir-worker
             requires:
-              - docker-branch
-        #master branch
+              - docker-dev
+        #prod builds
         - ric-orb/build_push_image:
             <<: *cfg-isopod-version
             context: prod
             path: *cfg-work-dir-worker
-            name: docker-master
+            name: docker-prod
             filters:
               branches:
                 only:
@@ -147,20 +147,13 @@ usage:
               - *build-test-worker
         - ric-orb/deploy_job:
             <<: *cfg-isopod-version
-            env: dev
-            context: dev
-            name: deploy-master-dev
-            work_dir: *cfg-work-dir-worker
-            requires:
-              - docker-master
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
             env: prod
             context: prod
             name: deploy-prod
             work_dir: *cfg-work-dir-worker
             requires:
-              - deploy-master-dev
+              - docker-prod
+              - deploy-dev
 
     #dummy jobs, when there is no code change on api/worker, but github check needs to see that job with that name is done
     no-code-change-api:
