@@ -37,6 +37,7 @@ usage:
     # FIXME: replace value with your actual repo name
     cache_key_prefix: my-repo
 
+  # name of the job(s) that github status check is looking for
   # NOTE: job name of no-op build jobs must match respective name of apps actual build jobs so that github can stay agnostic!
   # FIXME: replace suffix with your actual app name
   maven-build-test-app1: &maven-build-test-app1 'maven-build-test-app1'
@@ -81,6 +82,7 @@ usage:
     app1:
       when:
         or:
+          # FIXME: replace suffix with your actual app name
           - << pipeline.parameters.modified-app1 >>
           - << pipeline.parameters.modified-common >>
 
@@ -153,6 +155,7 @@ usage:
     app2:
       when:
         or:
+          # FIXME: replace suffix with your actual app name
           - << pipeline.parameters.modified-app2 >>
           - << pipeline.parameters.modified-common >>
 
