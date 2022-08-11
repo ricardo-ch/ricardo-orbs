@@ -13,7 +13,7 @@ parameters:
     type: steps
     default: [ ]
   go_mod_cache_path:
-    default: /home/circleci/go/pkg/mod
+    default: $GOPATH/pkg/mod
     description: 'Path to cache. Default path works for default executor (cimg/go)'
     type: string
 
