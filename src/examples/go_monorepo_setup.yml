@@ -29,10 +29,12 @@ usage:
     generate-config:
       jobs:
         - path-filtering/filter:
+            # FIXME: replace value with your actual main/master branch name
             base-revision: master
             config-path: .circleci/go-monorepo-workflows.yml
             # 3-column, whitespace-delimited mapping. One mapping per line:
             # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
+            # FIXME: replace common module paths with your actual paths
             # FIXME: replace app paths and names with your actual names/paths
             mapping: |
               worker/.* worker true

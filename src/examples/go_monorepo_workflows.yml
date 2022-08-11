@@ -1,35 +1,51 @@
 description: |
-  This example shows:
-   - Specific version of the isopod.
-   - this is for go application
-   - custom quality checks
+  Go monorepo example.
+  Note: circleci-config typically consists of 2 files in this case (see also go_monorepo_setup.yml)
+
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+
 usage:
+
+  #############################################################################
+  # This is what you typically want to have in your .circleci/java_monorepo_workflows.yml
+  #############################################################################
+
   version: 2.1
 
   orbs:
+    compliance: ricardo/compliance-orb@2
     go: circleci/go@1.7.1
     ric-orb: ricardo/ric-orb@3
 
   #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: 0.29.4
+
   #FIXME: go executor version to be used (from circleci's go-orb)
   cfg-go-build-test-executor: &cfg-go-build-test-executor
     name: go/default
     tag: '1.17'
 
-  #FIXME: change with working dirs of your apps
+  # FIXME: replace suffix/path with your actual app name/path
   cfg-work-dir-worker: &cfg-work-dir-worker './worker'
+  # FIXME: replace suffix/path with your actual app name/path
   cfg-work-dir-api: &cfg-work-dir-api './api'
 
-  #FIXME: name of the job that github check is looking for
+  # name of the job(s) that github status check is looking for
+  # NOTE: job name of no-op build jobs must match respective name of apps actual build jobs so that github can stay agnostic!
+  # FIXME: replace suffix with your actual app name
   build-test-api: &build-test-api 'build-test-api'
+  # FIXME: replace suffix with your actual app name
   build-test-worker: &build-test-worker 'build-test-worker'
 
   parameters:
+    # FIXME: replace suffix with your actual app name
     api:
       type: boolean
       default: false
+    # FIXME: replace suffix with your actual app name
     worker:
       type: boolean
       default: false
@@ -37,139 +53,193 @@ usage:
       type: boolean
       default: false
 
-  #below there are two workflows, api uses 5 jobs and worker uses 7 jobs to get same thing done
-  #the difference comes from the fact that api uses same docker image for master branch and other branches
-  #while worker builds one image for branch, and one for master, only difference is context.
-  #If you need different context for any reason use worker's approach
   workflows:
     version: 2
-    api:
-      when:
-        or:
-          - << pipeline.parameters.api >>
-          - << pipeline.parameters.common >>
-      jobs:
-        - ric-orb/go_build_test:
-            context: dev
-            work_dir: *cfg-work-dir-api
-            executor: *cfg-go-build-test-executor
-            #run additional tests on common package
-            additional_tests:
-              - run:
-                name: Running tests on common
-                command: make test
-                working_directory: common
-            name: *build-test-api
-        - request_branch_deploy_dev:
-            type: approval
-            name: request-deploy
-            filters:
-              branches:
-                ignore:
-                  - master
-        - ric-orb/build_push_image:
-            <<: *cfg-isopod-version
-            context: dev
-            path: *cfg-work-dir-api
-            name: docker
-            requires:
-              # request-deploy is only defined for non-master branches, so when workflow is triggered for master branch request-deploy is ignored because it does not exist (circleCI will skip the entire job if *all* required jobs are missing though)
-              - request-deploy
-              - *build-test-api
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
-            env: dev
-            context: dev
-            name: deploy-dev
-            work_dir: *cfg-work-dir-api
-            requires:
-              - docker
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
-            env: prod
-            context: prod
-            name: deploy-prod
-            work_dir: *cfg-work-dir-api
-            requires:
-              - deploy-dev
 
-    worker:
-      when:
-        or:
-          - << pipeline.parameters.worker >>
-          - << pipeline.parameters.common >>
-      jobs:
-        - ric-orb/go_build_test:
-            context: dev
-            work_dir: *cfg-work-dir-worker
-            executor: *cfg-go-build-test-executor
-            additional_tests:
-              - run:
-                name: Running tests on common
-                command: make test
-                working_directory: common
-            name: *build-test-worker
-        #dev builds
-        - request_branch_deploy_dev:
-            type: approval
-            name: request-deploy
-            filters:
-              branches:
-                ignore:
-                  - master
-        - ric-orb/build_push_image:
-            <<: *cfg-isopod-version
-            context: dev
-            path: *cfg-work-dir-worker
-            name: docker-dev
-            requires:
-              - request-deploy
-              - *build-test-worker
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
-            env: dev
-            context: dev
-            name: deploy-dev
-            work_dir: *cfg-work-dir-worker
-            requires:
-              - docker-dev
-        #prod builds
-        - ric-orb/build_push_image:
-            <<: *cfg-isopod-version
-            context: prod
-            path: *cfg-work-dir-worker
-            name: docker-prod
-            filters:
-              branches:
-                only:
-                  - master
-            requires:
-              - *build-test-worker
-        - ric-orb/deploy_job:
-            <<: *cfg-isopod-version
-            env: prod
-            context: prod
-            name: deploy-prod
-            work_dir: *cfg-work-dir-worker
-            requires:
-              - docker-prod
-              - deploy-dev
-
-    #dummy jobs, when there is no code change on api/worker, but github check needs to see that job with that name is done
+    # FIXME: replace infix with your actual app name
     no-code-change-api:
       when:
         and:
+          # FIXME: replace suffix with your actual app name
           - not: << pipeline.parameters.api >>
           - not: << pipeline.parameters.common >>
       jobs:
+        # github status check typically checks this job
+        # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
             name: *build-test-api
 
+    # FIXME: replace infix with your actual app name
     no-code-change-worker:
       when:
         and:
+          # FIXME: replace suffix with your actual app name
           - not: << pipeline.parameters.worker >>
           - not: << pipeline.parameters.common >>
       jobs:
+        # github status check typically checks this job
+        # the idea is that, depending on whether there were changes to the app or not, github either considers this no-op here or the actual build status (without knowing which)
         - ric-orb/no_op:
             name: *build-test-worker
+
+    ###########################################################################
+    # workflow for package 'api'
+    #
+    # NOTE: this is an example workflow that builds 1 image for DEV and PROD.
+    # if your app requires individual images per environment check the "worker"
+    # example below.
+    ###########################################################################
+    # FIXME: replace infix with your actual app name
+    api:
+      when:
+        or:
+          # FIXME: replace suffix with your actual app name
+          - << pipeline.parameters.api >>
+          - << pipeline.parameters.common >>
+      jobs:
+        # github status check typically checks this job
+        - ric-orb/go_build_test:
+            name: *build-test-api
+            context: dev
+            executor: *cfg-go-build-test-executor
+            work_dir: *cfg-work-dir-api
+            # FIXME: customize for your actual shared packages
+            additional_tests:
+              - run:
+                  name: Run additional tests from common package
+                  command: make test
+                  working_directory: common
+
+        - request_deploy_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  # FIXME: replace value with your actual main/master branch name
+                  - master
+
+        - ric-orb/build_push_image:
+            name: 'build-push-image'
+            context: dev
+            path: *cfg-work-dir-api
+            <<: *cfg-isopod-version
+            requires:
+              # FIXME: replace suffix with your actual app name
+              - *build-test-api
+              # note semantic of 'requires': on master this is ignored
+              - request_deploy_dev
+
+        - compliance/sre_compliance_checks:
+            context: dev
+            requires:
+              - build-push-image
+
+        - ric-orb/deploy_job:
+            name: 'deploy-dev'
+            context: dev
+            work_dir: *cfg-work-dir-api
+            <<: *cfg-isopod-version
+            env: dev
+            requires:
+              - docker
+
+        - ric-orb/deploy_job:
+            name: 'deploy-prod'
+            context: prod
+            work_dir: *cfg-work-dir-api
+            <<: *cfg-isopod-version
+            env: prod
+            filters:
+              branches:
+                only:
+                  # FIXME: replace value with your actual main/master branch name
+                  - 'master'
+            requires:
+              - deploy-dev
+
+    ###########################################################################
+    # workflow for package 'worker'
+    #
+    # NOTE:
+    # this is an example workflow that builds 2 separate images for DEV and
+    # PROD. if your app does not require individual images per environment,
+    # consider checking/following the "api" example above.
+    ###########################################################################
+    # FIXME: replace infix with your actual app name
+    worker:
+      when:
+        or:
+          # FIXME: replace suffix with your actual app name
+          - << pipeline.parameters.worker >>
+          - << pipeline.parameters.common >>
+      jobs:
+        # github status check typically checks this job
+        - ric-orb/go_build_test:
+            name: *build-test-worker
+            context: dev
+            work_dir: *cfg-work-dir-worker
+            executor: *cfg-go-build-test-executor
+            # FIXME: customize for your actual shared packages
+            additional_tests:
+              - run:
+                  name: Run additional tests from common package
+                  command: make test
+                  working_directory: common
+
+        - request_deploy_dev:
+            type: approval
+            filters:
+              branches:
+                ignore:
+                  # FIXME: replace value with your actual main/master branch name
+                  - master
+
+        # jobs to build and deploy DEV image
+        - ric-orb/build_push_image:
+            name: 'docker-dev'
+            context: dev
+            path: *cfg-work-dir-worker
+            <<: *cfg-isopod-version
+            requires:
+              # FIXME: replace suffix with your actual app name
+              - *build-test-worker
+              # note semantic of 'requires': on master this is ignored
+              - request-deploy
+
+        - compliance/sre_compliance_checks:
+            context: dev
+            requires:
+              - docker-dev
+
+        - ric-orb/deploy_job:
+            name: 'deploy-dev'
+            context: dev
+            work_dir: *cfg-work-dir-worker
+            <<: *cfg-isopod-version
+            env: dev
+            requires:
+              - docker-dev
+
+        # jobs to build and deploy PROD image
+        - ric-orb/build_push_image:
+            name: 'docker-prod'
+            context: prod
+            path: *cfg-work-dir-worker
+            <<: *cfg-isopod-version
+            filters:
+              branches:
+                only:
+                  # FIXME: replace value with your actual main/master branch name
+                  - master
+            requires:
+              - *build-test-worker
+
+        - ric-orb/deploy_job:
+            name: 'deploy-prod'
+            context: prod
+            work_dir: *cfg-work-dir-worker
+            <<: *cfg-isopod-version
+            env: prod
+            requires:
+              # note that this transitively filters for master!
+              - docker-prod

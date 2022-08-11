@@ -1,15 +1,23 @@
 description: |
-  This example shows:
-   - Specific version of the isopod.
-   - this is for go application
+  Go single-app-repo example.
+
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+
 usage:
+
+  #############################################################################
+  # This is what you typically want to have in your .circleci/config.yml
+  #############################################################################
+
   version: 2.1
 
   orbs:
     go: circleci/go@1.7.1
+    compliance: ricardo/compliance-orb@2
     ric-orb: ricardo/ric-orb@3
 
-  #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
     isopod_version: 0.29.4
 
@@ -19,38 +27,55 @@ usage:
 
   workflows:
     version: 2
-    #FIXME: replace with app name
+
+    # FIXME: replace name with your actual app name
     singlerepo-app:
       jobs:
+        # github status check typically checks this job
         - ric-orb/go_build_test:
-            name: build-test
+            name: 'build-test'
             context: dev
             executor: *cfg-go-build-test-executor
-        - request_branch_deploy_dev:
+
+        - approve_deploy_dev_branch:
             type: approval
-            name: request-deploy
             filters:
               branches:
                 ignore:
+                  # FIXME: replace value with your actual main/master branch name
                   - master
+
         - ric-orb/build_push_image:
-            <<: *cfg-isopod-version
+            name: 'docker'
             context: dev
-            name: docker
+            <<: *cfg-isopod-version
             requires:
-              - request-deploy
               - build-test
+              # note semantic of 'requires': on master this is ignored
+              - approve_deploy_dev_branch
+
+        - compliance/sre_compliance_checks:
+            context: dev
+            requires:
+              - build-push-image
+
         - ric-orb/deploy_job:
+            name: 'deploy-dev'
+            context: dev
             <<: *cfg-isopod-version
             env: dev
-            context: dev
-            name: deploy-dev
             requires:
               - docker
+
         - ric-orb/deploy_job:
+            name: 'deploy-prod'
+            context: prod
             <<: *cfg-isopod-version
             env: prod
-            context: prod
-            name: deploy-prod
+            filters:
+              branches:
+                only:
+                  # FIXME: replace value with your actual main/master branch name
+                  - 'master'
             requires:
               - deploy-dev
