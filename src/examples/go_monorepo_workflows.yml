@@ -241,5 +241,5 @@ usage:
             <<: *cfg-isopod-version
             env: prod
             requires:
-              # note that this transitively filters for master!
+              # note that this transitively filters for main/master!
               - docker-prod
