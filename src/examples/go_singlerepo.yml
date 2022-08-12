@@ -46,7 +46,7 @@ usage:
                   - master
 
         - ric-orb/build_push_image:
-            name: 'docker'
+            name: 'build-push-image'
             context: dev
             <<: *cfg-isopod-version
             requires:
@@ -65,7 +65,7 @@ usage:
             <<: *cfg-isopod-version
             env: dev
             requires:
-              - docker
+              - build-push-image
 
         - ric-orb/deploy_job:
             name: 'deploy-prod'
