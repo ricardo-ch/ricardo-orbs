@@ -141,7 +141,7 @@ usage:
             <<: *cfg-isopod-version
             env: dev
             requires:
-              - docker
+              - build-push-image
 
         - ric-orb/deploy_job:
             name: 'deploy-prod'
@@ -196,7 +196,7 @@ usage:
 
         # jobs to build and deploy DEV image
         - ric-orb/build_push_image:
-            name: 'docker-dev'
+            name: 'build-push-image-dev'
             context: dev
             path: *cfg-work-dir-worker
             <<: *cfg-isopod-version
@@ -209,7 +209,7 @@ usage:
         - compliance/sre_compliance_checks:
             context: dev
             requires:
-              - docker-dev
+              - build-push-image-dev
 
         - ric-orb/deploy_job:
             name: 'deploy-dev'
@@ -218,11 +218,11 @@ usage:
             <<: *cfg-isopod-version
             env: dev
             requires:
-              - docker-dev
+              - build-push-image-dev
 
         # jobs to build and deploy PROD image
         - ric-orb/build_push_image:
-            name: 'docker-prod'
+            name: 'build-push-image-prod'
             context: prod
             path: *cfg-work-dir-worker
             <<: *cfg-isopod-version
@@ -242,4 +242,4 @@ usage:
             env: prod
             requires:
               # note that this transitively filters for main/master!
-              - docker-prod
+              - build-push-image-prod
