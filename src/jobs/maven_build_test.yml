@@ -25,6 +25,7 @@ steps:
   - maven_auth
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
+      path: << parameters.path >>
   - login_docker_registry:
       url: ${DOCKER_JFROG_REGISTRY_URL}
       username: ${DOCKER_JFROG_USERNAME}
@@ -33,5 +34,6 @@ steps:
       path: << parameters.path >>
   - maven_cache_artifacts:
       prefix: << parameters.cache_key_prefix >>
+      path: << parameters.path >>
   - maven_save_output:
       path: << parameters.path >>
