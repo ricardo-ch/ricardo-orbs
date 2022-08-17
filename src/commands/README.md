@@ -156,7 +156,7 @@ This command execute install, build, test make commands. So, to execute it there
 
 - **cache_name** Not required. If not specified cache will not be used/created.
 - **cache_path** Not required. If not specified cache will not be created.
-- **quality_checks** is a list of steps to run. By default they are:
+- **quality_checks** is a list of steps to run. By default this is:
 
 ```yaml
 quality_checks:
@@ -187,7 +187,7 @@ steps:
 **Parameters**:
 
 - **branches** The list of comma separated branches for which notification should be sent. Default is *master*.
-- **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK(for channel circleci-deployments). Specify only if need to veride.
+- **webhook** is the slack webhook to channel where notification is sent. Default is stored in context/environment variable SLACK_WEBHOOK (for channel circleci-deployments). Specify only if you need to override.
 
 This command sends notification for branches to the target webhook when job fails. This uses [the slack orb](https://circleci.com/developer/orbs/orb/circleci/slack?version=3.4.2).
 
@@ -228,11 +228,11 @@ steps:
 **Name**: maven_cache_artifacts
 
 **Parameters**:
-- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*)
+- **prefix** Prefix for the cache-key (used in combination with and checksum of *pom.xml* as well as *path*)
+- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom.xml*). Default: "*.*"
 
 Example:
 
-Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
 ```yaml
 ...
 steps:
@@ -241,20 +241,40 @@ steps:
 ...
 ```
 
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because this way the individual apps can fall back to each other's cache.
+```yaml
+...
+steps:
+  - ric-orb/maven_cache_artifacts:
+      prefix: "my-monorepo"
+      path: "app1"
+...
+```
+
 ### Command to restore maven artifacts from cache for Java applications
 **Name**: maven_restore_artifacts
 
 **Parameters**:
-- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml*); no-op with blank prefix. Default: *blank*
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml* as well as *path*); no-op with blank prefix. Default: *blank*
+- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom.xml*). Default: "*.*"
 
 Example:
 
-Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because otherwise builds of the individual apps will not utilize a shared cache.
 ```yaml
 ...
 steps:
   - ric-orb/maven_restore_artifacts:
       prefix: "myrepo"
+...
+```
+
+Note that you typically want to use a shared prefix for the entire repository in case of monorepo, because this way the individual apps can fall back to each other's cache.
+```yaml
+...
+steps:
+  - ric-orb/maven_cache_artifacts:
+      prefix: "my-monorepo"
+      path: "app1"
 ...
 ```
 

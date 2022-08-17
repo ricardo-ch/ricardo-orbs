@@ -6,9 +6,13 @@ parameters:
   prefix:
     description: 'Prefix for the cache-key (used in combination with checksum of pom.xml)'
     type: string
+  path:
+    description: 'Path of maven module for the app, or "." for single-app-repo'
+    type: string
+    default: '.'
 
 steps:
   - save_cache:
       paths:
         - ~/.m2
-      key: << parameters.prefix >>-{{ checksum "pom.xml" }}
+      key: << parameters.prefix >>-{{ checksum "pom.xml" }}-<< parameters.path >>
