@@ -54,11 +54,6 @@ usage:
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev_branch
 
-        - compliance/sre_compliance_checks:
-            context: dev
-            requires:
-              - build-push-image
-
         - ric-orb/deploy_job:
             name: 'deploy-dev'
             context: dev
@@ -66,6 +61,10 @@ usage:
             env: dev
             requires:
               - build-push-image
+        - compliance/sre_compliance_checks:
+            context: dev
+            requires:
+              - deploy-dev
 
         - ric-orb/deploy_job:
             name: 'deploy-prod'
