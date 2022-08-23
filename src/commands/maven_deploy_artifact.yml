@@ -1,0 +1,35 @@
+description: >
+  Build java module using Maven and deploy the artifact. Note that it does not execute the tests.
+  Supports app-module from monorepo as well as single app from single-app-repo.
+
+parameters:
+  path:
+    description: 'Path of maven module for the app, or "." for single-app-repo'
+    type: string
+    default: .
+  pom_file:
+    description: 'The pom file to be used for the Maven build'
+    type: string
+    default: 'pom.xml'
+
+steps:
+  # build app (maven module) from monorepo
+  - when:
+      condition:
+        matches:
+          # check whether contains word-characters
+          pattern: '^.*\w.*$'
+          value: << parameters.path >>
+      steps:
+        - run: |
+            ./mvnw clean deploy -DskipTests -f << parameters.pom_file >> -pl << parameters.path >> -am
+  # build app from single-app-repo
+  - unless:
+      condition:
+        matches:
+          # check whether contains word-characters
+          pattern: '^.*\w.*$'
+          value: << parameters.path >>
+      steps:
+        - run: |
+            ./mvnw clean deploy -DskipTests -f << parameters.pom_file >>
