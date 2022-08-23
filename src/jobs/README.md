@@ -145,7 +145,7 @@ Custom properties:
 jobs:
 ...
   - ric-orb/build_push_image:
-      isopod_version: "0.29.4"
+      isopod_version: "0.29.6"
       docker_version: "19.03.13"
       private_hub_username: ${PDOCKER_USERNAME}
       private_hub_password: ${PDOCKER_PASSWORD}
@@ -169,7 +169,7 @@ jobs:
       context: dev
       path: "myapp"
       docker_version: "19.03.13"
-      isopod_version: "0.29.4"
+      isopod_version: "0.29.6"
       requires:
         - maven_build_test
 ...
@@ -208,7 +208,7 @@ jobs:
 ...
   - ric-orb/deploy_job:
       name: prod
-      isopod_version: 0.29.4
+      isopod_version: 0.29.6
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
       env: prod
@@ -276,7 +276,7 @@ jobs:
   - ric-orb/deploy_job:
       context: dev
       path: "myapp"
-      isopod_version: "0.29.4"
+      isopod_version: "0.29.6"
       env: "dev"
       requires:
         - build_push_image
@@ -327,7 +327,7 @@ jobs:
       context: prod
       source: ./build/assets
       app_name: my-ricardo-spa
-      isopod_version: 0.20.4
+      isopod_version: 0.29.6
       bucket_name: custom-bucket
       bucket_path: /custom/path
 
