@@ -228,8 +228,9 @@ steps:
 **Name**: maven_cache_artifacts
 
 **Parameters**:
-- **prefix** Prefix for the cache-key (used in combination with and checksum of *pom.xml* as well as *path*)
-- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom.xml*). Default: "*.*"
+- **prefix** Prefix for the cache-key (used in combination with and checksum of *pom_file* as well as *path*)
+- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom_file*). Default: "*.*"
+- **pom_file** The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
 
 Example:
 
@@ -255,8 +256,9 @@ steps:
 **Name**: maven_restore_artifacts
 
 **Parameters**:
-- **prefix** Prefix for the cache-key (used in combination with checksum of *pom.xml* as well as *path*); no-op with blank prefix. Default: *blank*
-- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom.xml*). Default: "*.*"
+- **prefix** Prefix for the cache-key (used in combination with checksum of *pom_file* as well as *path*); no-op with blank prefix. Default: *blank*
+- **path** Path of maven module (or "." for single-app-repo') for the cache-key (used in combination with *prefix* and checksum of *pom_file*). Default: "*.*"
+- **pom_file** The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
 
 Example:
 
