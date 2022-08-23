@@ -10,9 +10,13 @@ parameters:
     description: 'Path of maven module for the app, or "." for single-app-repo'
     type: string
     default: '.'
+  pom_file:
+    description: 'The pom file to be used for the Maven build'
+    type: string
+    default: 'pom.xml'
 
 steps:
   - save_cache:
       paths:
         - ~/.m2
-      key: << parameters.prefix >>-{{ checksum "pom.xml" }}-<< parameters.path >>
+      key: << parameters.prefix >>-{{ checksum "<< parameters.pom_file >>" }}-<< parameters.path >>
