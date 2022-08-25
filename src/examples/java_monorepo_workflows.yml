@@ -32,7 +32,7 @@ usage:
       default: false
 
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: '0.29.4'
+    isopod_version: 0.29.6
   cfg-cache-key-prefix: &cfg-cache-key-prefix
     # FIXME: replace value with your actual repo name
     cache_key_prefix: my-repo
