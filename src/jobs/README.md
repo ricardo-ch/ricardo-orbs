@@ -381,6 +381,66 @@ jobs:
 ...
 ```
 
+### Maven deploy Java artifact to the Artifactory
+
+**Name**: maven_deploy_artifact
+
+**Parameters**:
+- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom_file*). No caching if blank. Default: *blank* 
+- **pom_file** The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
+- **executor** Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+
+**Examples**
+
+Deploy Java artifact using a docker builder
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_deploy_artifact:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: maven_docker
+
+...
+```
+Deploy Java artifact using a VM builder
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_deploy_artifact:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: maven_vm
+...
+```
+
+Deploy Java artifact for a specific module from a monorepo
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_deploy_artifact:
+      context: dev
+      path: "mymodule"
+      cache_key_prefix: "myrepo"
+...
+```
+
+Deploy Java artifact using a different pom file
+```yaml
+...
+jobs:
+...
+  - ric-orb/maven_deploy_artifact:
+      context: dev
+      pom_file: "another-pom.xml"
+      cache_key_prefix: "myrepo"
+...
+```
+
 ### No-Op dummy job
 
 **Name**: no_op

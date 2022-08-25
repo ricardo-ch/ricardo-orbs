@@ -1,0 +1,40 @@
+description: >
+  Build java module using Maven and deploy the artifact; update circleCI caches.
+  Supports monorepo as well as single repo (i.e. one Maven project).
+
+parameters:
+  path:
+    description: 'Path of maven module for the app, or "." for single-app-repo'
+    type: string
+    default: .
+  cache_key_prefix:
+    description: 'Prefix for the maven artifacts cache-key (used in combination with checksum of pom.xml); no caching with blank prefix'
+    type: string
+    default: ''
+  pom_file:
+    description: 'The pom file to be used for the Maven build'
+    type: string
+    default: 'pom.xml'
+  executor:
+    description: 'Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)'
+    type: enum
+    enum: [ 'maven_docker', 'maven_vm' ]
+    default: 'maven_docker'
+
+executor:
+  name: << parameters.executor >>
+
+steps:
+  - checkout
+  - maven_auth
+  - maven_restore_artifacts:
+      prefix: << parameters.cache_key_prefix >>
+      pom_file: << parameters.pom_file >>
+      path: << parameters.path >>
+  - maven_deploy_artifact:
+      path: << parameters.path >>
+      pom_file: << parameters.pom_file >>
+  - maven_cache_artifacts:
+      prefix: << parameters.cache_key_prefix >>
+      pom_file: << parameters.pom_file >>
+      path: << parameters.path >>

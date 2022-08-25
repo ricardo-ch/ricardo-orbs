@@ -11,6 +11,10 @@ parameters:
     description: 'Path of maven module for the app, or "." for single-app-repo'
     type: string
     default: '.'
+  pom_file:
+    description: 'The pom file to be used for the Maven build'
+    type: string
+    default: 'pom.xml'
 
 steps:
   - when:
@@ -18,6 +22,6 @@ steps:
       steps:
         - restore_cache:
             keys:
-              - << parameters.prefix >>-{{ checksum "pom.xml" }}-<< parameters.path >>
-              - << parameters.prefix >>-{{ checksum "pom.xml" }}
+              - << parameters.prefix >>-{{ checksum "<< parameters.pom_file >>" }}-<< parameters.path >>
+              - << parameters.prefix >>-{{ checksum "<< parameters.pom_file >>" }}
               - << parameters.prefix >>-
