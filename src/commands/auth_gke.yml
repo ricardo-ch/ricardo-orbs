@@ -1,5 +1,5 @@
 description: >
-  This command deploys artifact to GCP with isopod. Required context/environment variables:
+  This command authenticates with GCP. Required context/environment variables:
     - GCLOUD_SERVICE_KEY
     - GOOGLE_PROJECT_ID
     - GKE_COMPUTE_ZONE

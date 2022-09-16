@@ -1,9 +1,11 @@
 description: >
-  Deploy to a GKE cluster to given environment. Use Isopod. Environment can be dev or prod.
+  Deploy to a GKE cluster to given environment. Use Isopod.
 
 parameters:
   to:
-    type: string
+    description: 'Environment to deploy to'
+    type: enum
+    enum: [ dev, prod ]
     default: dev
   config:
     type: string
