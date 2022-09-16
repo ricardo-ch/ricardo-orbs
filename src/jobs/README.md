@@ -31,9 +31,9 @@ In this example:
 - custom steps
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
 - ric-orb/quality_gate_job:
     executor: cypress-with-gcloud
     name: integration-test
@@ -53,33 +53,30 @@ jobs:
           command: make test-integration
     requires:
       - deploy_dev
-...
 ```
 
 In this example is default setting, only required is added:
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/quality_gate_job:
       executor: go
       context: dev
-...
 ```
 
 Cache example:
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/quality_gate_job:
       executor: go
       context: dev
       cache_name: dependency-cache-{{ checksum "go.sum" }}
       cache_path: "$GOPATH/pkg/mod"
-...
 ```
 
 ### Build and Push Docker Image Job
@@ -89,6 +86,7 @@ jobs:
 **Parameters**:
 
 - **path** Path to directory containing isopod.yml file. NOTE: this directory will be the working directory for isopod (i.e. dockerfile is also expected there, and should be executable directly from that directory). Default is `.`
+- **isopod_config** Name of the isopod config file. Default is *isopod.yml*
 - **isopod_version** isopod version in executor. Not required. Default is *latest*
 - **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
@@ -100,7 +98,7 @@ jobs:
 - **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
 - **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
 - **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
-- **prebuild_steps,** the list of steps that are executed to prepare building image/application. Default is none
+- **prebuild_steps** the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps** the list of steps that are executed after building image/application. Default is none
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
@@ -110,28 +108,29 @@ This job builds docker image and pushes the image to the private docker registry
 Example with:
 - custom pre-build steps
 - disabling docker_layer_caching
+- non-standard isopod config file name
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/build_push_image:
       name: docker
       prebuild_steps:
         - run:
             name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
             command: printenv > .env.sentry
+      isopod_config: isopod.yaml
       docker_layer_caching: false
       context: dev
       requires:
         - request_branch_deployment_to_dev
-...
 ```
 
 All default:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/build_push_image:
       context: dev
       requires:
@@ -141,9 +140,9 @@ jobs:
 
 Custom properties:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/build_push_image:
       isopod_version: "0.29.6"
       docker_version: "19.03.13"
@@ -157,14 +156,13 @@ jobs:
       requires:
         - request_branch_deployment_to_dev
         - quality-gate
-...
 ```
 
 Builds docker image from java build outputs (as saved to workspace by maven_build_test job) for a specific app from a monorepo:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/build_push_image:
       context: dev
       path: "myapp"
@@ -172,7 +170,6 @@ jobs:
       isopod_version: "0.29.6"
       requires:
         - maven_build_test
-...
 ```
 
 ### Deploy Job
@@ -203,9 +200,9 @@ Examples:
 
 Deployment to prod with specific isopod version:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/deploy_job:
       name: prod
       isopod_version: 0.29.6
@@ -219,9 +216,9 @@ jobs:
 
 Deployment with slack notifications:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/deploy_job:
       name: prod
       env: prod
@@ -230,14 +227,13 @@ jobs:
         - deploy_dev
       slack_notify_success: true
       slack_notify_failure: true
-...
 ```
 
 Slack failure on team channel:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/deploy_job:
       name: prod
       env: prod
@@ -246,14 +242,13 @@ jobs:
         - deploy_dev
       slack_notify_failure: true
       slack_fail_webhook: http://...ddd.d.
-...
 ```
 
 Custom steps:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/deploy_job:
       name: dev_deploy
       env: dev
@@ -270,9 +265,9 @@ jobs:
 
 Deploys java image for a specific app from a monorepo:
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/deploy_job:
       context: dev
       path: "myapp"
@@ -280,7 +275,6 @@ jobs:
       env: "dev"
       requires:
         - build_push_image
-...
 ```
 
 ### Push build to bucket Job
@@ -304,15 +298,13 @@ All default
 This will push static assets from `./build/assets` into  production bucket `ricardo-web-assets/static-assets/my-ricardo-spa`, the latest isopod version will be used.
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/push_build_to_bucket_job:
       context: prod
       source: ./build/assets
       app_name: my-ricardo-spa
-
-...
 ```
 
 Custom isopod version and custom bucket 
@@ -320,9 +312,9 @@ Custom isopod version and custom bucket
 This will push static assets from `./build/assets` into  production bucket `custom-bucket/custom/path/my-ricardo-spa`, the v0.20.4 isopod version will be used.
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/push_build_to_bucket_job:
       context: prod
       source: ./build/assets
@@ -330,8 +322,6 @@ jobs:
       isopod_version: 0.29.6
       bucket_name: custom-bucket
       bucket_path: /custom/path
-
-...
 ```
 
 ### Maven build and test job for Java applications
@@ -347,38 +337,34 @@ jobs:
 
 Builds java sources using a docker builder
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_docker
-
-...
 ```
 Builds java sources using a VM builder
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_vm
-...
 ```
 
 Builds java sources for a specific app from a monorepo
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_build_test:
       context: dev
       path: "myapp"
       cache_key_prefix: "myrepo"
-...
 ```
 
 ### Maven deploy Java artifact to the Artifactory
@@ -395,50 +381,45 @@ jobs:
 
 Deploy Java artifact using a docker builder
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_deploy_artifact:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_docker
-
-...
 ```
 Deploy Java artifact using a VM builder
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_deploy_artifact:
       context: dev
       cache_key_prefix: "myrepo"
       executor: maven_vm
-...
 ```
 
 Deploy Java artifact for a specific module from a monorepo
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_deploy_artifact:
       context: dev
       path: "mymodule"
       cache_key_prefix: "myrepo"
-...
 ```
 
 Deploy Java artifact using a different pom file
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/maven_deploy_artifact:
       context: dev
       pom_file: "another-pom.xml"
       cache_key_prefix: "myrepo"
-...
 ```
 
 ### No-Op dummy job
@@ -451,11 +432,10 @@ jobs:
 
 Does nothing. Because sometimes you need a job, but you have nothing to do…
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/no_op
-...
 ```
 
 ### Build & Quality Gate Job for Go Applications
@@ -478,9 +458,9 @@ In this example:
 - custom steps
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
 - ric-orb/go_build_test:
     executor:
       name: go/default
@@ -491,21 +471,19 @@ jobs:
           name: Running tests on common
           command: make test
           working_directory: common
-...
 ```
 
 This example uses default settings and only the minimum required configuration is added:
 
 ```yaml
-...
+# ...
 jobs:
-...
+  # ...
   - ric-orb/quality_gate_job:
       executor:
         name: go/default
         tag: '1.17'
       context: dev
-...
 ```
 
 

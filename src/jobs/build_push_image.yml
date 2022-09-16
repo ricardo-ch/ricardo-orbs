@@ -13,6 +13,10 @@ parameters:
     description: 'Path to directory containing isopod.yml file'
     type: string
     default: .
+  isopod_config:
+    description: 'Name of the isopod config file'
+    type: string
+    default: 'isopod.yml'
   isopod_version:
     type: string
     default: $ISOPOD_VERSION
@@ -86,4 +90,5 @@ steps:
   - steps: << parameters.prebuild_steps >>
   - build_push:
       work_dir: << parameters.path >>
+      config: << parameters.isopod_config >>
   - steps: << parameters.postbuild_steps >>

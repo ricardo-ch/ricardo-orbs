@@ -204,7 +204,7 @@ usage:
               # FIXME: replace suffix with your actual app name
               - *build-test-worker
               # note semantic of 'requires': on master this is ignored
-              - request-deploy
+              - request_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev
