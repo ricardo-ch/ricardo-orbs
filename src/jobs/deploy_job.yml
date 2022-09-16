@@ -12,6 +12,10 @@ parameters:
     description: 'Path to directory containing isopod.yml file'
     type: string
     default: .
+  isopod_config:
+    description: 'Name of the isopod config file'
+    type: string
+    default: 'isopod.yml'
   env:
     description: 'Kubernetes cluster to deploy to'
     type: enum
@@ -64,7 +68,7 @@ steps:
   - checkout
   - steps: << parameters.predeploy_steps >>
   - deploy:
-      config: << parameters.path >>/isopod.yml
+      config: << parameters.path >>/<< parameters.isopod_config >>
       to: <<parameters.env>>
       work_dir: << parameters.work_dir >>
   - steps: << parameters.postdeploy_steps >>

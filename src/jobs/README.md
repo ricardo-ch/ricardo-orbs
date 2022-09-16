@@ -108,7 +108,6 @@ This job builds docker image and pushes the image to the private docker registry
 Example with:
 - custom pre-build steps
 - disabling docker_layer_caching
-- non-standard isopod config file name
 ```yaml
 # ...
 jobs:
@@ -119,11 +118,10 @@ jobs:
         - run:
             name: Copy env variable to .env file (to be used in Docker image by Sentry Webpack plugin)
             command: printenv > .env.sentry
-      isopod_config: isopod.yaml
       docker_layer_caching: false
       context: dev
       requires:
-        - approve_deploy_dev
+        - maven_build_test
 ```
 
 All default:
@@ -134,7 +132,6 @@ jobs:
   - ric-orb/build_push_image:
       context: dev
       requires:
-        - approve_deploy_dev
         - quality-gate
 ```
 
@@ -146,6 +143,7 @@ jobs:
   - ric-orb/build_push_image:
       isopod_version: "0.29.6"
       docker_version: "19.03.13"
+      isopod_config: isopod.yaml
       private_hub_username: ${PDOCKER_USERNAME}
       private_hub_password: ${PDOCKER_PASSWORD}
       docker_hub_username: ${MY_DOCKER_HUB_USERNAME}
@@ -154,8 +152,7 @@ jobs:
       cache_name: dependency-cache-{{ checksum "go.sum" }}
       context: dev
       requires:
-        - approve_deploy_dev
-        - quality-gate
+        - maven_build_test
 ```
 
 Builds docker image from java build outputs (as saved to workspace by maven_build_test job) for a specific app from a monorepo:
@@ -179,6 +176,7 @@ jobs:
 **Parameters**:
 
 - **path** Path to directory containing isopod.yml file. Default is "*.*"
+- **isopod_config** Name of the isopod config file. Default is *isopod.yml*
 - **isopod_version** isopod version in executor. Not required. Default is **latest**
 - **private_hub_username** username for private docker registry. Default is value of context variable ${DOCKER_JFROG_USERNAME}
 - **private_hub_password** password for private docker registry. Default is value of context variable ${DOCKER_JFROG_PASSWORD}
@@ -204,7 +202,6 @@ Deployment to prod with specific isopod version:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      name: prod
       isopod_version: 0.29.6
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
@@ -220,7 +217,6 @@ Deployment with slack notifications:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      name: prod
       env: prod
       context: prod
       requires:
@@ -235,7 +231,6 @@ Slack failure on team channel:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      name: prod
       env: prod
       context: prod
       requires:
@@ -250,7 +245,6 @@ Custom steps:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      name: dev_deploy
       env: dev
       context: dev
       predeploy_steps:
@@ -263,7 +257,7 @@ jobs:
         - docker
 ```
 
-Deploys java image for a specific app from a monorepo:
+Deploys java image for a specific app with a specific isopod config file from a monorepo:
 ```yaml
 # ...
 jobs:
@@ -271,6 +265,7 @@ jobs:
   - ric-orb/deploy_job:
       context: dev
       path: "myapp"
+      isopod_config: "isopod.yml"
       isopod_version: "0.29.6"
       env: "dev"
       requires:
