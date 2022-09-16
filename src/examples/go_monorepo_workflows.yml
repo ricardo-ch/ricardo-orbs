@@ -110,7 +110,7 @@ usage:
                   command: make test
                   working_directory: common
 
-        - request_deploy_dev:
+        - approve_deploy_dev:
             type: approval
             filters:
               branches:
@@ -127,7 +127,7 @@ usage:
               # FIXME: replace suffix with your actual app name
               - *build-test-api
               # note semantic of 'requires': on master this is ignored
-              - request_deploy_dev
+              - approve_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev
@@ -186,7 +186,7 @@ usage:
                   command: make test
                   working_directory: common
 
-        - request_deploy_dev:
+        - approve_deploy_dev:
             type: approval
             filters:
               branches:
@@ -204,7 +204,7 @@ usage:
               # FIXME: replace suffix with your actual app name
               - *build-test-worker
               # note semantic of 'requires': on master this is ignored
-              - request_deploy_dev
+              - approve_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev

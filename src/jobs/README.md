@@ -123,7 +123,7 @@ jobs:
       docker_layer_caching: false
       context: dev
       requires:
-        - request_branch_deployment_to_dev
+        - approve_deploy_dev
 ```
 
 All default:
@@ -134,7 +134,7 @@ jobs:
   - ric-orb/build_push_image:
       context: dev
       requires:
-        - request_branch_deployment_to_dev
+        - approve_deploy_dev
         - quality-gate
 ```
 
@@ -154,7 +154,7 @@ jobs:
       cache_name: dependency-cache-{{ checksum "go.sum" }}
       context: dev
       requires:
-        - request_branch_deployment_to_dev
+        - approve_deploy_dev
         - quality-gate
 ```
 
