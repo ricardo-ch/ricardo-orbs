@@ -98,7 +98,7 @@ usage:
             executor: maven_docker
 #            executor: maven_vm
 
-        - approve_deploy_dev_branch:
+        - approve_deploy_dev:
             type: approval
             filters:
               branches:
@@ -116,7 +116,7 @@ usage:
               # FIXME: replace suffix with your actual app name
               - *maven-build-test-app1
               # note semantic of 'requires': on master this is ignored
-              - approve_deploy_dev_branch
+              - approve_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev
@@ -171,7 +171,7 @@ usage:
 #            executor: maven_docker
             executor: maven_vm
 
-        - approve_deploy_dev_branch:
+        - approve_deploy_dev:
             type: approval
             filters:
               branches:
@@ -189,7 +189,7 @@ usage:
               # FIXME: replace suffix with your actual app name
               - *maven-build-test-app2
               # note semantic of 'requires': on master this is ignored
-              - approve_deploy_dev_branch
+              - approve_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev

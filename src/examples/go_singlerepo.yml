@@ -37,7 +37,7 @@ usage:
             context: dev
             executor: *cfg-go-build-test-executor
 
-        - approve_deploy_dev_branch:
+        - approve_deploy_dev:
             type: approval
             filters:
               branches:
@@ -52,7 +52,7 @@ usage:
             requires:
               - build-test
               # note semantic of 'requires': on master this is ignored
-              - approve_deploy_dev_branch
+              - approve_deploy_dev
 
         - compliance/sre_compliance_checks:
             context: dev
