@@ -1,5 +1,5 @@
 description: >
-  This command authenticate to GKE so operations with GKE are possible. Requires context/environment variables to be defined:
+  This command authenticates to GKE so operations with GKE are possible. Requires context/environment variables to be defined:
     - GCLOUD_SERVICE_KEY
     - GOOGLE_PROJECT_ID
     - GKE_COMPUTE_ZONE
