@@ -67,5 +67,21 @@ Files:
 Example configuration for a repo containing a single java app
 - configure the build/deployment workflow with minimal custom configuration
 
+### Example Go Monorepo
+Files:
+- [go_monorepo_setup.yml](go_monorepo_setup.yml)
+- [go_monorepo_workflows.yml](go_monorepo_workflows.yml)
+
+Example configuration for a go monorepo shows how to:
+- use path-filtering to trigger workflow for specific go module
+- configure the build/deployment workflow with minimal custom configuration
+
+### Example Go Single-App Repo
+Files:
+- [go_singleapprepo.yml](go_singlerepo.yml)
+
+Example configuration for a repo containing a single go app
+- configure the build/deployment workflow with minimal custom configuration
+
 ## See:
- - [Providing Usage examples](https://circleci.com/docs/2.0/orb-author/#providing-usage-examples-of-orbs)
+- [Providing Usage examples](https://circleci.com/docs/2.0/orb-author/#providing-usage-examples-of-orbs)
