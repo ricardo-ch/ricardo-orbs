@@ -2,7 +2,7 @@
 
 # Jobs
 
-Easily author and add [Parameterized Jobs](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs) to the `src/jobs` directory.
+Easily author and add [Parameterized Jobs](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs) to the [src/jobs directory](.).
 
 Each _YAML_ file within this directory will be treated as an orb job, with a name which matches its filename.
 
@@ -12,24 +12,23 @@ Jobs may invoke orb commands and other steps to fully automate tasks with minima
 
 **Name**: quality_gate_job
 
-**Parameters**:
+Generic quality gate job
 
-- **resource_class,** [circleci resource_class](https://circleci.com/docs/2.0/configuration-reference/#resource_class), default is *medium.*
-- **executor**, [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
-- **cache_name** Not required. If not specified cache will not be used/created.
-- **cache_path** Not required. If not specified cache will not be created.
-- **quality_checks** is a list of steps to run. The default is: `install_build_test`
+**Parameters**:
+- **resource_class**: [circleci resource_class](https://circleci.com/docs/2.0/configuration-reference/#resource_class), default is *medium.*
+- **executor**: [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
+- **cache_name**: Not required. If not specified cache will not be used/created.
+- **cache_path**: Not required. If not specified cache will not be created.
+- **quality_checks**: is a list of steps to run. The default is: `install_build_test`
 
 For applications that already have defined *Makefile* and above defined targets usage is quite simple. Otherwise there are two paths to add custom steps to configuration or to add Makefile(recommended).
 
 **Examples**
 
-In this example:
-
-- user defined executor is used
+In this example you configure:
+- user defined executor
 - custom name
 - custom steps
-
 ```yaml
 # ...
 jobs:
@@ -55,8 +54,7 @@ jobs:
       - deploy_dev
 ```
 
-In this example is default setting, only required is added:
-
+In this example you configure default settings, and only required parameters are added:
 ```yaml
 # ...
 jobs:
@@ -67,7 +65,6 @@ jobs:
 ```
 
 Cache example:
-
 ```yaml
 # ...
 jobs:
@@ -79,27 +76,64 @@ jobs:
       cache_path: "$GOPATH/pkg/mod"
 ```
 
-### Build and Push Docker Image Job
+### Docker build & push (Docker Image) Job
 
-**Name**: build_push_image
+**Name**: docker_build_push
 
 **Parameters**:
+- **path**: Path to directory containing dockerfile (also working directory). Default is *"."*
+- **docker_hub_username**: Docker hub credentials. Default is context variable *$DOCKER_HUB_USERNAME*
+- **docker_hub_password**: Docker hub credentials. Default is context variable *$DOCKER_HUB_PASSWORD*
+- **private_hub_url**: JFrog url. Default is *$DOCKER_JFROG_REGISTRY_URL*
+- **private_hub_username**: JFrog credentials. Default is *$DOCKER_JFROG_USERNAME*
+- **private_hub_password**: JFrog credentials. Default is *$DOCKER_JFROG_PASSWORD*
+- **docker_version**: Default is *19.03.13*
+- **docker_layer_caching**: To enable docker layer caching. Default is *true*
 
-- **path** Path to directory containing isopod.yml file. NOTE: this directory will be the working directory for isopod (i.e. dockerfile is also expected there, and should be executable directly from that directory). Default is `.`
-- **isopod_config** Name of the isopod config file. Default is *isopod.yml*
-- **isopod_version** isopod version in executor. Not required. Default is *latest*
-- **docker_hub_username** username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
-- **docker_hub_password** password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
-- **private_hub_username** username for private docker registry, default is value of context variable *$DOCKER_JFROG_USERNAME*
-- **private_hub_password** password for private docker registry, default is value of context variable *$DOCKER_JFROG_PASSWORD*
-- **private_hub_url** url for private docker registry, default is value of context variable *$DOCKER_JFROG_REGISTRY_URL*
-- **cache_name** Not required. If not specified cache will not be used/created
-- **maven_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
-- **npm_credentials** environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
-- **docker_layer_caching**, for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
-- **docker_version**, [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
-- **prebuild_steps** the list of steps that are executed to prepare building image/application. Default is none
-- **postbuild_steps** the list of steps that are executed after building image/application. Default is none
+This job builds and pushes Docker image to private Docker hub. It uses docker for building and pushing.
+
+**Examples**
+
+Minimal
+```yaml
+#...
+jobs:
+  # ...
+  - ric-orb/docker_build_push
+#...
+```
+
+For a specific (maven) module:
+```yaml
+#...
+jobs:
+  # ...
+  - ric-orb/docker_build_push:
+      path: my_maven_module
+#...
+```
+
+### Isopod build & push Docker Image Job
+
+**Name**: build_push_image
+(TODO: should be called isopod_build_push, but that would be a breaking change)
+
+**Parameters**:
+- **path**: Path to directory containing isopod.yml file. NOTE: this directory will be the working directory for isopod (i.e. dockerfile is also expected there, and should be executable directly from that directory). Default is `.`
+- **isopod_config**: Name of the isopod config file. Default is *isopod.yml*
+- **isopod_version**: isopod version in executor. Not required. Default is *latest*
+- **docker_hub_username**: username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
+- **docker_hub_password**: password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
+- **private_hub_username**: username for private docker registry, default is value of context variable *$DOCKER_JFROG_USERNAME*
+- **private_hub_password**: password for private docker registry, default is value of context variable *$DOCKER_JFROG_PASSWORD*
+- **private_hub_url**: url for private docker registry, default is value of context variable *$DOCKER_JFROG_REGISTRY_URL*
+- **cache_name**: Not required. If not specified cache will not be used/created
+- **maven_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
+- **npm_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
+- **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
+- **docker_version**: [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
+- **prebuild_steps**: the list of steps that are executed to prepare building image/application. Default is none
+- **postbuild_steps**: the list of steps that are executed after building image/application. Default is none
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 
@@ -124,7 +158,7 @@ jobs:
         - maven_build_test
 ```
 
-All default:
+Example with all default:
 ```yaml
 # ...
 jobs:
@@ -135,7 +169,7 @@ jobs:
         - quality-gate
 ```
 
-Custom properties:
+Example with custom properties:
 ```yaml
 # ...
 jobs:
@@ -155,7 +189,7 @@ jobs:
         - maven_build_test
 ```
 
-Builds docker image from java build outputs (as saved to workspace by maven_build_test job) for a specific app from a monorepo:
+Example for building docker image from java build outputs (as saved to workspace by maven_build_test job) for a specific app from a monorepo:
 ```yaml
 # ...
 jobs:
@@ -169,27 +203,27 @@ jobs:
         - maven_build_test
 ```
 
-### Deploy Job
+### Isodpod deploy Job
 
 **Name**: deploy_job
+(TODO: should be called isopod_deploy, but that would be a breaking change)
 
 **Parameters**:
-
-- **path** Path to directory containing isopod.yml file. Default is "*.*"
-- **isopod_config** Name of the isopod config file. Default is *isopod.yml*
-- **isopod_version** isopod version in executor. Not required. Default is **latest**
-- **private_hub_username** username for private docker registry. Default is value of context variable ${DOCKER_JFROG_USERNAME}
-- **private_hub_password** password for private docker registry. Default is value of context variable ${DOCKER_JFROG_PASSWORD}
-- **env** environment for which deployment is executed. Values: *prod*, *dev*. Default is *dev*
-- **predeploy_steps** steps that are executed to prepare deployment. Default is none
-- **postdeploy_steps** steps that are executed after deployment. Default is none
-- **slack_notify_success** flag to send slack message if job is successful. Default is false
-- **slack_ok_webhook** the slack webhook used to send slack message on success. Default is value from context variable $SLACK_WEBHOOK
-- **slack_ok_branches** comma separated list of branches for which successful slack message will be sent. Default is *master*
-- **slack_notify_failure** flag to send slack message when job fails. Default is false
-- **slack_fail_webhook** the slack webhook used to send slack message on failure. Default is value from context variable $SLACK_WEBHOOK
-- **slack_fail_branches** comma separated list of branches for which failure slack message will be sent. Default is *master*
-- **work_dir** working directory for default deployment (with the isopod). This should be relative to the job working directory. Default is `.`
+- **path**: Path to directory containing isopod.yml file. Default is "*.*"
+- **isopod_config**: Name of the isopod config file. Default is *isopod.yml*
+- **isopod_version**: isopod version in executor. Not required. Default is **latest**
+- **private_hub_username**: username for private docker registry. Default is value of context variable ${DOCKER_JFROG_USERNAME}
+- **private_hub_password**: password for private docker registry. Default is value of context variable ${DOCKER_JFROG_PASSWORD}
+- **env**: environment for which deployment is executed. Values: *prod*, *dev*. Default is *dev*
+- **predeploy_steps**: steps that are executed to prepare deployment. Default is none
+- **postdeploy_steps**: steps that are executed after deployment. Default is none
+- **slack_notify_success**: flag to send slack message if job is successful. Default is false
+- **slack_ok_webhook**: the slack webhook used to send slack message on success. Default is value from context variable $SLACK_WEBHOOK
+- **slack_ok_branches**: comma separated list of branches for which successful slack message will be sent. Default is *master*
+- **slack_notify_failure**: flag to send slack message when job fails. Default is false
+- **slack_fail_webhook**: the slack webhook used to send slack message on failure. Default is value from context variable $SLACK_WEBHOOK
+- **slack_fail_branches**: comma separated list of branches for which failure slack message will be sent. Default is *master*
+- **work_dir**: working directory for default deployment (with the isopod). This should be relative to the job working directory. Default is `.`
 
 This job executes deployment on GKE.
 It can send Slack message on success/failure.
@@ -211,7 +245,7 @@ jobs:
           - integration-test
 ```
 
-Deployment with slack notifications:
+Deployment with Slack notifications:
 ```yaml
 # ...
 jobs:
@@ -277,20 +311,19 @@ jobs:
 **Name**: push_build_to_bucket_job
 
 **Parameters**:
-
-- **isopod_version** isopod version in executor. Not required. Default is **latest**
-- **private_hub_username** username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
-- **private_hub_password** password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
-- **bucket_name** name of the bucket where assets will be pushed, default is value of context variable GCLOUD_WEB_ASSETS_BUCKET_NAME
-- **bucket_path** bucket's path where assets will be pushed, default is /static-assets
-- **app_name** this is a folder name for application's assets, the convention is to use a github repo name
-- **source** path to source of assets
+- **isopod_version**: isopod version in executor. Not required. Default is **latest**
+- **private_hub_username**: username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
+- **private_hub_password**: password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
+- **bucket_name**: name of the bucket where assets will be pushed, default is value of context variable GCLOUD_WEB_ASSETS_BUCKET_NAME
+- **bucket_path**: bucket's path where assets will be pushed, default is /static-assets
+- **app_name**: this is a folder name for application's assets, the convention is to use a github repo name
+- **source**: path to source of assets
 
 **Examples**
 
 All default
 
-This will push static assets from `./build/assets` into  production bucket `ricardo-web-assets/static-assets/my-ricardo-spa`, the latest isopod version will be used.
+This will push static assets from `./build/assets` into  production bucket `ricardo-web-assets/static-assets/my-ricardo-spa` using gsutil rsync. the latest isopod image will be used as executor.
 
 ```yaml
 # ...
@@ -304,7 +337,7 @@ jobs:
 
 Custom isopod version and custom bucket 
 
-This will push static assets from `./build/assets` into  production bucket `custom-bucket/custom/path/my-ricardo-spa`, the v0.20.4 isopod version will be used.
+This will push static assets from `./build/assets` into  production bucket `custom-bucket/custom/path/my-ricardo-spa`, the isopod v0.20.4 image will be used as executor.
 
 ```yaml
 # ...
@@ -314,19 +347,19 @@ jobs:
       context: prod
       source: ./build/assets
       app_name: my-ricardo-spa
-      isopod_version: 0.29.6
+      isopod_version: 0.20.4
       bucket_name: custom-bucket
       bucket_path: /custom/path
 ```
 
-### Maven build and test job for Java applications
+### Maven build and test job (for Java applications)
 
 **Name**: maven_build_test
 
 **Parameters**:
-- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
-- **cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
-- **executor** Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+- **path**: Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **cache_key_prefix**: Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
+- **executor**: Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
 
 **Examples**
 
@@ -362,15 +395,15 @@ jobs:
       cache_key_prefix: "myrepo"
 ```
 
-### Maven deploy Java artifact to the Artifactory
+### Maven deploy Java artifact to Artifactory
 
 **Name**: maven_deploy_artifact
 
 **Parameters**:
-- **path** Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
-- **cache_key_prefix** Prefix for the maven artifacts cache-key (used in combination with checksum of *pom_file*). No caching if blank. Default: *blank* 
-- **pom_file** The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
-- **executor** Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+- **path**: Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
+- **cache_key_prefix**: Prefix for the maven artifacts cache-key (used in combination with checksum of *pom_file*). No caching if blank. Default: *blank* 
+- **pom_file**: The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
+- **executor**: Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
 
 **Examples**
 
@@ -384,6 +417,7 @@ jobs:
       cache_key_prefix: "myrepo"
       executor: maven_docker
 ```
+
 Deploy Java artifact using a VM builder
 ```yaml
 # ...
@@ -433,25 +467,23 @@ jobs:
   - ric-orb/no_op
 ```
 
-### Build & Quality Gate Job for Go Applications
+### Build & Quality Gate Job (for Go Applications)
 
 **Name**: go_build_test
 
 **Parameters**:
 
-- **executor**, [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
-- **additional_tests** is a list of additional steps to run, e.g. run tests on common. The default is: empty list
-- **work_dir** working directory for executing build and test commands
+- **executor**: [circleci executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor)
+- **additional_tests**: is a list of additional steps to run, e.g. run tests on common. The default is: empty list
+- **work_dir**: working directory for executing build and test commands
 
-Job runs install_build_test step, runs additional steps if there are any, and persist resulting `app` file to workspace (to be used by following jobs) 
+Job runs [`install_build_test` command](../commands/install_build_test.yml), runs additional steps if there are any, and persist resulting `app` file to workspace (to be used by subsequent jobs) 
 
 **Examples**
 
-In this example:
-
-- user defined executor is used
+In this example you configure:
+- user defined executor
 - custom steps
-
 ```yaml
 # ...
 jobs:
@@ -469,7 +501,6 @@ jobs:
 ```
 
 This example uses default settings and only the minimum required configuration is added:
-
 ```yaml
 # ...
 jobs:
@@ -480,7 +511,6 @@ jobs:
         tag: '1.17'
       context: dev
 ```
-
 
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)

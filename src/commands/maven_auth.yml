@@ -1,4 +1,5 @@
 description: >
+  (TODO: should be called maven_setup, but that would be a breaking change)
   Command for creating ${HOME}/.m2/settings.xml file. Expects content to present in environment variable.
   Content needs to be 64bit encoded. Input parameter `maven_credentials` is name environment/context
   variable.

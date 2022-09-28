@@ -1,6 +1,7 @@
 description: >
-  Setup port forwarding in GKE cluster to the target in given namespace. Requires to authenticated to
-  the GKE. Executor needs dockersize tool in the PATH.
+  Setup port forwarding in GKE cluster to the target in given namespace.
+  Needs to authenticate to GKE, so the executor must have dockerize installed (in the PATH).
+
 parameters:
   target:
     type: string
