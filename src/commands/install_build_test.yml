@@ -1,5 +1,7 @@
 description: >
+  (TODO: should be called make_install_build_test, but that would be a breaking change)
   Executes make command to install, build, test and deploy application. Executor should have installed make tool.
+
 parameters:
   work_dir:
     type: string
