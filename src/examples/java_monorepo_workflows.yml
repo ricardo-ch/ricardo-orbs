@@ -140,6 +140,11 @@ usage:
             path: 'app1'
             <<: *cfg-isopod-version
             env: 'prod'
+            slack_notify_success: true
+            slack_notify_failure: true
+            # FIXME: replace value with your actual main/master branch name; 'master' is default and is not needed for the slack webhook configuration to work
+            #slack_ok_branches: 'main'
+            #slack_fail_branches: 'main'
             filters:
               branches:
                 only:
@@ -213,6 +218,11 @@ usage:
             path: 'app2'
             <<: *cfg-isopod-version
             env: 'prod'
+            slack_notify_success: true
+            slack_notify_failure: true
+            # FIXME: replace value with your actual main/master branch name; 'master' is default and is not needed for the slack webhook configuration to work
+            #slack_ok_branches: 'main'
+            #slack_fail_branches: 'main'
             filters:
               branches:
                 only:
