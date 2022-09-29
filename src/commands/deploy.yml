@@ -1,4 +1,5 @@
 description: >
+  (TODO: should be called isopod_deploy, but that would be a breaking change)
   Deploy to a GKE cluster to given environment. Use Isopod.
 
 parameters:

@@ -1,4 +1,5 @@
 description: >
+  (TODO: should be called isopod_build_push, but that would be a breaking change)
   Build the docker image with isopod.
 
 parameters:

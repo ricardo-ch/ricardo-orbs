@@ -1,4 +1,5 @@
 description: >
+  (TODO: should be called isopod_deploy, but that would be a breaking change)
   Job for deploying to GKE cluster for environment(dev|prod).
 
 executor:

@@ -1,6 +1,7 @@
 description: >
+  (TODO: should be called isopod_build_push, but that would be a breaking change)
   This job builds and pushes Docker image to private Docker hub. It uses isopod for building and pushing.
-  As dependencies can be pulled from Docker HUB authentication is needed for it as well.
+  Since dependencies can be pulled from Docker HUB, authentication is needed for it as well.
 
 executor:
   name: isopod
