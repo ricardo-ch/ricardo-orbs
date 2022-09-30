@@ -1,0 +1,27 @@
+description: >
+  Checks that some expression evaluated from the Maven project matches with a certain pattern.
+  This job will succeed if the property matches the pattern, and fail if there is no match.
+  Thus it can be used to allow/block flows depending on the value of the expression.
+
+parameters:
+  expression:
+    description: 'An expression to evaluate. Note that this must not include the surrounding ${...}'
+    type: string
+  pattern:
+    description: 'The pattern to match against the expression'
+    type: string
+  pom_file:
+    description: 'The pom file to use'
+    type: string
+    default: 'pom.xml'
+
+executor:
+  name: 'maven_docker'
+
+steps:
+  - checkout
+  - run:
+      name: Verify that expression matches pattern
+      command: |
+        RESULT=$(./mvnw help:evaluate -Dexpression=<< parameters.expression >> -q -DforceStdout -f << parameters.pom_file >>)
+        echo $RESULT | grep "<< parameters.pattern >>"
