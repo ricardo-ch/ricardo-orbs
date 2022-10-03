@@ -33,6 +33,7 @@ steps:
 Build and push the docker image with docker.
 
 **Parameters**:
+- **image_name**: The Docker image name (without the path, e.g. search-solr)
 - **work_dir**: Working directory for the command. Deafult is *"."*
 
 Example:
@@ -41,6 +42,7 @@ Example:
 #...
 steps:
   - ric-orb/docker_build_push:
+      image_name: my_image
       work_dir: my_maven_module
 #...
 ```
