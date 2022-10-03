@@ -1,4 +1,4 @@
-description: Attach build files from workspace
+description: Attach build files from environment specific directory in workspace
 parameters:
   build_env:
     type: enum
