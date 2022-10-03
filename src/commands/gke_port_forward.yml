@@ -7,15 +7,35 @@ parameters:
     type: string
   port:
     type: integer
+  local_port:
+    type: integer
+    default: 0
   namespace:
     type: string
   context:
     type: string
 steps:
-  - run:
-      background: true
-      name: Setup port forwarding to target
-      command: kubectl port-forward --context <<parameters.context>> -n <<parameters.namespace>> <<parameters.target>> <<parameters.port>>
-  - run:
-      name: Wait for port forwarding setup completion
-      command: dockerize -wait tcp://localhost:<<parameters.port>> -timeout 60s
+  # if local_port should be the same than port
+  - when:
+      condition:
+        equal: [ 0, <<parameters.local_port>> ]
+      steps:
+        - run:
+            background: true
+            name: Setup port forwarding to target
+            command: kubectl port-forward --context <<parameters.context>> -n <<parameters.namespace>> <<parameters.target>> <<parameters.port>>
+        - run:
+            name: Wait for port forwarding setup completion
+            command: dockerize -wait tcp://localhost:<<parameters.port>> -timeout 60s
+  # if local_port has a value
+  - unless:
+      condition:
+        equal: [ 0, <<parameters.local_port>> ]
+      steps:
+        - run:
+            background: true
+            name: Setup port forwarding to target
+            command: kubectl port-forward --context <<parameters.context>> -n <<parameters.namespace>> <<parameters.target>> <<parameters.local_port>>:<<parameters.port>>
+        - run:
+            name: Wait for port forwarding setup completion
+            command: dockerize -wait tcp://localhost:<<parameters.local_port>> -timeout 60s

@@ -101,6 +101,7 @@ steps:
 **Parameters**:
 - **target**: service/pod to which traffic is forwarded
 - **port**: service/pod port to portforward
+- **local_port**: (optional) service/pod port to portforward on the LOCAL (CircleCI) side. If missing, it is the same than port
 - **namespace**: k8s namespace where service/pod is located
 - **context**: k8s context.
 
