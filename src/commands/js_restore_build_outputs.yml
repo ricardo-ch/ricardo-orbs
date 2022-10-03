@@ -4,11 +4,11 @@ parameters:
     type: enum
     enum: [ 'beta', 'prod']
     default: beta
-steps: 
+steps:
   - attach_workspace:
       name: WORKSPACE - Attaching from /<< parameters.build_env >>
       at: .
-  - run: 
+  - run:
       name: WORKSPACE - Copy files to root
       command: |
         cp -a << parameters.build_env >>/. .

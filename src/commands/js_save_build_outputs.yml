@@ -5,7 +5,7 @@ parameters:
     enum: [ 'beta', 'prod' ]
     default: beta
 steps:
-  - run: 
+  - run:
       name: WORKSPACE - Create /<< parameters.build_env >> folder
       command: |
         mkdir -p << parameters.build_env >>
