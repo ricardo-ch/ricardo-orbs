@@ -1,4 +1,4 @@
-description: Persist build files to workspace
+description: Persist build files to environment specific directory in workspace
 parameters:
   build_env:
     type: enum
