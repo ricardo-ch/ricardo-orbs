@@ -2,6 +2,8 @@ description: >
   Build the docker image with docker.
 
 parameters:
+  image_name:
+    type: string
   work_dir:
     type: string
     default: .
@@ -9,7 +11,7 @@ parameters:
 steps:
   - run:
       name: 'docker build'
-      command: docker build -t ric-docker.jfrog.io/ricardo-ch/search-solr:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
+      command: docker build -t ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
   - run:
       name: 'docker push'
-      command: docker push ric-docker.jfrog.io/ricardo-ch/search-solr:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+      command: docker push ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
