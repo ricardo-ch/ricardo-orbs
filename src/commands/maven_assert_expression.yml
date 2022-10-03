@@ -1,6 +1,6 @@
 description: >
   Checks that some expression evaluated from the Maven project matches with a certain pattern.
-  This job will succeed if the property matches the pattern, and fail if there is no match.
+  This job will succeed if the expression contains the pattern, and fail otherwise.
   Thus it can be used to allow/block flows depending on the value of the expression.
 
 parameters:
@@ -15,13 +15,9 @@ parameters:
     type: string
     default: 'pom.xml'
 
-executor:
-  name: 'maven_docker'
-
 steps:
-  - checkout
   - run:
-      name: Verify that expression matches pattern
+      name: Verify that expression contains pattern
       command: |
         RESULT=$(./mvnw help:evaluate -Dexpression=<< parameters.expression >> -q -DforceStdout -f << parameters.pom_file >>)
         echo $RESULT | grep "<< parameters.pattern >>"
