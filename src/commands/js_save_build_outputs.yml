@@ -1,0 +1,17 @@
+description: Persist build files to workspace
+parameters:
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod' ]
+    default: beta
+steps:
+  - run: 
+      name: WORKSPACE - Create /<< parameters.build_env >> folder
+      command: |
+        mkdir -p << parameters.build_env >>
+        cp -r build .next << parameters.build_env >>
+  - persist_to_workspace:
+      name: WORKSPACE - persisting to /<< parameters.build_env >>
+      root: .
+      paths:
+        - << parameters.build_env >>

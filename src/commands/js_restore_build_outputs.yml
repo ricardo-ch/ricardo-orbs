@@ -1,0 +1,15 @@
+description: Attach build files from workspace
+parameters:
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod']
+    default: beta
+steps: 
+  - attach_workspace:
+      name: WORKSPACE - Attaching from /<< parameters.build_env >>
+      at: .
+  - run: 
+      name: WORKSPACE - Copy files to root
+      command: |
+        cp -a << parameters.build_env >>/. .
+        rm -rf << parameters.build_env >>
