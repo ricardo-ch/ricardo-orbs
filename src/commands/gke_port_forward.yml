@@ -15,7 +15,7 @@ parameters:
   context:
     type: string
 steps:
-  # if local_port should be the same than port
+  # if 0, local_port should be the same as port
   - when:
       condition:
         equal: [ 0, <<parameters.local_port>> ]
@@ -27,7 +27,7 @@ steps:
         - run:
             name: Wait for port forwarding setup completion
             command: dockerize -wait tcp://localhost:<<parameters.port>> -timeout 60s
-  # if local_port has a value
+  # if local_port has a value, use it
   - unless:
       condition:
         equal: [ 0, <<parameters.local_port>> ]
