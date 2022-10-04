@@ -81,6 +81,7 @@ jobs:
 **Name**: docker_build_push
 
 **Parameters**:
+- **image_name**: The Docker image name (without the path, e.g. search-solr)
 - **path**: Path to directory containing dockerfile (also working directory). Default is *"."*
 - **docker_hub_username**: Docker hub credentials. Default is context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password**: Docker hub credentials. Default is context variable *$DOCKER_HUB_PASSWORD*
@@ -99,7 +100,8 @@ Minimal
 #...
 jobs:
   # ...
-  - ric-orb/docker_build_push
+  - ric-orb/docker_build_push:
+      image_name: my_image
 #...
 ```
 
@@ -109,6 +111,7 @@ For a specific (maven) module:
 jobs:
   # ...
   - ric-orb/docker_build_push:
+      image_name: my_image
       path: my_maven_module
 #...
 ```
