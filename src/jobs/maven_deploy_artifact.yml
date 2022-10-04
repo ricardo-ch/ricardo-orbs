@@ -16,13 +16,11 @@ parameters:
     type: string
     default: 'pom.xml'
   executor:
-    description: 'Executor for the build (java_builder_docker is more lightweight, but some tests leveraging testcontainers etc require the java_builder_vm)'
-    type: enum
-    enum: [ 'maven_docker', 'maven_vm' ]
+    description: 'Executor for the build (Either use existing ones: maven_docker, maven_vm or define your own)'
+    type: executor
     default: 'maven_docker'
 
-executor:
-  name: << parameters.executor >>
+executor: << parameters.executor >>
 
 steps:
   - checkout
