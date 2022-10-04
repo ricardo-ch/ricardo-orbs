@@ -26,10 +26,7 @@ View the included _[hello.yml](./hello.yml)_ example.
 
 **Name**: maven_docker
 
-**Parameters**:
-
-- **tag** cimg/openjdk image version, default *11.0*
-
+**Parameters**: none
 
 A docker executor with java 11 installed (see also [Convenience Images: cimg/openjdk:11.0](https://circleci.com/developer/images/image/cimg/openjdk)). It is used for running java jobs in this orb.
 
@@ -39,7 +36,7 @@ A docker executor with java 11 installed (see also [Convenience Images: cimg/ope
 
 **Parameters**: none
 
-A vm executor (ubuntu-2022:current) with java 11 installed. It is used for running java jobs in this orb.
+A vm executor with java 11 installed. It is used for running java jobs in this orb.
 
 This executor is required in case a build depends on a running docker instance to execute testcontainers.
 

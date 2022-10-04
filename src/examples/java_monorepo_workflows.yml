@@ -16,7 +16,7 @@ usage:
 
   orbs:
     compliance: ricardo/compliance-orb@2
-    ric-orb: ricardo/ric-orb@5
+    ric-orb: ricardo/ric-orb@4
 
   parameters:
     modified-common:
@@ -95,8 +95,8 @@ usage:
             # FIXME: replace value with your actual app path
             path: 'app1'
             <<: *cfg-cache-key-prefix
-            executor: ric-orb/maven_docker
-#            executor: ric-orb/maven_vm
+            executor: maven_docker
+#            executor: maven_vm
 
         - approve_deploy_dev:
             type: approval
@@ -173,8 +173,8 @@ usage:
             # FIXME: replace value with your actual app path
             path: 'app2'
             <<: *cfg-cache-key-prefix
-#            executor: ric-orb/maven_docker
-            executor: ric-orb/maven_vm
+#            executor: maven_docker
+            executor: maven_vm
 
         - approve_deploy_dev:
             type: approval
