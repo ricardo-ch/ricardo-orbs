@@ -81,6 +81,7 @@ jobs:
 **Name**: docker_build_push
 
 **Parameters**:
+- **image_name**: The Docker image name (without the path, e.g. search-solr)
 - **path**: Path to directory containing dockerfile (also working directory). Default is *"."*
 - **docker_hub_username**: Docker hub credentials. Default is context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password**: Docker hub credentials. Default is context variable *$DOCKER_HUB_PASSWORD*
@@ -99,7 +100,8 @@ Minimal
 #...
 jobs:
   # ...
-  - ric-orb/docker_build_push
+  - ric-orb/docker_build_push:
+      image_name: my_image
 #...
 ```
 
@@ -109,6 +111,7 @@ For a specific (maven) module:
 jobs:
   # ...
   - ric-orb/docker_build_push:
+      image_name: my_image
       path: my_maven_module
 #...
 ```
@@ -359,7 +362,7 @@ jobs:
 **Parameters**:
 - **path**: Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **cache_key_prefix**: Prefix for the maven artifacts cache-key (used in combination with checksum of *pom.xml*). No caching if blank. Default: *blank* 
-- **executor**: Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+- **executor**: Executor for the build. Values: *ric-orb/maven_docker*  (default; more lightweight), *ric-orb/maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) or your custom executor
 
 **Examples**
 
@@ -371,7 +374,7 @@ jobs:
   - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
-      executor: maven_docker
+      executor: ric-orb/maven_docker
 ```
 Builds java sources using a VM builder
 ```yaml
@@ -381,7 +384,22 @@ jobs:
   - ric-orb/maven_build_test:
       context: dev
       cache_key_prefix: "myrepo"
-      executor: maven_vm
+      executor: ric-orb/maven_vm
+```
+Builds java sources using a custom executor
+```yaml
+# ...
+executors:
+  jdk17:
+    docker:
+      - image: cimg/openjdk:17.0.4
+# ...
+jobs:
+  # ...
+  - ric-orb/maven_build_test:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: jdk17
 ```
 
 Builds java sources for a specific app from a monorepo
@@ -403,7 +421,7 @@ jobs:
 - **path**: Path of maven module for the app, or "." for single-app-repo. Default: "*.*"
 - **cache_key_prefix**: Prefix for the maven artifacts cache-key (used in combination with checksum of *pom_file*). No caching if blank. Default: *blank* 
 - **pom_file**: The pom file to be used for the maven build, the checksum used as part of the cache key is calculated from it. Default: "pom.xml"
-- **executor**: Executor for the build. Values: *maven_docker*  (default; more lightweight), *maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) 
+- **executor**: Executor for the build. Values: *ric-orb/maven_docker*  (default; more lightweight), *ric-orb/maven_vm* (required by builds leveraging testcontainers and therefore depending on docker) or your custom executor
 
 **Examples**
 
@@ -415,7 +433,7 @@ jobs:
   - ric-orb/maven_deploy_artifact:
       context: dev
       cache_key_prefix: "myrepo"
-      executor: maven_docker
+      executor: ric-orb/maven_docker
 ```
 
 Deploy Java artifact using a VM builder
@@ -426,7 +444,23 @@ jobs:
   - ric-orb/maven_deploy_artifact:
       context: dev
       cache_key_prefix: "myrepo"
-      executor: maven_vm
+      executor: ric-orb/maven_vm
+```
+
+Deploy Java artifact using a custom executor
+```yaml
+# ...
+executors:
+  jdk17:
+    docker:
+      - image: cimg/openjdk:17.0.4
+# ...
+jobs:
+  # ...
+  - ric-orb/maven_deploy_artifact:
+      context: dev
+      cache_key_prefix: "myrepo"
+      executor: jdk17
 ```
 
 Deploy Java artifact for a specific module from a monorepo

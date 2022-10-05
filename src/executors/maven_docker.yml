@@ -1,8 +1,15 @@
 description: >
   Docker executor with JDK 11 to build java applications.
 
+parameters:
+  tag:
+    default: '11.0'
+    description: >
+      Pick a specific cimg/openjdk image version
+    type: string
+
 docker:
-  - image: 'cimg/openjdk:11.0'
+  - image: 'cimg/openjdk:<< parameters.tag >>'
     auth:
       username: $DOCKER_HUB_USERNAME
       password: $DOCKER_HUB_PASSWORD
