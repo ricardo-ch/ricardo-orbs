@@ -1,6 +1,6 @@
 description: >
   Checks that the Maven project (of the provided pom file) has a SNAPSHOT version, otherwise it fails.
-  Normally used to force that branch builds of library modules have a -SNAPSHOT version when manually deployed.
+  Typically used to force that branch builds of library modules have a -SNAPSHOT version when manually deployed.
 
 parameters:
   pom_file:
