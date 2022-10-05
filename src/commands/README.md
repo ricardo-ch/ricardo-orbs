@@ -33,6 +33,7 @@ steps:
 Build and push the docker image with docker.
 
 **Parameters**:
+- **image_name**: The Docker image name (without the path, e.g. search-solr)
 - **work_dir**: Working directory for the command. Deafult is *"."*
 
 Example:
@@ -41,6 +42,7 @@ Example:
 #...
 steps:
   - ric-orb/docker_build_push:
+      image_name: my_image
       work_dir: my_maven_module
 #...
 ```
@@ -101,6 +103,7 @@ steps:
 **Parameters**:
 - **target**: service/pod to which traffic is forwarded
 - **port**: service/pod port to portforward
+- **local_port**: (optional) service/pod port to portforward on the LOCAL (CircleCI) side. If missing or 0, it is the same as port
 - **namespace**: k8s namespace where service/pod is located
 - **context**: k8s context.
 

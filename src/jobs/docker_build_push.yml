@@ -9,6 +9,9 @@ executor:
   password: <<parameters.private_hub_password>>
 
 parameters:
+  image_name:
+    description: 'The Docker image name (without the path, e.g. search-solr)'
+    type: string
   path:
     description: 'Path to directory containing dockerfile (also working directory)'
     type: string
@@ -52,4 +55,5 @@ steps:
   - attach_workspace:
       at: .
   - docker_build_push:
+      image_name: << parameters.image_name >>
       work_dir: << parameters.path >>

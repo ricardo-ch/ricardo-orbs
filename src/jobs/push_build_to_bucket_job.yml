@@ -26,9 +26,13 @@ parameters:
     type: string
   source:
     type: string
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod']
+    default: beta
 steps:
-  - attach_workspace:
-      at: .
+  - js_restore_build_outputs:
+      build_env: << parameters.build_env >>
   - run:
       name: Authenticate to GKE
       command: |
