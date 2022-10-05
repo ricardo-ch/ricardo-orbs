@@ -8,7 +8,7 @@ parameters:
     description: 'An expression to evaluate. Note that this must not include the surrounding ${...}'
     type: string
   pattern:
-    description: 'The pattern to match against the expression'
+    description: 'The regex pattern to match against the expression'
     type: string
   pom_file:
     description: 'The pom file to use'
