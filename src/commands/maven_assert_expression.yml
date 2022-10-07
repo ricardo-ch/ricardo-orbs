@@ -19,5 +19,10 @@ steps:
   - run:
       name: Verify that expression contains pattern
       command: |
-        RESULT=$(./mvnw help:evaluate -Dexpression=<< parameters.expression >> -q -DforceStdout -f << parameters.pom_file >>)
-        echo $RESULT | grep "<< parameters.pattern >>"
+        EXPR=<< parameters.expression >>
+        PATTERN=<< parameters.pattern >>
+        RESULT=$(./mvnw help:evaluate -Dexpression=$EXPR -q -DforceStdout -f << parameters.pom_file >>)
+        if [[ ! "$RESULT" =~ $PATTERN ]]; then
+            echo "The expression $EXPR=[$RESULT] does not match with the pattern $PATTERN"
+            exit 1
+        fi

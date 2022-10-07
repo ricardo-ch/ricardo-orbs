@@ -15,5 +15,5 @@ steps:
   - checkout
   - maven_assert_expression:
       expression: 'project.version'
-      pattern: 'SNAPSHOT'
+      pattern: '^.*-SNAPSHOT$'
       pom_file: << parameters.pom_file >>
