@@ -1,0 +1,28 @@
+description: >
+  Checks that some expression evaluated from the Maven project matches with a certain pattern.
+  This job will succeed if the expression contains the pattern, and fail otherwise.
+  Thus it can be used to allow/block flows depending on the value of the expression.
+
+parameters:
+  expression:
+    description: 'An expression to evaluate, following the Maven expression syntax but without any surrounding ${...}'
+    type: string
+  pattern:
+    description: 'The regex pattern to match against the expression'
+    type: string
+  pom_file:
+    description: 'The pom file to use'
+    type: string
+    default: 'pom.xml'
+
+steps:
+  - run:
+      name: Verify that expression contains pattern
+      command: |
+        EXPR=<< parameters.expression >>
+        PATTERN=<< parameters.pattern >>
+        RESULT=$(./mvnw help:evaluate -Dexpression=$EXPR -q -DforceStdout -f << parameters.pom_file >>)
+        if [[ ! "$RESULT" =~ $PATTERN ]]; then
+            echo "The expression $EXPR=[$RESULT] does not match with the pattern $PATTERN"
+            exit 1
+        fi
