@@ -485,6 +485,26 @@ jobs:
       cache_key_prefix: "myrepo"
 ```
 
+### Assert that the project version is a SNAPSHOT (for Java applications)
+
+**Name**: maven_assert_snapshot_version
+
+Checks that the Maven project (of the provided pom file) has a SNAPSHOT version, otherwise it fails.
+Typically used to force that branch builds of library modules have a -SNAPSHOT version when manually deployed.
+
+**Parameters**:
+- **pom_file**: The pom file to use. Default: "pom.xml"
+
+Example:
+
+```yaml
+#...
+jobs:
+  - ric-orb/maven_assert_snapshot_version:
+      context: dev
+#...
+```
+
 ### No-Op dummy job
 
 **Name**: no_op

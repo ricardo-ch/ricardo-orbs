@@ -353,6 +353,28 @@ steps:
 #...
 ```
 
+### Command to assert that a Maven expression matches a pattern (for Java applications)
+
+**Name**: maven_assert_expression
+
+**Parameters**:
+- **expression**: An expression to evaluate, following the Maven expression syntax but without any surrounding ${...}.
+- **pattern**: The regex pattern to match against the expression.
+- **pom_file**: The pom file to use. Default: "pom.xml"
+
+Example:
+
+Assert that the project version finishes with '-SNAPSHOT'
+
+```yaml
+#...
+steps:
+  - ric-orb/maven_assert_expression:
+      expression: 'project.version'
+      pattern: '^.*-SNAPSHOT$'
+#...
+```
+
 ## See:
 
 - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)

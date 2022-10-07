@@ -5,7 +5,7 @@ description: >
 
 parameters:
   expression:
-    description: 'An expression to evaluate. Note that this must not include the surrounding ${...}'
+    description: 'An expression to evaluate, following the Maven expression syntax but without any surrounding ${...}'
     type: string
   pattern:
     description: 'The regex pattern to match against the expression'
