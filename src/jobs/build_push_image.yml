@@ -52,7 +52,7 @@ parameters:
     default: true
   docker_version:
     type: string
-    default: '19.03.13'
+    default: ''
   prebuild_steps:
     description: 'Steps that will run before build'
     type: steps
@@ -70,9 +70,9 @@ steps:
   # only really needed for npm/node, but less painful to just do it than to configure it in each node build config
   - npm_auth:
       npm_credentials: << parameters.npm_credentials >>
-  - setup_remote_docker:
+  - remote_docker:
+      docker_version: << parameters.docker_version >>
       docker_layer_caching: << parameters.docker_layer_caching >>
-      version: << parameters.docker_version >>
   - login_docker_registry:
       username: <<parameters.docker_hub_username>>
       password: <<parameters.docker_hub_password>>

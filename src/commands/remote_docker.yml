@@ -1,0 +1,33 @@
+description: >
+  This command wraps the built-in setup_remote_docker to make it work with optional version parameter.
+
+parameters:
+  docker_version:
+    type: string
+    default: ''
+  docker_layer_caching:
+    type: boolean
+    default: true
+
+steps:
+  # pass the version if it was specified...
+  - when:
+      condition:
+        matches:
+          # check whether non-empty string
+          pattern: '.+'
+          value: << parameters.docker_version >>
+      steps:
+        - setup_remote_docker:
+            version: << parameters.docker_version >>
+            docker_layer_caching: << parameters.docker_layer_caching >>
+  # ... or use default version otherwise
+  - unless:
+      condition:
+        matches:
+          # check whether non-empty string
+          pattern: '.+'
+          value: << parameters.docker_version >>
+      steps:
+        - setup_remote_docker:
+            docker_layer_caching: << parameters.docker_layer_caching >>

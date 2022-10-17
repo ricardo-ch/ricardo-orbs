@@ -88,8 +88,8 @@ jobs:
 - **private_hub_url**: JFrog url. Default is *$DOCKER_JFROG_REGISTRY_URL*
 - **private_hub_username**: JFrog credentials. Default is *$DOCKER_JFROG_USERNAME*
 - **private_hub_password**: JFrog credentials. Default is *$DOCKER_JFROG_PASSWORD*
-- **docker_version**: Default is *19.03.13*
-- **docker_layer_caching**: To enable docker layer caching. Default is *true*
+- **docker_version**: Default is *''* (which defaults to CircleCI's default)
+- **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
 
 This job builds and pushes Docker image to private Docker hub. It uses docker for building and pushing.
 
@@ -133,8 +133,8 @@ jobs:
 - **cache_name**: Not required. If not specified cache will not be used/created
 - **maven_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
 - **npm_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
+- **docker_version**: [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *''* (which defaults to CircleCI's default)
 - **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
-- **docker_version**: [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *19.03.13*
 - **prebuild_steps**: the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps**: the list of steps that are executed after building image/application. Default is none
 
@@ -178,8 +178,9 @@ Example with custom properties:
 jobs:
   # ...
   - ric-orb/build_push_image:
+      context: dev
       isopod_version: "0.29.6"
-      docker_version: "19.03.13"
+      docker_version: "20.10.17"
       isopod_config: isopod.yaml
       private_hub_username: ${PDOCKER_USERNAME}
       private_hub_password: ${PDOCKER_PASSWORD}
@@ -187,7 +188,6 @@ jobs:
       docker_hub_password: ${MY_DOCKER_HUB_PASSWORD}
       private_hub_url: ${PDOCKER_REGISTRY_URL}
       cache_name: dependency-cache-{{ checksum "go.sum" }}
-      context: dev
       requires:
         - maven_build_test
 ```
@@ -200,8 +200,8 @@ jobs:
   - ric-orb/build_push_image:
       context: dev
       path: "myapp"
-      docker_version: "19.03.13"
       isopod_version: "0.29.6"
+      docker_version: "20.10.17"
       requires:
         - maven_build_test
 ```

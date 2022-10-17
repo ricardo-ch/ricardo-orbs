@@ -26,6 +26,26 @@ steps:
 #...
 ```
 
+### Setup Remote Docker
+
+**Name**: remote_docker
+
+This command wraps the built-in setup_remote_docker to make it work with optional version parameter.
+
+**Parameters**:
+- **docker_version**: [see docs](https://circleci.com/docs/2.0/building-docker-images/#docker-version). Default is *''* (which defaults to CircleCI's default)
+- **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
+
+Example:
+```yaml
+#...
+steps:
+  - ric-orb/remote_docker:
+      docker_version: '20.10.17'
+      docker_layer_caching: true
+#...
+```
+
 ### Docker build & push
 
 **Name**: docker_build_push
