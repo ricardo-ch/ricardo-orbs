@@ -33,7 +33,7 @@ parameters:
     default: $DOCKER_JFROG_REGISTRY_URL
   docker_version:
     type: string
-    default: '19.03.13'
+    default: ''
   docker_layer_caching:
     type: boolean
     default: true
@@ -42,8 +42,8 @@ steps:
   - checkout
   - attach_workspace:
       at: .
-  - setup_remote_docker:
-      version: << parameters.docker_version >>
+  - remote_docker:
+      docker_version: << parameters.docker_version >>
       docker_layer_caching: << parameters.docker_layer_caching >>
   - login_docker_registry:
       username: <<parameters.docker_hub_username>>
