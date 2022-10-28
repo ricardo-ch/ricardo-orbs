@@ -566,6 +566,58 @@ jobs:
       context: dev
 ```
 
+### CodeQL
+
+**Name**: codeql
+
+**Parameters**:
+
+- **executor**: [CircleCI Executor](https://circleci.com/docs/2.0/configuration-reference/#docker--machine--macos--windows-executor) to execute CodeQL. As the code to be analyzed also needs to be built, ensure using an executor that is capable of building the code
+- **language**: Specify the identifier for the language to create a database for, one of: `cpp`, `csharp`, `go`, `java`, `javascript`, `python`, and `ruby` (use `javascript` to analyze `TypeScript` code). See [Supported languages and frameworks](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/)
+- **pre-init-steps**: Steps to execute prior to creating the database. This is usually used to restore a cache of dependencies used when building
+- **build-command**: Use to specify the build command or script that invokes the build process for the codebase. If absent, tries to automatically build. Not needed for Python and JavaScript/TypeScript analysis
+
+**Examples**
+
+This example uses auto compile functionality to build the code
+```yaml
+jobs:
+  - ric-orb/codeql:
+      context: dev
+      executor: jdk17
+      language: java
+      pre-init-steps: 
+        - ric-orb/maven_restore_artifacts:
+            prefix: foo
+            path: path-to-directory
+```
+
+This example shows an example for Go
+```yaml
+jobs:
+  - ric-orb/codeql:
+      context: dev
+      executor:
+        name: go/default
+        tag: '1.17'
+      language: go
+      build-command: 'make install && make build'
+      pre-init-steps: 
+        - restore_cache:
+            keys:
+              - 'go-mod-{{ arch }}-{{ checksum foo/go.sum"  }}'
+              - 'go-mod-{{ arch }}-'
+```
+
+This example shows an example for javascript, where also a build of the code is not necessary
+```yaml
+jobs:
+  - ric-orb/codeql:
+      context: dev
+      executor: js
+      language: javascript
+```
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)
