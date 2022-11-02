@@ -1,0 +1,60 @@
+description: >
+  Code scanning is a feature that you use to analyze the code in a GitHub repository to find security vulnerabilities and coding errors. Any problems identified by the analysis are shown in GitHub. For information, see https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning-with-codeql
+
+parameters:
+  executor:
+    description: 'Executor to execute CodeQL. As the code to be analyzed also needs to be built, ensure using an executor that is capable of building the code'
+    type: executor
+  language:
+    description: 'Specify the identifier for the language to create a database for, one of: cpp`, `csharp`, `go`, `java`, `javascript`, `python`, and `ruby (use javascript to analyze TypeScript code). See https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/'
+    type: string
+  pre-init-steps:
+    description: 'Steps to execute prior to creating the database. This is usually used to restore a cache of dependencies used when building'
+    type: steps
+    default: [ ]
+  build-command:
+    description: 'Use to specify the build command or script that invokes the build process for the codebase. If absent, tries to automatically build. Not needed for Python and JavaScript/TypeScript analysis'
+    type: string
+    default: ''
+
+executor: << parameters.executor >>
+
+steps:
+  - checkout
+  - run:
+      name: Setting up CodeQL
+      working_directory: ~/
+      command: |
+        wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz && \
+        tar -xzf ./codeql-bundle-linux64.tar.gz && \
+        ln -s ~/codeql/codeql ~/bin/codeql
+  - steps: << parameters.pre-init-steps >>
+  - run:
+      name: Creating CodeQL databases to analyze
+      working_directory: ~/
+      command: |
+        cmd=(codeql database create << parameters.language >>-codeql-db)
+
+        cmd+=(--language << parameters.language >>)
+        cmd+=(--source-root ~/project)
+        cmd+=(--no-run-unnecessary-builds)
+
+        if [[ ! -z "<< parameters.build-command >>" ]]; then
+          cmd+=(--command '<< parameters.build-command >>')
+        fi
+
+        "${cmd[@]}"
+  - run:
+      name: Analyzing CodeQL database
+      working_directory: ~/
+      command: |
+        codeql database analyze << parameters.language >>-codeql-db << parameters.language >>-security-and-quality.qls \
+          --format sarif-latest \
+          --output=<< parameters.language >>-codeql-report.sarif
+  - run:
+      name: Uploading results to GitHub
+      working_directory: ~/
+      command: |
+        echo $GITHUB_CODEQL_TOKEN | codeql github upload-results --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME \
+          --ref=refs/heads/$CIRCLE_BRANCH --commit=$CIRCLE_SHA1 --sarif=<< parameters.language >>-codeql-report.sarif \
+          --github-auth-stdin
