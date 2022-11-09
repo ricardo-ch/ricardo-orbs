@@ -124,7 +124,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-dev'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-dev-app1'
             context: dev
             # FIXME: replace value with your actual app path
             path: 'app1'
@@ -134,7 +135,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-prod'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-prod-app1'
             context: prod
             # FIXME: replace value with your actual app path
             path: 'app1'
@@ -151,7 +153,8 @@ usage:
                   # FIXME: replace value with your actual main/master branch name
                   - 'master'
             requires:
-              - deploy-dev
+              # FIXME: replace suffix with your actual app name
+              - deploy-dev-app1
 
     ###########################################################################
     # maven module: 'app2'
@@ -202,7 +205,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-dev'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-dev-app2'
             context: dev
             # FIXME: replace value with your actual app path
             path: 'app2'
@@ -212,7 +216,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-prod'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-prod-app2'
             context: prod
             # FIXME: replace value with your actual app path
             path: 'app2'
@@ -229,4 +234,5 @@ usage:
                   # FIXME: replace value with your actual main/master branch name
                   - 'master'
             requires:
-              - deploy-dev
+              # FIXME: replace suffix with your actual app name
+              - deploy-dev-app2
