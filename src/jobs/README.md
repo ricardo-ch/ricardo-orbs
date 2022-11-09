@@ -179,7 +179,7 @@ jobs:
   # ...
   - ric-orb/build_push_image:
       context: dev
-      isopod_version: "0.29.6"
+      isopod_version: "0.30.0"
       docker_version: "20.10.17"
       isopod_config: isopod.yaml
       private_hub_username: ${PDOCKER_USERNAME}
@@ -200,7 +200,7 @@ jobs:
   - ric-orb/build_push_image:
       context: dev
       path: "myapp"
-      isopod_version: "0.29.6"
+      isopod_version: "0.30.0"
       docker_version: "20.10.17"
       requires:
         - maven_build_test
@@ -239,7 +239,7 @@ Deployment to prod with specific isopod version:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      isopod_version: 0.29.6
+      isopod_version: 0.30.0
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
       env: prod
@@ -303,7 +303,7 @@ jobs:
       context: dev
       path: "myapp"
       isopod_config: "isopod.yml"
-      isopod_version: "0.29.6"
+      isopod_version: "0.30.0"
       env: "dev"
       requires:
         - build_push_image

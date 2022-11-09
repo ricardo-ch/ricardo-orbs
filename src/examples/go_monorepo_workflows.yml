@@ -21,7 +21,7 @@ usage:
 
   #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: 0.29.6
+    isopod_version: 0.30.0
 
   #FIXME: go executor version to be used (from circleci's go-orb)
   cfg-go-build-test-executor: &cfg-go-build-test-executor
@@ -89,7 +89,7 @@ usage:
     # if your app requires individual images per environment check the "worker"
     # example below.
     ###########################################################################
-    # FIXME: replace infix with your actual app name
+    # FIXME: replace name with your actual app name
     api:
       when:
         or:
@@ -135,7 +135,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-dev'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-dev-api'
             context: dev
             work_dir: *cfg-work-dir-api
             <<: *cfg-isopod-version
@@ -144,7 +145,8 @@ usage:
               - build-push-image
 
         - ric-orb/deploy_job:
-            name: 'deploy-prod'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-prod-api'
             context: prod
             work_dir: *cfg-work-dir-api
             <<: *cfg-isopod-version
@@ -160,7 +162,8 @@ usage:
                   # FIXME: replace value with your actual main/master branch name
                   - 'master'
             requires:
-              - deploy-dev
+              # FIXME: replace suffix with your actual app name
+              - deploy-dev-api
 
     ###########################################################################
     # workflow for package 'worker'
@@ -170,7 +173,7 @@ usage:
     # PROD. if your app does not require individual images per environment,
     # consider checking/following the "api" example above.
     ###########################################################################
-    # FIXME: replace infix with your actual app name
+    # FIXME: replace name with your actual app name
     worker:
       when:
         or:
@@ -215,9 +218,11 @@ usage:
             context: dev
             requires:
               - build-push-image-dev
+              - build-push-image-prod
 
         - ric-orb/deploy_job:
-            name: 'deploy-dev'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-dev-worker'
             context: dev
             work_dir: *cfg-work-dir-worker
             <<: *cfg-isopod-version
@@ -240,7 +245,8 @@ usage:
               - *build-test-worker
 
         - ric-orb/deploy_job:
-            name: 'deploy-prod'
+            # FIXME: replace suffix with your actual app name
+            name: 'deploy-prod-worker'
             context: prod
             work_dir: *cfg-work-dir-worker
             <<: *cfg-isopod-version
@@ -250,6 +256,12 @@ usage:
             # FIXME: replace value with your actual main/master branch name; 'master' is default and is not needed for the slack webhook configuration to work
             #slack_ok_branches: 'main'
             #slack_fail_branches: 'main'
+            filters:
+              branches:
+                only:
+                  # FIXME: replace value with your actual main/master branch name
+                  - master
             requires:
-              # note that this transitively filters for main/master!
+              # FIXME: replace suffix with your actual app name
+              - deploy-dev-worker
               - build-push-image-prod
