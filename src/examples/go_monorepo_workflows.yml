@@ -21,7 +21,7 @@ usage:
 
   #FIXME: isopod version that you want to use
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: 0.31.0
+    isopod_version: 0.31.1
 
   #FIXME: go executor version to be used (from circleci's go-orb)
   cfg-go-build-test-executor: &cfg-go-build-test-executor
