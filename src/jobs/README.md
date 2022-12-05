@@ -545,7 +545,7 @@ jobs:
 - ric-orb/go_build_test:
     executor:
       name: go/default
-      tag: '1.17'
+      tag: '1.19'
     context: dev
     additional_tests:
       - run:
@@ -562,7 +562,7 @@ jobs:
   - ric-orb/quality_gate_job:
       executor:
         name: go/default
-        tag: '1.17'
+        tag: '1.19'
       context: dev
 ```
 
@@ -599,7 +599,7 @@ jobs:
       context: dev
       executor:
         name: go/default
-        tag: '1.17'
+        tag: '1.19'
       language: go
       build-command: 'make install && make build'
       pre-init-steps: 

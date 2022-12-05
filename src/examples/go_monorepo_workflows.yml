@@ -26,7 +26,7 @@ usage:
   #FIXME: go executor version to be used (from circleci's go-orb)
   cfg-go-build-test-executor: &cfg-go-build-test-executor
     name: go/default
-    tag: '1.17'
+    tag: '1.19'
 
   # FIXME: replace suffix/path with your actual app name/path
   cfg-work-dir-worker: &cfg-work-dir-worker './worker'
