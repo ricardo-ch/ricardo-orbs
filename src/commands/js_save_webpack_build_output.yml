@@ -1,4 +1,4 @@
-description: Persist nextjs build files to environment specific directory in workspace
+description: Persist webpack build files to environment specific directory in workspace
 parameters:
   build_env:
     type: enum
@@ -9,7 +9,7 @@ steps:
       name: WORKSPACE - Create /<< parameters.build_env >> folder
       command: |
         mkdir -p << parameters.build_env >>
-        cp -r build .next << parameters.build_env >>
+        cp -r build << parameters.build_env >>
   - persist_to_workspace:
       name: WORKSPACE - persisting to /<< parameters.build_env >>
       root: .

@@ -18,7 +18,7 @@ steps:
   - run:
       name: Build the application
       command: yarn run build
-  - js_save_build_outputs:
+  - js_save_webpack_build_output:
       build_env: << parameters.env >>
 
 # job
