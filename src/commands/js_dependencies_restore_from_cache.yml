@@ -1,4 +1,4 @@
-description: > 
+description: >
   Save yarn dependencies from cache
   Only supports yarn 3
 parameters:

@@ -1,6 +1,6 @@
 description: >
-  Build the application  
-executor: ric-orb/js
+  Build the application
+executor: js
 resource_class: large
 parameters:
   env:
@@ -19,11 +19,11 @@ steps:
       name: Build the application
       command: yarn run build
   - js_save_build_outputs:
-      build_env: env
+      build_env: << parameters.env >>
 
 # job
 
-# 
+#
 #     resource_class: large
 #     steps:
 #       - checkout
@@ -49,7 +49,7 @@ steps:
 #           # first line is to be sure that local env is not used in production
 #           # second one is to expose the right env variables (beta or prod) to the builder
 #           command: |
-#             rm .env 
+#             rm .env
 #             APP_ENV=<< parameters.build_env >> yarn run generate:build-env
 #       - run:
 #           name: Build the application

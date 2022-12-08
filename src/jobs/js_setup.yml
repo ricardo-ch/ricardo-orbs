@@ -8,10 +8,10 @@ parameters:
     default: v1
 steps:
   - checkout
-  - js_dependencies_restore_from_cache
+  - js_dependencies_restore_from_cache:
       cache_version: << parameters.cache_version >>
   - run:
       name: Installing dependencies
       command: yarn --immutable
-  - js_dependencies_save_to_cache
+  - js_dependencies_save_to_cache:
       cache_version: << parameters.cache_version >>
