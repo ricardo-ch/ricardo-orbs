@@ -12,8 +12,7 @@ parameters:
 resource_class: << parameters.resource_class >>
 steps:
   - checkout
-  - attach_workspace:
-      at: .
+  - js_dependencies_restore_from_cache
   - when:
       condition: <<parameters.reports_path>>
       steps:

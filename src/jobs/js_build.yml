@@ -1,0 +1,56 @@
+description: >
+  Build the application  
+executor: ric-orb/js
+resource_class: large
+parameters:
+  env:
+    type: enum
+    enum: [ 'beta', 'prod' ]
+    default: beta
+steps:
+  - checkout
+  - js_dependencies_restore_from_cache
+  - run:
+      # first line is to be sure that local env is not used in production
+      # second one is to expose the right env variables (beta or prod) to the builder
+      name: Delete .env
+      command: rm .env
+  - run:
+      name: Build the application
+      command: yarn run build
+  - js_save_build_outputs:
+      build_env: env
+
+# job
+
+# 
+#     resource_class: large
+#     steps:
+#       - checkout
+#       - restore-dependencies-cache
+#       - restore-next-cache
+#       - yarn-build:
+#           build_env: << parameters.env >>
+#       - ric-orb/js_save_build_outputs:
+#           build_env: << parameters.env >>
+#       - save-next-cache
+
+# command
+# yarn-build:
+#     description: Build the application with the right env
+#     parameters:
+#       build_env:
+#         type: enum
+#         enum: [ 'beta', 'prod' ]
+#         default: beta
+#     steps:
+#       - run:
+#           name: Generate build env
+#           # first line is to be sure that local env is not used in production
+#           # second one is to expose the right env variables (beta or prod) to the builder
+#           command: |
+#             rm .env 
+#             APP_ENV=<< parameters.build_env >> yarn run generate:build-env
+#       - run:
+#           name: Build the application
+#           command: APP_ENV=<< parameters.build_env >> yarn run build

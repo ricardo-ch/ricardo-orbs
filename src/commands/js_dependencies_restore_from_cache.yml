@@ -1,0 +1,14 @@
+description: > 
+  Save yarn dependencies from cache
+  Only supports yarn 3
+parameters:
+  cache_version:
+    type: string
+    default: v1
+steps:
+  - restore_cache:
+      name: CACHE - Restore dependencies
+      keys:
+        # https://circleci.com/docs/2.0/caching/#partial-dependency-caching-strategies
+        - << parameters.cache_version >>-yarn-packages-{{ checksum "yarn.lock" }}
+        - << parameters.cache_version >>-yarn-packages-js
