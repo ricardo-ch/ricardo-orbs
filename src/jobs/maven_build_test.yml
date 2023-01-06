@@ -20,10 +20,10 @@ executor: << parameters.executor >>
 
 steps:
   - checkout
-  - maven_auth
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
       path: << parameters.path >>
+  - maven_auth
   - login_docker_registry:
       url: ${DOCKER_JFROG_REGISTRY_URL}
       username: ${DOCKER_JFROG_USERNAME}

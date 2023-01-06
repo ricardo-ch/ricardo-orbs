@@ -18,5 +18,5 @@ parameters:
 steps:
   - save_cache:
       paths:
-        - ~/.m2
+        - ~/.m2/repository
       key: << parameters.prefix >>-{{ checksum "<< parameters.pom_file >>" }}-<< parameters.path >>
