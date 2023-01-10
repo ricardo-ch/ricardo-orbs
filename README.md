@@ -40,8 +40,7 @@ For further questions/comments about this or other orbs, visit the Orb Category 
 Read [official docs](https://support.circleci.com/hc/en-us/articles/4414672675099-How-to-enable-users-who-are-not-an-organization-owner-to-publish-an-Orb).
 
 Required:
-* Access to github account that is org owner (see 1Password)
-* Install CircleCi CLI tool [from here](https://circleci.com/docs/local-cli/)
+* Access to github account that is org owner (see 1Password, search for **SRE Bot GitHub**)
 
 ##### Use org owner account
 
@@ -61,7 +60,8 @@ key and **Add Deploy Key** in *User Key*.
 3. Click the Create New Token button.
 4. In the Token name field, type a memorable name for the token. 
 5. Click the Add API Token button.
-6. After the token appears, copy and paste it to another location(1Password). You will not be able to view the token again.
+6. After the token appears, copy and paste it to another location(1Password). You will not be able to view the token again(store it in 1Password).
+   [Token location](https://start.1password.com/open/i?a=MSNVIFFLNRGSHOM4JGHI76MG6Y&v=yh5wkh5ovef7phlp4tyy5mmfau&i=dunjrth7l3okjgutto2rgoelje&h=ricardo-ch.1password.com)
 
 ##### Update CIRCLE_TOKEN variable
 
@@ -70,10 +70,6 @@ key and **Add Deploy Key** in *User Key*.
 3. If there is variable named **CIRCLE_TOKEN** remove it, by clicking on **X** next to it.
 4. Click on button **Add Environment Variable** and for name enter **CIRCLE_TOKEN** and for value API token value you just created.
 
-##### Setup API Token in CircleCI CLI
-
-In CLI run `circleci setup`, follow the steps. When asked do you want to change API token choose **Yes**.
-For token value set one you generated.
 
 ## Status
 
