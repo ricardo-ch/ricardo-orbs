@@ -35,11 +35,47 @@ Example: `[semver:major]`
 
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
 
+### How to set up publishing in CircleCI
+
+Read [official docs](https://support.circleci.com/hc/en-us/articles/4414672675099-How-to-enable-users-who-are-not-an-organization-owner-to-publish-an-Orb).
+
+Required:
+* Access to github account that is org owner (see 1Password, search for **SRE Bot GitHub**)
+
+##### Use org owner account
+
+If by any chance you are logged in GitHub logout and login back as org owner. Then login to CircleCI with 
+GitHub account.
+
+##### Update ssh key
+
+In CircleCI go to the project settings for this orb. On left side choose **SSH Keys**.
+If there is user key set, remove it and new one. You do not need to execute any command. Just clicking on **X** will remove
+key and **Add Deploy Key** in *User Key*. 
+
+##### Update CircleCI API Key
+
+1. Go to [user settings](https://app.circleci.com/settings/user). 
+2. Click [Personal API Tokens](https://app.circleci.com/settings/user/tokens) on the left.
+3. Click the Create New Token button.
+4. In the Token name field, type a memorable name for the token. 
+5. Click the Add API Token button.
+6. After the token appears, copy and paste it to another location(1Password). You will not be able to view the token again(store it in 1Password).
+   [Token location](https://start.1password.com/open/i?a=MSNVIFFLNRGSHOM4JGHI76MG6Y&v=yh5wkh5ovef7phlp4tyy5mmfau&i=dunjrth7l3okjgutto2rgoelje&h=ricardo-ch.1password.com)
+
+##### Update CIRCLE_TOKEN variable
+
+1. Go to the project settings.
+2. Select on the left **Environment Variables**.
+3. If there is variable named **CIRCLE_TOKEN** remove it, by clicking on **X** next to it.
+4. Click on button **Add Environment Variable** and for name enter **CIRCLE_TOKEN** and for value API token value you just created.
+
+
 ## Status
 
 This orb is not listed. To list it again use `circleci orb unlist <namespace>/<orb> <true|false> [flags]` or [see docs](https://circleci-public.github.io/circleci-cli/circleci_orb_unlist.html).
 
-The currently released version is 1.7.0.
+The currently released version is 5.6.0.
 
 ## Known Issue
 
