@@ -10,11 +10,11 @@ usage:
 
   references:
     deploy_cfg: &deploy_cfg
-      isopod_version: 0.31.1
+      isopod_version: 0.31.2
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
     build_cfg: &build_cfg
-      isopod_version: 0.31.1
+      isopod_version: 0.31.2
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
       docker_hub_username: $MY_DOCKER_HUB_USERNAME
