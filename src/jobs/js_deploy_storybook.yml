@@ -1,4 +1,4 @@
-name: Storybook Deployment
+description: Storybook Deployment
 executor: js
 parameters:
   resource_class:
