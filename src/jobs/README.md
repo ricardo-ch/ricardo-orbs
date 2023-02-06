@@ -618,6 +618,42 @@ jobs:
       language: javascript
 ```
 
+### Deploy Storybook job
+
+**Name**: js_deploy_storybook
+
+**Parameters**:
+- **ressource_class**: Ressource allowed to circle-ci for this step (small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+)
+
+**Examples**
+
+All default
+
+This will create an artifact of your current version of Storybook with a medium resource class. To open it check the Artifact tab of this step in circle-ci, find the index file and click on it.
+
+```yaml
+# ...
+jobs:
+  # ...
+- ric-orb/js_deploy_storybook:
+    name: Deploy Storybook
+    requires:
+      - setup
+```
+
+Custom resource_class version
+
+```yaml
+# ...
+jobs:
+  # ...
+- ric-orb/js_deploy_storybook:
+    name: Deploy Storybook
+    resource_class: large
+    requires:
+      - setup
+```
+
 ## See:
  - [Orb Author Intro](https://circleci.com/docs/2.0/orb-author-intro/#section=configuration)
  - [How To Author Commands](https://circleci.com/docs/2.0/reusing-config/#authoring-parameterized-jobs)
