@@ -1,0 +1,19 @@
+name: Storybook Deployment
+executor: js
+parameters:
+  resource_class:
+    type: enum
+    enum:
+      ["small", "medium", "medium+", "large", "xlarge", "2xlarge", "2xlarge+"]
+    default: "medium"
+resource_class: << parameters.resource_class >>
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  - run:
+      name: Build storybook
+      command: yarn build-storybook
+  - store_artifacts:
+      path: storybook-static
+      destination: storybook
