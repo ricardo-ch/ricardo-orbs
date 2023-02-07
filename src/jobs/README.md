@@ -649,7 +649,7 @@ jobs:
   # ...
 - ric-orb/js_deploy_storybook:
     name: Deploy Storybook
-    resource_class: large
+    resource_class: xlarge
     requires:
       - setup
 ```
