@@ -623,7 +623,7 @@ jobs:
 **Name**: js_deploy_storybook
 
 **Parameters**:
-- **ressource_class**: Ressource allowed to circle-ci for this step (small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+)
+- **ressource_class**: Resource allowed to circle-ci for this step (small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+)
 
 **Examples**
 
