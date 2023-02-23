@@ -26,7 +26,7 @@ steps:
       username: ${DOCKER_JFROG_USERNAME}
       password: ${DOCKER_JFROG_PASSWORD}
   - login_docker_registry:
-      url: <<DOCKER_GAR_REGISTRY_URL>>
+      url: ${DOCKER_GAR_REGISTRY_URL}
       username: ${DOCKER_GAR_USERNAME}
       password: ${DOCKER_GAR_PASSWORD}
   - restore_cache:

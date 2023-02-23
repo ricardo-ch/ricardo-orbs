@@ -15,16 +15,7 @@ parameters:
     description: 'Executor for the build (Either use existing ones: maven_docker, maven_vm or define your own)'
     type: executor
     default: 'maven_docker'
-  gar_username:
-    type: string
-    default: $DOCKER_GAR_USERNAME
-  gar_password:
-    type: string
-    default: $DOCKER_GAR_PASSWORD
-  gar_url:
-    type: string
-    default: $DOCKER_GAR_REGISTRY_URL
-    
+
 executor: << parameters.executor >>
 
 steps:
@@ -38,7 +29,7 @@ steps:
       username: ${DOCKER_JFROG_USERNAME}
       password: ${DOCKER_JFROG_PASSWORD}
   - login_docker_registry:
-      url: <<DOCKER_GAR_REGISTRY_URL>>
+      url: ${DOCKER_GAR_REGISTRY_URL}
       username: ${DOCKER_GAR_USERNAME}
       password: ${DOCKER_GAR_PASSWORD}
   - maven_build_test:
