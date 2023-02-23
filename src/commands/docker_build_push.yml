@@ -11,7 +11,14 @@ parameters:
 steps:
   - run:
       name: 'docker build'
-      command: docker build -t ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1} .
+      command: docker build .
+  - run:
+      name: 'docker tag'
+      command: |
+        [[ ${JFROG_ENABLED} == "true" ]] && docker tag ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+        [[ ${GAR_ENABLED} == "true" ]] && docker tag europe-west1-docker.pkg.dev/ricardo-platform/docker/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
   - run:
       name: 'docker push'
-      command: docker push ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+      command: |
+        [[ ${JFROG_ENABLED} == "true" ]] && docker push ric-docker.jfrog.io/ricardo-ch/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+        [[ ${GAR_ENABLED} == "true" ]] && docker push europe-west1-docker.pkg.dev/ricardo-platform/docker/<< parameters.image_name >>:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
