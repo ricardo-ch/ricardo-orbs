@@ -4,7 +4,7 @@ docker:
   - image: 'europe-west1-docker.pkg.dev/ricardo-platform/docker/isopod:<<parameters.tag>>'
     auth:
       username: _json_key
-      password: ${GOOGLE_APPLICATION_CREDENTIALS}
+      password: ${GAR_APPLICATION_CREDENTIALS}
 parameters:
   tag:
     default: ${ISOPOD_VERSION}
