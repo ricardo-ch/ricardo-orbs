@@ -5,8 +5,6 @@ description: >
 executor:
   name: isopod
   tag: $ISOPOD_VERSION
-  username: <<parameters.private_hub_username>>
-  password: <<parameters.private_hub_password>>
 
 parameters:
   image_name:
@@ -22,15 +20,6 @@ parameters:
   docker_hub_password:
     type: string
     default: $DOCKER_HUB_PASSWORD
-  private_hub_username:
-    type: string
-    default: $DOCKER_JFROG_USERNAME
-  private_hub_password:
-    type: string
-    default: $DOCKER_JFROG_PASSWORD
-  private_hub_url:
-    type: string
-    default: $DOCKER_JFROG_REGISTRY_URL
   gar_username:
     type: string
     default: $DOCKER_GAR_USERNAME
