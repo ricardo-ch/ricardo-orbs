@@ -4,7 +4,8 @@ description: >
 executor:
   name: isopod
   tag: <<parameters.isopod_version>>
-
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
 parameters:
   isopod_version:
     type: string

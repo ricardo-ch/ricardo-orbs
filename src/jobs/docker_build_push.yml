@@ -5,6 +5,8 @@ description: >
 executor:
   name: isopod
   tag: $ISOPOD_VERSION
+  username: <<parameters.private_hub_username>>
+  password: <<parameters.private_hub_password>>
 
 parameters:
   image_name:
