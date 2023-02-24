@@ -11,3 +11,11 @@ parameters:
     description: >
       Pick a specific ricardo-ch/isopod image variant.
     type: string
+  username:
+    type: string
+    description: >
+      [deprecated] Artifactory username.
+  password:
+    type: string
+    description: >
+      [deprecated] Artifactory password.
