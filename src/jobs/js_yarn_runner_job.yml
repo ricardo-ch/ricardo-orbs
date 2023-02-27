@@ -15,19 +15,19 @@ steps:
   - attach_workspace:
       at: .
   - when:
-      condition: <<parameters.reports_path>>
+      condition: << parameters.reports_path >>
       steps:
         - run:
             name: Running tests
             command: yarn << parameters.script >>
             environment:
-              JEST_JUNIT_OUTPUT_DIR: <<parameters.reports_path>>
+              JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
         - store_test_results:
-            path: <<parameters.reports_path>>
+            path: << parameters.reports_path >>
         - store_artifacts:
-            path: <<parameters.reports_path>>
+            path: << parameters.reports_path >>
   - unless:
-      condition: <<parameters.reports_path>>
+      condition: << parameters.reports_path >>
       steps:
         - run:
             name: Running tests

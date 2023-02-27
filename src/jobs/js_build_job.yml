@@ -1,0 +1,29 @@
+description: >
+  Build application
+parameters:
+  app_type:
+    type: enum
+    enum: [ 'legacy', 'nextjs' ]
+    default: nextjs
+  build_env:
+    type: enum
+    enum: ['beta', 'prod']
+    default: beta
+  resource_class:
+    type: string
+    default: large
+executor: js
+resource_class: << parameters.resource_class >>
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  - run:
+      name: Delete .env
+      command: rm .env
+  - run:
+      name: Build the application
+      command: APP_ENV=<< parameters.build_env >> yarn build
+  - js_save_build_outputs:
+      app_type: << parameters.app_type >>
+      build_env: << parameters.build_env >>
