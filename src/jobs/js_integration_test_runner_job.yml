@@ -1,0 +1,56 @@
+description: >
+  Integration test runner with Cypress
+
+# taken from cypress-in orb
+# uses cimg/node:<< parameters.node-version >>-browsers
+executor: cypress/default
+
+parallelism: << parameters.parallelism >>
+
+resource_class: << parameters.resource_class >>
+
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  - run:
+      name: Globing
+      # equally spread tests with a given split_by strategy
+      # for now we are using filesize splitting, I was not able to find solution for splitting by timing
+      # splitting by filesize is acceptable for our use cases, because we don't have many cypress tests.
+      command: |
+        shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
+        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
+  # install cypress binaries
+  - cypress/install:
+      package-manager: << parameters.package_manager >>
+  # run test by running app server, then calling cypress run script
+  - cypress/run-tests:
+      start-command: << parameters.start_command >>
+      cypress-command: << parameters.cypress_command >>
+
+parameters:
+  cypress_command:
+    description: Command used to run your Cypress tests
+    type: string
+    default: yarn ci:cypress:local
+  globPattern:
+    type: string
+  package_manager:
+    type: enum
+    enum: [ 'yarn-berry', 'yarn', 'npm']
+    default: yarn-berry
+    description: Select the default node package manager to use
+  parallelism:
+    type: integer
+    default: 4
+  resource_class:
+    type: string
+    default: medium+
+  split_by:
+    type: enum
+    enum: ['timings', 'filesize']
+  start_command:
+    description: Command used to start your local dev server for Cypress to tests against
+    type: string
+    default: yarn start
