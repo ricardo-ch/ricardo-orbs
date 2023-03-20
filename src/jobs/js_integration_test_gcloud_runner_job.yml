@@ -12,8 +12,8 @@ steps:
   - auth_gke
   - gke_port_forward:
       context: ${GKE_CLUSTER_NAME}
-      namespace: listing
-      target: svc/listing-form-spa-svc
+      namespace: << parameters.namespace >>
+      target: << parameters.target >>
       port: << parameters.port >>
   - run:
       name: Run integration tests
@@ -31,10 +31,10 @@ parameters:
     default: 3000
   namespace:
     type: string
-    default: ''
+    default: 'listing'
   target:
     type: string
-    default: ''
+    default: 'svc/listing-form-spa-svc'
   test_command:
     type: string
     default: cypress:test-beta
