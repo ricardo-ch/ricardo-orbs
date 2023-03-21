@@ -9,11 +9,11 @@ parameters:
   username:
     type: string
     description: Docker google artifact registry username
-    default: $DOCKER_GAR_USERNAME
+    default: ${DOCKER_GAR_USERNAME}
   password:
     type: string
     description: Docker google artifact registry password
-    default: $DOCKER_GAR_PASSWORD
+    default: ${DOCKER_GAR_PASSWORD}
   working_directory:
     type: string
     description: Working directory
