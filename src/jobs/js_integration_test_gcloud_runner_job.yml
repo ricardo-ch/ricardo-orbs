@@ -2,7 +2,10 @@ description: >
   Runs Cypress integration tests in gcloud, used for testing deployed, it's not parallelized.
   To be verified if it can be replaced with canary releases.
 
-executor: cypress_with_gcloud
+executor:
+  name: cypress_with_gcloud
+  username: $DOCKER_GAR_USERNAME
+  password: $DOCKER_GAR_PASSWORD
 
 steps:
   - checkout
