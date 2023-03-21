@@ -1,5 +1,10 @@
 description: Runs jest tests with CircleCI parallelism
+
+# Executor
+
 executor: js
+
+# generic CircleCI params
 
 resource_class: << parameters.resource_class >>
 parallelism: << parameters.parallelism >>
@@ -12,16 +17,20 @@ steps:
       at: .
   - run:
       name: Running tests
+      # equally spread tests with a given split_by strategy
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
         yarn << parameters.script >>
+      # this is specific to JEST test, it is run for any type of tests to keep the orb simple
+      # JEST_JUNIT_ADD_FILE_ATTRIBUTE - circleci require a 'file' attribute in xml file to group by timings
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
         JEST_JUNIT_ADD_FILE_ATTRIBUTE: 'true'
+  # storing test results is needed for circleci to compare them between runs and choose the best split
+  # in circleci UI it results with TESTS tab being filled with results
+  # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
   - store_test_results:
-      path: ./reports/junit
-  - store_artifacts:
       path: ./reports/junit
 
 # Parameters
@@ -32,8 +41,10 @@ parameters:
     default: medium+
   script:
     type: string
+  # define which files should be included for testing
   globPattern:
     type: string
+  # how many nodes will run in parallel
   parallelism:
     type: integer
     default: 4

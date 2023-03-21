@@ -41,6 +41,7 @@ parameters:
     enum: [ 'yarn-berry', 'yarn', 'npm']
     default: yarn-berry
     description: Select the default node package manager to use
+  # how many nodes will run in parallel
   parallelism:
     type: integer
     default: 4
