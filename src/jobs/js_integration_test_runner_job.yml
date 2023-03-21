@@ -26,8 +26,8 @@ steps:
       package-manager: << parameters.package_manager >>
   # run test by running app server, then calling cypress run script
   - cypress/run-tests:
-      start-command: << parameters.start_command >>
-      cypress-command: << parameters.cypress_command >>
+      start-command: yarn << parameters.start_command >>
+      cypress-command: yarn << parameters.cypress_command >>
 
 parameters:
   cypress_command:
@@ -41,6 +41,7 @@ parameters:
     enum: [ 'yarn-berry', 'yarn', 'npm']
     default: yarn-berry
     description: Select the default node package manager to use
+  # how many nodes will run in parallel
   parallelism:
     type: integer
     default: 4
@@ -53,4 +54,4 @@ parameters:
   start_command:
     description: Command used to start your local dev server for Cypress to tests against
     type: string
-    default: yarn start
+    default: start
