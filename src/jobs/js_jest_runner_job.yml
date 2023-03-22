@@ -20,8 +20,9 @@ steps:
       # equally spread tests with a given split_by strategy
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
-        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
-        yarn << parameters.script >>
+        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=timings > testing/tmp-test-list
+        yarn ts-node --skipProject --transpileOnly ./testing/displayTestList.ts
+        yarn << parameters.script >> --findRelatedTests $(cat testing/tmp-test-list) --ci --logHeapUsage --reporters=default --reporters=jest-junit << parameters.jest_options >>
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
         JEST_JUNIT_ADD_FILE_ATTRIBUTE: 'true'
@@ -47,6 +48,6 @@ parameters:
   parallelism:
     type: integer
     default: 4
-  split_by:
-    type: enum
-    enum: ['timings', 'filesize']
+  jest_options:
+    type: string
+    default: ''

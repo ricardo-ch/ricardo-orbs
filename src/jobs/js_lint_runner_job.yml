@@ -20,8 +20,8 @@ steps:
       # equally spread tests with a given split_by strategy
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
-        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
-        yarn << parameters.script >>
+        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=filesize > testing/tmp-test-list
+        yarn ci:lint $(cat testing/tmp-test-list) -f junit -o reports/junit/eslint-results.xml << parameters.eslint_options >>
   # storing test results is needed for circleci to compare them between runs and choose the best split
   # in circleci UI it results with TESTS tab being filled with results
   # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
@@ -34,8 +34,6 @@ parameters:
   resource_class:
     type: string
     default: medium+
-  script:
-    type: string
   # define which files should be included for testing
   globPattern:
     type: string
@@ -43,6 +41,6 @@ parameters:
   parallelism:
     type: integer
     default: 4
-  split_by:
-    type: enum
-    enum: ['timings', 'filesize']
+  eslint_options:
+    type: string
+    default: ''

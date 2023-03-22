@@ -17,7 +17,7 @@ steps:
       port: << parameters.port >>
   - run:
       name: Run integration tests
-      command: yarn << parameters.test_command >>
+      command: yarn ci:cypress:beta
   # videos are always stored
   - store_artifacts:
       path: integration/beta/cypress/videos
@@ -31,10 +31,7 @@ parameters:
     default: 3000
   namespace:
     type: string
-    default: 'listing'
+    default: ''
   target:
     type: string
-    default: 'svc/listing-form-spa-svc'
-  test_command:
-    type: string
-    default: cypress:test-beta
+    default: ''
