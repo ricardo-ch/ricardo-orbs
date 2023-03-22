@@ -11,8 +11,8 @@ resource_class: << parameters.resource_class >>
 
 steps:
   - checkout
-  - attach_workspace:
-      at: .
+  - js_restore_build_outputs:
+      build_env: << parameters.build_env >>
   - run:
       name: Globing
       # equally spread tests with a given split_by strategy
@@ -55,3 +55,7 @@ parameters:
     description: Command used to start your local dev server for Cypress to tests against
     type: string
     default: start
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod']
+    default: beta
