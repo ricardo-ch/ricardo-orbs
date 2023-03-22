@@ -2,7 +2,7 @@ description: >
   Runs Cypress integration tests in gcloud, used for testing deployed, it's not parallelized.
   To be verified if it can be replaced with canary releases.
 
-executor: cypress_with_gcloud
+executor: << parameters.executor >>
 
 steps:
   - checkout
@@ -35,3 +35,6 @@ parameters:
   target:
     type: string
     default: ''
+  executor:
+    type: executor
+    default: cypress_with_gcloud
