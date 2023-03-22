@@ -13,7 +13,7 @@ steps:
       at: .
   - run:
       name: Build storybook
-      command: yarn build-storybook
+      command: yarn ci:build-storybook
   - store_artifacts:
       path: storybook-static
       destination: storybook
