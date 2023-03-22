@@ -9,6 +9,11 @@ executor: js
 resource_class: << parameters.resource_class >>
 parallelism: << parameters.parallelism >>
 
+define: &test-command |
+  shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
+  circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
+  yarn << parameters.script >>
+
 # Execution
 
 steps:
@@ -18,10 +23,7 @@ steps:
   - run:
       name: Running tests
       # equally spread tests with a given split_by strategy
-      command: |
-        shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
-        circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=<< parameters.split_by >> > testing/tmp-test-list
-        yarn << parameters.script >>
+      command:  *test-command
       # this is specific to JEST test, it is run for any type of tests to keep the orb simple
       # JEST_JUNIT_ADD_FILE_ATTRIBUTE - circleci require a 'file' attribute in xml file to group by timings
       environment:
