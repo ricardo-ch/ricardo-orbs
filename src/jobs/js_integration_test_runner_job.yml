@@ -5,9 +5,7 @@ description: >
 # uses cimg/node:<< parameters.node-version >>-browsers
 executor: cypress/default
 
-parallelism: << parameters.parallelism >>
-
-resource_class: << parameters.resource_class >>
+# Execution
 
 steps:
   - checkout
@@ -28,6 +26,11 @@ steps:
   - cypress/run-tests:
       start-command: yarn << parameters.start_command >>
       cypress-command: yarn ci:cypress --spec $(cat testing/tmp-test-list) << parameters.cypress_options >>
+
+# generic CircleCI params
+
+parallelism: << parameters.parallelism >>
+resource_class: << parameters.resource_class >>
 
 parameters:
   globPattern:

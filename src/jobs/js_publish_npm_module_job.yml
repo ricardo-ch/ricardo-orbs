@@ -1,15 +1,12 @@
 description: >
   Publish npm module
-executor:
-  name: js
-parameters:
-  fingerprints:
-    description: SSH key fingerprint
-    type: string
-  before-publish:
-    type: steps
-    description: Steps to run before publish
-    default: []
+
+# Executor
+
+executor: js
+
+# Execution
+
 steps:
   - checkout
   - add_ssh_keys:
@@ -42,3 +39,14 @@ steps:
           echo "Publishing $VERSION_VAR version"
           yarn np $VERSION_VAR --yolo --contents=build --no-release-draft
         fi
+
+# Parameters
+
+parameters:
+  fingerprints:
+    description: SSH key fingerprint
+    type: string
+  before-publish:
+    type: steps
+    description: Steps to run before publish
+    default: []

@@ -1,19 +1,12 @@
 description: >
   Build application
-parameters:
-  app_type:
-    type: enum
-    enum: [ 'legacy', 'nextjs' ]
-    default: nextjs
-  build_env:
-    type: enum
-    enum: ['beta', 'prod']
-    default: beta
-  resource_class:
-    type: string
-    default: large
+
+# Executor
+
 executor: js
-resource_class: << parameters.resource_class >>
+
+# Execution
+
 steps:
   - checkout
   - attach_workspace:
@@ -27,3 +20,22 @@ steps:
   - js_save_build_outputs:
       app_type: << parameters.app_type >>
       build_env: << parameters.build_env >>
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+
+# Parameters
+
+parameters:
+  app_type:
+    type: enum
+    enum: [ 'legacy', 'nextjs' ]
+    default: nextjs
+  build_env:
+    type: enum
+    enum: ['beta', 'prod']
+    default: beta
+  resource_class:
+    type: string
+    default: large

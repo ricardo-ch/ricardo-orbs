@@ -1,11 +1,29 @@
 description: >
   This job sync ui assets with web assets to google storage bucket.
   Authentication is needed for creating/deleting storage objects.
+
+# Executor
+
 executor:
   name: isopod
   tag: <<parameters.isopod_version>>
   username: <<parameters.private_hub_username>>
   password: <<parameters.private_hub_password>>
+
+steps:
+  - js_restore_build_outputs:
+      build_env: << parameters.build_env >>
+  - run:
+      name: Authenticate to GKE
+      command: |
+        echo ${GCLOUD_WEB_ASSETS_KEY} > ${HOME}/gcp-key.json
+        gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+  - run:
+      name: Sync build content with bucket
+      command: gsutil -m rsync -r << parameters.source >> gs://<< parameters.bucket_name >><< parameters.bucket_path >>/<< parameters.app_name >>
+
+# Parameters
+
 parameters:
   isopod_version:
     type: string
@@ -30,14 +48,3 @@ parameters:
     type: enum
     enum: [ 'beta', 'prod']
     default: beta
-steps:
-  - js_restore_build_outputs:
-      build_env: << parameters.build_env >>
-  - run:
-      name: Authenticate to GKE
-      command: |
-        echo ${GCLOUD_WEB_ASSETS_KEY} > ${HOME}/gcp-key.json
-        gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-  - run:
-      name: Sync build content with bucket
-      command: gsutil -m rsync -r << parameters.source >> gs://<< parameters.bucket_name >><< parameters.bucket_path >>/<< parameters.app_name >>

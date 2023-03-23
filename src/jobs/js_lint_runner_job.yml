@@ -4,11 +4,6 @@ description: Runs jest tests with CircleCI parallelism
 
 executor: js
 
-# generic CircleCI params
-
-resource_class: << parameters.resource_class >>
-parallelism: << parameters.parallelism >>
-
 # Execution
 
 steps:
@@ -27,6 +22,11 @@ steps:
   # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
   - store_test_results:
       path: ./reports/junit
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+parallelism: << parameters.parallelism >>
 
 # Parameters
 

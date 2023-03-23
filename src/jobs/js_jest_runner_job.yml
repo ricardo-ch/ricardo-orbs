@@ -4,11 +4,6 @@ description: Runs jest tests with CircleCI parallelism
 
 executor: js
 
-# generic CircleCI params
-
-resource_class: << parameters.resource_class >>
-parallelism: << parameters.parallelism >>
-
 # Execution
 
 steps:
@@ -21,7 +16,7 @@ steps:
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=timings > testing/tmp-test-list
-        yarn ts-node --skipProject --transpileOnly ./testing/displayTestList.ts
+        yarn ts-node --skipProject --transpileOnly ./testing/ci.displayTestList.ts
         yarn << parameters.script >> --findRelatedTests $(cat testing/tmp-test-list) --ci --logHeapUsage --reporters=default --reporters=jest-junit << parameters.jest_options >>
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
@@ -32,6 +27,11 @@ steps:
   # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
   - store_test_results:
       path: ./reports/junit
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+parallelism: << parameters.parallelism >>
 
 # Parameters
 

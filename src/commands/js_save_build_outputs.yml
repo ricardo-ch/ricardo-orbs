@@ -1,11 +1,8 @@
-description: Persist build files to environment specific directory in workspace
-parameters:
-  build_env:
-    type: enum
-    enum: [ 'beta', 'prod' ]
-  app_type:
-    type: enum
-    enum: [ 'legacy', 'nextjs' ]
+description: >
+  Persist build files to environment specific directory in workspace
+
+# Execution
+
 steps:
   # if app_type === nextjs
   - when:
@@ -32,3 +29,13 @@ steps:
       root: .
       paths:
         - << parameters.build_env >>
+
+# Parameters
+
+parameters:
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod' ]
+  app_type:
+    type: enum
+    enum: [ 'legacy', 'nextjs' ]
