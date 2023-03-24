@@ -20,10 +20,10 @@ steps:
         equal: [ nextjs, << parameters.app_type >> ]
       steps:
         - run:
-          name: Generate build env
-          # expose the right env variables (beta or prod) to the builder
-          command: |
-            APP_ENV=<< parameters.build_env >> yarn run generate:build-env
+            name: Generate build env
+            # expose the right env variables (beta or prod) to the builder
+            command: |
+              APP_ENV=<< parameters.build_env >> yarn run generate:build-env
   - run:
       name: Build the application
       command: APP_ENV=<< parameters.build_env >> yarn ci:build
@@ -49,7 +49,3 @@ parameters:
   resource_class:
     type: string
     default: large
-  app_type:
-    type: enum
-    enum: [ 'legacy', 'nextjs' ]
-    default: nextjs
