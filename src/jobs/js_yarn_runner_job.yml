@@ -1,15 +1,12 @@
-description: Run any npm script (like ESLint, TS lint, phrase merge, dead code detection, ...)
+description: >
+  Run any npm script (like ESLint, TS lint, phrase merge, dead code detection, ...)
+
+# Executor
+
 executor: js
-parameters:
-  resource_class:
-    type: string
-    default: medium+
-  script:
-    type: string
-  reports_path:
-    type: string
-    default: ''
-resource_class: << parameters.resource_class >>
+
+# Execution
+
 steps:
   - checkout
   - attach_workspace:
@@ -32,3 +29,19 @@ steps:
         - run:
             name: Running tests
             command: yarn << parameters.script >>
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+
+# Parameters
+
+parameters:
+  resource_class:
+    type: string
+    default: medium+
+  script:
+    type: string
+  reports_path:
+    type: string
+    default: ''

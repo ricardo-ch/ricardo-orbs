@@ -1,7 +1,12 @@
 description: >
   Install dependencies
-executor:
-  name: js
+
+# Executor
+
+executor: js
+
+# Execution
+
 steps:
   - checkout
   - run:

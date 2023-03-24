@@ -1,0 +1,20 @@
+description: >
+  Copy build files from environment specific directory to root
+  See more in js_restore_build_outputs.yml
+
+# Execution
+
+steps:
+  - run:
+      name: WORKSPACE - Copy files to root
+      command: |
+        cp -a << parameters.build_env >>/. .
+        rm -rf << parameters.build_env >>
+
+# Parameters
+
+parameters:
+  build_env:
+    type: enum
+    enum: [ 'beta', 'prod']
+    default: beta

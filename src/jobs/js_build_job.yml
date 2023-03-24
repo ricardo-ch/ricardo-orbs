@@ -1,5 +1,42 @@
 description: >
   Build application
+
+# Executor
+
+executor: js
+
+# Execution
+
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  # to be sure that local env is not used in production
+  - run:
+      name: Delete .env
+      command: rm .env
+  - when:
+      condition:
+        equal: [ nextjs, << parameters.app_type >> ]
+      steps:
+        - run:
+            name: Generate build env
+            # expose the right env variables (beta or prod) to the builder
+            command: |
+              APP_ENV=<< parameters.build_env >> yarn run generate:build-env
+  - run:
+      name: Build the application
+      command: APP_ENV=<< parameters.build_env >> yarn ci:build
+  - js_save_build_outputs:
+      app_type: << parameters.app_type >>
+      build_env: << parameters.build_env >>
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+
+# Parameters
+
 parameters:
   app_type:
     type: enum
@@ -12,18 +49,3 @@ parameters:
   resource_class:
     type: string
     default: large
-executor: js
-resource_class: << parameters.resource_class >>
-steps:
-  - checkout
-  - attach_workspace:
-      at: .
-  - run:
-      name: Delete .env
-      command: rm .env
-  - run:
-      name: Build the application
-      command: APP_ENV=<< parameters.build_env >> yarn build
-  - js_save_build_outputs:
-      app_type: << parameters.app_type >>
-      build_env: << parameters.build_env >>

@@ -1,15 +1,21 @@
-description: Attach build files from environment specific directory in workspace
+description: >
+  Attach build files from environment specific directory in workspace
+  It is needed because today for next.js apps we have different builds for beta and prod.
+  To be reviewed at some point if we still need env specific folders in workspace
+
+# Execution
+
+steps:
+  - attach_workspace:
+      name: WORKSPACE - Attaching from /<< parameters.build_env >>
+      at: .
+  - js_copy_workspace_to_root:
+      build_env: << parameters.build_env >>
+
+# Parameters
+
 parameters:
   build_env:
     type: enum
     enum: [ 'beta', 'prod']
     default: beta
-steps:
-  - attach_workspace:
-      name: WORKSPACE - Attaching from /<< parameters.build_env >>
-      at: .
-  - run:
-      name: WORKSPACE - Copy files to root
-      command: |
-        cp -a << parameters.build_env >>/. .
-        rm -rf << parameters.build_env >>
