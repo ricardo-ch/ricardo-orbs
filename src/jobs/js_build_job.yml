@@ -11,6 +11,11 @@ steps:
   - checkout
   - attach_workspace:
       at: .
+  - when:
+      condition:
+        equal: [nextjs, << parameters.app_type >>]
+      steps:
+        - js_restore_nextjs_cache
   # to be sure that local env is not used in production
   - run:
       name: Delete .env
@@ -30,6 +35,13 @@ steps:
   - js_save_build_outputs:
       app_type: << parameters.app_type >>
       build_env: << parameters.build_env >>
+  - when:
+      condition:
+        equal: [nextjs, << parameters.app_type >>]
+      # https://nextjs.org/docs/messages/no-cache
+      # https://nextjs.org/docs/advanced-features/ci-build-caching#circleci 
+      steps:
+        - js_save_nextjs_cache
 
 # generic CircleCI params
 

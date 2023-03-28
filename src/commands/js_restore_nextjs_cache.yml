@@ -1,0 +1,9 @@
+description: >
+  restore next.js build cache
+
+steps:
+  - restore_cache:
+      name: CACHE - Restore next.js cache
+      keys:
+        - v1-next-{{ checksum "yarn.lock" }}
+        - v1-next-

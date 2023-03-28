@@ -1,0 +1,9 @@
+description: >
+  save next.js build cache
+
+steps:
+  - save_cache:
+      name: CACHE - Save next.js cache
+      key: v1-next-{{ checksum "yarn.lock" }}
+      paths:
+        - ./.next/cache
