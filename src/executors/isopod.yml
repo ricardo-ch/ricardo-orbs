@@ -1,7 +1,7 @@
 description: >
   Isopod executor
 docker:
-  - image: 'us-east4-docker.pkg.dev/ricardo-platform/docker-cicd-virtual/isopod:<<parameters.tag>>'
+  - image: 'us-east4-docker.pkg.dev/ricardo-platform/docker-virtual-cicd/isopod:<<parameters.tag>>'
     auth:
       username: _json_key
       password: ${GAR_APPLICATION_CREDENTIALS}
