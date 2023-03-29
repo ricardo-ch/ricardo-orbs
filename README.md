@@ -35,6 +35,28 @@ Example: `[semver:major]`
 
 For further questions/comments about this or other orbs, visit the Orb Category of [CircleCI Discuss](https://discuss.circleci.com/c/orbs).
 
+### How to backport a change
+Sometimes you want have a change backported to an older major version than what is built in `main`. The following steps are necessary to do so:
+
+1. Create a new branch from the latest tag of said version
+1. Cherry-pick the commit into this branch
+1. Create a new tag and push it to the remote
+1. Publish the new version
+
+Example how to backport a change into v6 of the orb:
+
+```sh
+git checkout -b backport-to-6 v6.1.0
+# cherry-pick the commit
+git tag v6.1.1
+git push origin v6.1.1
+circleci orb publish --skip-update-check orb.yml ricardo/ric-orb@6.1.1
+```
+
+You can double check if the publishing of the orb worked by visiting the following URL:
+
+* <https://circleci.com/developer/orbs/orb/ricardo/ric-orb?version=6.1.1>
+
 ### How to set up publishing in CircleCI
 
 Read [official docs](https://support.circleci.com/hc/en-us/articles/4414672675099-How-to-enable-users-who-are-not-an-organization-owner-to-publish-an-Orb).
