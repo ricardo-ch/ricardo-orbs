@@ -29,7 +29,6 @@ steps:
       command: APP_ENV=<< parameters.build_env >> yarn ci:build
   - js_save_build_outputs:
       app_type: << parameters.app_type >>
-      build_env: << parameters.build_env >>
 
 # generic CircleCI params
 

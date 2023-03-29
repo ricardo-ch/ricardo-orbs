@@ -11,8 +11,8 @@ executor:
   password: <<parameters.private_hub_password>>
 
 steps:
-  - js_restore_build_outputs:
-      build_env: << parameters.build_env >>
+  - attach_workspace:
+      at: .
   - run:
       name: Authenticate to GKE
       command: |
@@ -44,7 +44,3 @@ parameters:
     type: string
   source:
     type: string
-  build_env:
-    type: enum
-    enum: [ 'beta', 'prod']
-    default: beta
