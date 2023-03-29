@@ -9,8 +9,8 @@ executor: cypress/default
 
 steps:
   - checkout
-  - js_restore_build_outputs:
-      build_env: << parameters.build_env >>
+  - attach_workspace:
+      at: .
   - run:
       name: Globing
       # equally spread tests with a given split_by strategy
@@ -51,10 +51,6 @@ parameters:
     description: Command used to start your local dev server for Cypress to tests against
     type: string
     default: start
-  build_env:
-    type: enum
-    enum: [ 'beta', 'prod']
-    default: beta
   cypress_options:
     type: string
     default: ''
