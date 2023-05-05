@@ -9,9 +9,25 @@ parameters:
   work_dir:
     type: string
     default: .
+  image_suffix:
+    type: string
+    default: ""
 
 steps:
-  - run:
-      name: 'isopod build'
-      working_directory: << parameters.work_dir >>
-      command: isopod -f << parameters.config >> build
+  - when:
+      condition:
+        equal: [ "", << parameters.image_suffix >> ]
+      steps:
+        - run:
+            name: 'isopod build'
+            working_directory: << parameters.work_dir >>
+            command: isopod -f << parameters.config >> build
+  - when:
+      condition:
+        not:
+          equal: [ "", << parameters.image_suffix >> ]
+      steps:
+        - run:
+            name: 'isopod build'
+            working_directory: << parameters.work_dir >>
+            command: isopod -f << parameters.config >> build --image-suffix << parameters.image_suffix >>

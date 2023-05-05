@@ -64,6 +64,9 @@ parameters:
     description: 'Comma separated list of branches for which notifications are sent'
     type: string
     default: 'master'
+  image_suffix:
+    type: string
+    default: ""
 
 steps:
   - checkout
@@ -72,6 +75,7 @@ steps:
       config: << parameters.path >>/<< parameters.isopod_config >>
       to: <<parameters.env>>
       work_dir: << parameters.work_dir >>
+      image_suffix: << parameters.image_suffix >>
   - steps: << parameters.postdeploy_steps >>
   - when:
       condition: << parameters.slack_notify_success >>
