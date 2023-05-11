@@ -29,16 +29,44 @@ steps:
           echo "Last commit: $lastCommitTitle"
           echo "New '$version' version will be published..."
         fi
-  - run:
-      name: Publish version
-      command: |
-        if [ -z "$VERSION_VAR" ]
-        then
-          echo "There will be no publish, semver was not detected"
-        else
-          echo "Publishing $VERSION_VAR version"
-          yarn np $VERSION_VAR --yolo --contents=build --no-release-draft
-        fi
+  - when:
+      condition:
+        equal: [ np, << parameters.publish-with >> ]
+      steps:
+        - run:
+            name: Publish version
+            command: |
+              if [ -z "$VERSION_VAR" ]
+              then
+                echo "There will be no publish, semver was not detected"
+              else
+                echo "Publishing $VERSION_VAR version"
+                yarn np $VERSION_VAR --yolo --contents=build --no-release-draft
+              fi
+  - when:
+      condition:
+        not:
+          equal: [ np, << parameters.publish-with >> ]
+      steps:
+        - run:
+            name: Configure Git user.name and user.email based on last commit
+            command: |
+              git config --global user.name `git log -1 --pretty=format:'%an'`
+              git config --global user.email `git log -1 --pretty=format:'%ae'`
+        - run:
+            name: GAR authentication
+            command: |
+              npm set registry https://npm.pkg.github.com/
+              echo "//npm.pkg.github.com/:_authToken=$NPM_GAR_TOKEN" > ~/.npmrc
+        - run:
+            name: publish npm
+            command: |
+              npm version $VERSION_VAR
+              npm publish
+        - run:
+            name: git push version commit and tags
+            command: |
+              git push --follow-tags --set-upstream origin `git branch --show-current`
 
 # Parameters
 
@@ -48,5 +76,9 @@ parameters:
     type: string
   before-publish:
     type: steps
-    description: Steps to run before publish
+    description: Steps to run before publish. Should be removed once all our apps will be migrated to yarn-3.
     default: []
+  publish-with:
+    type: string
+    description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
+    default: np
