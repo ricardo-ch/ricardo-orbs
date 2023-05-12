@@ -50,6 +50,7 @@ git checkout -b backport-to-6 v6.1.0
 # cherry-pick the commit
 git tag v6.1.1
 git push origin v6.1.1
+circleci orb pack --skip-update-check src > orb.yml
 circleci orb publish --skip-update-check orb.yml ricardo/ric-orb@6.1.1
 ```
 
