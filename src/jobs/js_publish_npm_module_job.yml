@@ -59,7 +59,7 @@ steps:
               npm set registry https://npm.pkg.github.com/
               echo "//npm.pkg.github.com/:_authToken=$NPM_GAR_TOKEN" > ~/.npmrc
         - run:
-            name: publish npm
+            name: publish npm & git push
             command: |
               if [ -z "$VERSION_VAR" ]
               then
@@ -69,14 +69,7 @@ steps:
                 cd << parameters.build-folder >>
                 npm version $VERSION_VAR
                 npm publish
-              fi
-        - run:
-            name: git push version commit and tags
-            command: |
-              if [ -z "$VERSION_VAR" ]
-              then
-                echo "no push, semver was not detected"
-              else
+                cp package.json ../ && cd ..
                 git push --follow-tags --set-upstream origin `git branch --show-current`
               fi
 
