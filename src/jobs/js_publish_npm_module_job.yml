@@ -57,7 +57,7 @@ steps:
             name: GAR authentication
             command: |
               npm set registry https://npm.pkg.github.com/
-              echo "//npm.pkg.github.com/:_authToken=$NPM_GAR_TOKEN" > ~/.npmrc
+              echo "//npm.pkg.github.com/:_authToken=$NPM_GHR_TOKEN" > ~/.npmrc
         - run:
             name: publish npm
             command: |
