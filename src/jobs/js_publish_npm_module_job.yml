@@ -54,7 +54,8 @@ steps:
               git config --global user.name `git log -1 --pretty=format:'%an'`
               git config --global user.email `git log -1 --pretty=format:'%ae'`
         - run:
-            name: GAR authentication
+            name: Github Registry authentication
+            # NPM_GHP_TOKEN was generated for ricardo-saas user
             command: |
               npm set registry https://npm.pkg.github.com/
               echo "//npm.pkg.github.com/:_authToken=$NPM_GHP_TOKEN" > ~/.npmrc
@@ -90,6 +91,7 @@ parameters:
     description: Steps to run before publish. Should be removed once all our apps will be migrated to yarn-3.
     default: []
   publish-with:
-    type: string
-    description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
+    type: enum
+    enum: ['np', 'custom']
     default: np
+    description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
