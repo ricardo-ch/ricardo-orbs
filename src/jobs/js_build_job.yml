@@ -11,10 +11,14 @@ steps:
   - checkout
   - attach_workspace:
       at: .
-  # to be sure that local env is not used in production
-  - run:
-      name: Delete .env
-      command: rm .env
+  - when:
+      condition:
+        equal: [ true, << parameters.require_env_cleanup >> ]
+      steps:
+        # to be sure that local env is not used in production
+        - run:
+            name: Delete .env
+            command: rm .env
   - when:
       condition:
         equal: [ nextjs, << parameters.app_type >> ]
@@ -48,3 +52,7 @@ parameters:
   resource_class:
     type: string
     default: large
+  require_env_cleanup:
+    description: some apps doesn't have .env file, e.g. selling-ui
+    type: boolean
+    default: true
