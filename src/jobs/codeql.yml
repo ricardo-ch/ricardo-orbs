@@ -8,6 +8,10 @@ parameters:
   language:
     description: 'Specify the identifier for the language to create a database for, one of: cpp`, `csharp`, `go`, `java`, `javascript`, `python`, and `ruby (use javascript to analyze TypeScript code). See https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/'
     type: string
+  config-file:
+    description: Path of the Code Scanning configuration file to use. A Code Scanning configuration file specifies options on how to create the CodeQL databases and what queries to run in later steps. For more details on the format of this configuration file, refer to https://aka.ms/docs-config-file
+    type: string
+    default: ''
   pre-init-steps:
     description: 'Steps to execute prior to creating the database. This is usually used to restore a cache of dependencies used when building'
     type: steps
@@ -43,14 +47,25 @@ steps:
           cmd+=(--command '<< parameters.build-command >>')
         fi
 
+        if [[ ! -z "<< parameters.config-file >>" ]]; then
+          cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
+        fi
+
         "${cmd[@]}"
   - run:
       name: Analyzing CodeQL database
       working_directory: ~/
       command: |
-        codeql database analyze << parameters.language >>-codeql-db << parameters.language >>-security-and-quality.qls \
-          --format sarif-latest \
-          --output=<< parameters.language >>-codeql-report.sarif
+        cmd=(codeql database analyze << parameters.language >>-codeql-db)
+
+        if [[ -z "<< parameters.config-file >>" ]]; then
+          cmd+=(<< parameters.language >>-security-and-quality.qls)
+        fi
+
+        cmd+=(--format sarif-latest)
+        cmd+=(--output=<< parameters.language >>-codeql-report.sarif)
+
+        "${cmd[@]}"
   - run:
       name: Uploading results to GitHub
       working_directory: ~/
