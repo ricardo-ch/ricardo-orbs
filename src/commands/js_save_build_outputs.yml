@@ -1,17 +1,32 @@
-description: Persist build files to environment specific directory in workspace
-parameters:
-  build_env:
-    type: enum
-    enum: [ 'beta', 'prod' ]
-    default: beta
+description: >
+  Persist build files to environment specific directory in workspace
+
+# Execution
+
 steps:
-  - run:
-      name: WORKSPACE - Create /<< parameters.build_env >> folder
-      command: |
-        mkdir -p << parameters.build_env >>
-        cp -r build .next << parameters.build_env >>
-  - persist_to_workspace:
-      name: WORKSPACE - persisting to /<< parameters.build_env >>
-      root: .
-      paths:
-        - << parameters.build_env >>
+  # if app_type === nextjs
+  - when:
+      condition:
+        equal: [ nextjs, << parameters.app_type >> ]
+      steps:
+        - persist_to_workspace:
+            root: .
+            paths:
+              - build
+              - .next
+  # if app_type !== nextjs
+  - unless:
+      condition:
+        equal: [ nextjs, << parameters.app_type >> ]
+      steps:
+        - persist_to_workspace:
+            root: .
+            paths:
+              - build
+
+# Parameters
+
+parameters:
+  app_type:
+    type: enum
+    enum: [ 'legacy', 'nextjs' ]

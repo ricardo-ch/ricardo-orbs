@@ -31,6 +31,15 @@ parameters:
   private_hub_url:
     type: string
     default: $DOCKER_JFROG_REGISTRY_URL
+  gar_username:
+    type: string
+    default: $DOCKER_GAR_USERNAME
+  gar_password:
+    type: string
+    default: $DOCKER_GAR_PASSWORD
+  gar_url:
+    type: string
+    default: $DOCKER_GAR_REGISTRY_URL
   docker_version:
     type: string
     default: ''
@@ -52,6 +61,10 @@ steps:
       url: <<parameters.private_hub_url>>
       username: <<parameters.private_hub_username>>
       password: <<parameters.private_hub_password>>
+  - login_docker_registry:
+      url: <<parameters.gar_url>>
+      username: <<parameters.gar_username>>
+      password: <<parameters.gar_password>>
   - attach_workspace:
       at: .
   - docker_build_push:

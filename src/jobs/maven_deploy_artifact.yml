@@ -24,11 +24,11 @@ executor: << parameters.executor >>
 
 steps:
   - checkout
-  - maven_auth
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
       pom_file: << parameters.pom_file >>
       path: << parameters.path >>
+  - maven_auth
   - maven_deploy_artifact:
       path: << parameters.path >>
       pom_file: << parameters.pom_file >>

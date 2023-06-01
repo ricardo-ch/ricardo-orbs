@@ -1,0 +1,30 @@
+description: >
+  Storybook Deployment
+
+# Executor
+
+executor: js
+
+# Execution
+
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  - run:
+      name: Build storybook
+      command: yarn ci:build-storybook
+  - store_artifacts:
+      path: storybook-static
+      destination: storybook
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+
+parameters:
+  resource_class:
+    type: enum
+    enum:
+      ["small", "medium", "medium+", "large", "xlarge", "2xlarge", "2xlarge+"]
+    default: "medium"

@@ -179,7 +179,7 @@ jobs:
   # ...
   - ric-orb/build_push_image:
       context: dev
-      isopod_version: "0.31.1"
+      isopod_version: "0.31.2"
       docker_version: "20.10.17"
       isopod_config: isopod.yaml
       private_hub_username: ${PDOCKER_USERNAME}
@@ -200,7 +200,7 @@ jobs:
   - ric-orb/build_push_image:
       context: dev
       path: "myapp"
-      isopod_version: "0.31.1"
+      isopod_version: "0.31.2"
       docker_version: "20.10.17"
       requires:
         - maven_build_test
@@ -239,7 +239,7 @@ Deployment to prod with specific isopod version:
 jobs:
   # ...
   - ric-orb/deploy_job:
-      isopod_version: 0.31.1
+      isopod_version: 0.31.2
       private_hub_username: $PDOCKER_USERNAME
       private_hub_password: $PDOCKER_PASSWORD
       env: prod
@@ -303,7 +303,7 @@ jobs:
       context: dev
       path: "myapp"
       isopod_config: "isopod.yml"
-      isopod_version: "0.31.1"
+      isopod_version: "0.31.2"
       env: "dev"
       requires:
         - build_push_image
@@ -616,6 +616,42 @@ jobs:
       context: dev
       executor: js
       language: javascript
+```
+
+### Deploy Storybook job
+
+**Name**: js_deploy_storybook
+
+**Parameters**:
+- **ressource_class**: Resource allowed to circle-ci for this step (small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+)
+
+**Examples**
+
+All default
+
+This will create an artifact of your current version of Storybook with a medium resource class. To open it check the Artifact tab of this step in circle-ci, find the index file and click on it.
+
+```yaml
+# ...
+jobs:
+  # ...
+- ric-orb/js_deploy_storybook:
+    name: Deploy Storybook
+    requires:
+      - setup
+```
+
+Custom resource_class version
+
+```yaml
+# ...
+jobs:
+  # ...
+- ric-orb/js_deploy_storybook:
+    name: Deploy Storybook
+    resource_class: xlarge
+    requires:
+      - setup
 ```
 
 ## See:

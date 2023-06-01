@@ -1,10 +1,10 @@
 description: >
   Isopod executor
 docker:
-  - image: 'ric-docker.jfrog.io/ricardo-ch/isopod:<<parameters.tag>>'
+  - image: 'us-east4-docker.pkg.dev/ricardo-platform/docker-virtual-cicd/isopod:<<parameters.tag>>'
     auth:
-      username: <<parameters.username>>
-      password: <<parameters.password>>
+      username: _json_key
+      password: ${GAR_APPLICATION_CREDENTIALS}
 parameters:
   tag:
     default: ${ISOPOD_VERSION}
@@ -14,8 +14,8 @@ parameters:
   username:
     type: string
     description: >
-      Artifactory username.
+      [deprecated] Artifactory username.
   password:
     type: string
     description: >
-      Artifactory password.
+      [deprecated] Artifactory password.

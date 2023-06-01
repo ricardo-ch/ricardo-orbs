@@ -1,0 +1,18 @@
+description: >
+  Install dependencies
+
+# Executor
+
+executor: js
+
+# Execution
+
+steps:
+  - checkout
+  - run:
+      name: Install dependencies
+      command: yarn --immutable
+  - persist_to_workspace:
+      root: .
+      paths:
+        - node_modules

@@ -14,10 +14,27 @@ parameters:
   work_dir:
     type: string
     default: .
+  image_suffix:
+    type: string
+    default: ""
 
 steps:
   - auth_gke
-  - run:
-      working_directory: << parameters.work_dir >>
-      name: Deploy to cluster
-      command: isopod -f << parameters.config >> deploy --environment << parameters.to >>
+  - when:
+      condition:
+        equal: [ "", << parameters.image_suffix >> ]
+      steps:
+        - run:
+            working_directory: << parameters.work_dir >>
+            name: Deploy to cluster
+            command: isopod -f << parameters.config >> deploy --environment << parameters.to >>
+  - when:
+      condition:
+        not:
+          equal: [ "", << parameters.image_suffix >> ]
+      steps:
+        - run:
+            working_directory: << parameters.work_dir >>
+            name: Deploy to cluster
+            command: isopod -f << parameters.config >> deploy --environment << parameters.to >> --image-suffix << parameters.image_suffix >>
+

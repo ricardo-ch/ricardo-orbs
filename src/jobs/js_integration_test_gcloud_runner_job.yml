@@ -1,0 +1,40 @@
+description: >
+  Runs Cypress integration tests in gcloud, used for testing deployed, it's not parallelized because for now we have single-scenarios tests only.
+
+# Executor
+
+executor: cypress_with_gcloud
+
+# Execution
+
+steps:
+  - checkout
+  - run:
+      name: Installing dependencies
+      command: yarn
+  - auth_gke
+  - gke_port_forward:
+      context: ${GKE_CLUSTER_NAME}
+      namespace: << parameters.namespace >>
+      target: << parameters.target >>
+      port: << parameters.port >>
+  - run:
+      name: Run integration tests
+      command: yarn ci:cypress:beta
+  # videos are always stored
+  - store_artifacts:
+      path: integration/beta/cypress/videos
+  # screenshots are only stored, when error occurs
+  - store_artifacts:
+      path: integration/beta/cypress/screenshots
+
+parameters:
+  port:
+    type: integer
+    default: 3000
+  namespace:
+    type: string
+    default: ''
+  target:
+    type: string
+    default: ''

@@ -36,6 +36,15 @@ parameters:
   private_hub_url:
     type: string
     default: $DOCKER_JFROG_REGISTRY_URL
+  gar_username:
+    type: string
+    default: $DOCKER_GAR_USERNAME
+  gar_password:
+    type: string
+    default: $DOCKER_GAR_PASSWORD
+  gar_url:
+    type: string
+    default: $DOCKER_GAR_REGISTRY_URL
   cache_name:
     type: string
     default: ''
@@ -61,6 +70,9 @@ parameters:
     description: 'Steps that will run after build'
     type: steps
     default: [ ]
+  image_suffix:
+    type: string
+    default: ""
 
 steps:
   - checkout
@@ -80,6 +92,10 @@ steps:
       url: <<parameters.private_hub_url>>
       username: <<parameters.private_hub_username>>
       password: <<parameters.private_hub_password>>
+  - login_docker_registry:
+      url: <<parameters.gar_url>>
+      username: <<parameters.gar_username>>
+      password: <<parameters.gar_password>>
   - when:
       condition: <<parameters.cache_name>>
       steps:
@@ -92,4 +108,5 @@ steps:
   - build_push:
       work_dir: << parameters.path >>
       config: << parameters.isopod_config >>
+      image_suffix: << parameters.image_suffix >>
   - steps: << parameters.postbuild_steps >>

@@ -3,3 +3,4 @@ orb.yml
 
 # intellij IDE metadata
 **/.idea
+.DS_Store

@@ -19,7 +19,7 @@ usage:
     ric-orb: ricardo/ric-orb@5
 
   cfg-isopod-version: &cfg-isopod-version
-    isopod_version: 0.31.1
+    isopod_version: 0.31.2
 
   cfg-go-build-test-executor: &cfg-go-build-test-executor
     name: go/default

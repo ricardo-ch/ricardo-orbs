@@ -1,0 +1,47 @@
+description: >
+  Run any npm script (like ESLint, TS lint, phrase merge, dead code detection, ...)
+
+# Executor
+
+executor: js
+
+# Execution
+
+steps:
+  - checkout
+  - attach_workspace:
+      at: .
+  - when:
+      condition: << parameters.reports_path >>
+      steps:
+        - run:
+            name: Running tests
+            command: yarn << parameters.script >>
+            environment:
+              JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
+        - store_test_results:
+            path: << parameters.reports_path >>
+        - store_artifacts:
+            path: << parameters.reports_path >>
+  - unless:
+      condition: << parameters.reports_path >>
+      steps:
+        - run:
+            name: Running tests
+            command: yarn << parameters.script >>
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
+
+# Parameters
+
+parameters:
+  resource_class:
+    type: string
+    default: medium+
+  script:
+    type: string
+  reports_path:
+    type: string
+    default: ''

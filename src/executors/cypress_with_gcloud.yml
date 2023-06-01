@@ -1,0 +1,27 @@
+description: >
+  Cypress with gcloud executor
+
+parameters:
+  image:
+    default: node16-cypress-with-gcloud:latest
+    description: Custom docker image
+    type: string
+  username:
+    type: string
+    description: Docker google artifact registry username
+    default: ${DOCKER_GAR_USERNAME}
+  password:
+    type: string
+    description: Docker google artifact registry password
+    default: ${DOCKER_GAR_PASSWORD}
+  working_directory:
+    type: string
+    description: Working directory
+    default: /home/circleci
+
+docker:
+  - image: europe-west1-docker.pkg.dev/ricardo-platform/docker/<< parameters.image >>
+    auth:
+      username: << parameters.username >>
+      password: << parameters.password >>
+working_directory: << parameters.working_directory >>
