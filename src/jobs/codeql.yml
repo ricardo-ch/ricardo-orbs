@@ -42,24 +42,30 @@ steps:
       working_directory: ~/
       command: |
         cmd=(codeql database create << parameters.language >>-codeql-db)
+        echo "debug 1: $cmd"
 
         cmd+=(--language << parameters.language >>)
+        echo "debug 2: $cmd"
         cmd+=(--source-root ~/project)
+        echo "debug 3: $cmd"
         cmd+=(--no-run-unnecessary-builds)
 
         if [[ ! -z "<< parameters.build-command >>" ]]; then
+          echo "debug 4: $cmd"
           cmd+=(--command '<< parameters.build-command >>')
         fi
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
+          echo "debug 5: $cmd"
           cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
         else
           # Use default codeql config otherwise
           wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
+          echo "debug 6: $cmd"
           cmd+=(--codescanning-config ~/.codeql.conf)
         fi
 
-        echo $cmd
+        echo "debug 7: $cmd"
 
         "${cmd[@]}"
   - run:
