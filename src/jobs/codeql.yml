@@ -43,16 +43,16 @@ steps:
       command: |
         cmd=("codeql database create << parameters.language >>-codeql-db")
 
-        cmd+=("--language << parameters.language >>"")
+        cmd+=("--language << parameters.language >>")
         cmd+=("--source-root ~/project")
         cmd+=("--no-run-unnecessary-builds")
 
         if [[ ! -z "<< parameters.build-command >>" ]]; then
-          cmd+=("--command '<< parameters.build-command >>'"")
+          cmd+=("--command '<< parameters.build-command >>'")
         fi
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
-          cmd+=("--codescanning-config 'project/<< parameters.config-file >>'"")
+          cmd+=("--codescanning-config 'project/<< parameters.config-file >>'")
         else
           # Use default codeql config otherwise
           wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
