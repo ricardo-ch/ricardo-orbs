@@ -55,7 +55,7 @@ steps:
           cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
         elif
           # Use default codeql config otherwise
-          echo "<<include(templates/codeql/codeql.conf)>>" > ~/.codeql.conf
+          wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
           cmd+=(--codescanning-config '~/.codeql.conf')
         fi
 
