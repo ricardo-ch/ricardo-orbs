@@ -53,7 +53,7 @@ steps:
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
           cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
-        elif
+        else
           # Use default codeql config otherwise
           wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
           cmd+=(--codescanning-config '~/.codeql.conf')
