@@ -59,6 +59,8 @@ steps:
           cmd+=(--codescanning-config ~/.codeql.conf)
         fi
 
+        echo $cmd
+
         "${cmd[@]}"
   - run:
       name: Analyzing CodeQL database
