@@ -41,45 +41,41 @@ steps:
       name: Creating CodeQL databases to analyze
       working_directory: ~/
       command: |
-        cmd=(codeql database create << parameters.language >>-codeql-db)
-        echo "debug 1: $cmd"
+        cmd=("codeql database create << parameters.language >>-codeql-db")
 
-        cmd+=(--language << parameters.language >>)
-        echo "debug 2: $cmd"
-        cmd+=(--source-root ~/project)
-        echo "debug 3: $cmd"
-        cmd+=(--no-run-unnecessary-builds)
+        cmd+=("--language << parameters.language >>"")
+        cmd+=("--source-root ~/project")
+        cmd+=("--no-run-unnecessary-builds")
 
         if [[ ! -z "<< parameters.build-command >>" ]]; then
-          echo "debug 4: $cmd"
-          cmd+=(--command '<< parameters.build-command >>')
+          cmd+=("--command '<< parameters.build-command >>'"")
         fi
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
-          echo "debug 5: $cmd"
-          cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
+          cmd+=("--codescanning-config 'project/<< parameters.config-file >>'"")
         else
           # Use default codeql config otherwise
           wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
-          echo "debug 6: $cmd"
-          cmd+=(--codescanning-config ~/.codeql.conf)
+          cmd+=("--codescanning-config ~/.codeql.conf")
         fi
 
-        echo "debug 7: $cmd"
+        echo "$cmd"
 
         "${cmd[@]}"
   - run:
       name: Analyzing CodeQL database
       working_directory: ~/
       command: |
-        cmd=(codeql database analyze << parameters.language >>-codeql-db)
+        cmd=("codeql database analyze << parameters.language >>-codeql-db")
 
         if [[ -z "<< parameters.config-file >>" ]]; then
-          cmd+=(<< parameters.language >>-security-and-quality.qls)
+          cmd+=("<< parameters.language >>-security-and-quality.qls")
         fi
 
-        cmd+=(--format sarif-latest)
-        cmd+=(--output=<< parameters.language >>-codeql-report.sarif)
+        cmd+=("--format sarif-latest")
+        cmd+=("--output=<< parameters.language >>-codeql-report.sarif")
+
+        echo "$cmd"
 
         "${cmd[@]}"
   - run:
