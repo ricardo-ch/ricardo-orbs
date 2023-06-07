@@ -56,7 +56,7 @@ steps:
         else
           # Use default codeql config otherwise
           wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/codeql-improvements/src/templates/codeql/codeql.conf
-          cmd+=(--codescanning-config '~/.codeql.conf')
+          cmd+=(--codescanning-config ~/.codeql.conf)
         fi
 
         "${cmd[@]}"
