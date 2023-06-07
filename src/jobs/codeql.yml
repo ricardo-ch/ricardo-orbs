@@ -68,10 +68,6 @@ steps:
       command: |
         cmd=( codeql database analyze << parameters.language >>-codeql-db )
 
-        if [[ -z "<< parameters.config-file >>" ]]; then
-          cmd+=( << parameters.language >>-security-and-quality.qls )
-        fi
-
         cmd+=( --format sarif-latest )
         cmd+=( --output=<< parameters.language >>-codeql-report.sarif )
 
