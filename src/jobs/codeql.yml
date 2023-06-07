@@ -29,9 +29,13 @@ steps:
       name: Setting up CodeQL
       working_directory: ~/
       command: |
+        mkdir -p ~/bin
+
         wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz && \
-        tar -xzf ./codeql-bundle-linux64.tar.gz && \
-        ln -s ~/codeql/codeql ~/bin/codeql
+          tar -xzf ./codeql-bundle-linux64.tar.gz && \
+          ln -s ~/codeql/codeql ~/bin/codeql
+
+        echo 'export PATH=$(realpath ~)/bin:"$PATH"' >> "$BASH_ENV"
   - steps: << parameters.pre-init-steps >>
   - run:
       name: Creating CodeQL databases to analyze
@@ -49,6 +53,10 @@ steps:
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
           cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
+        elif
+          # Use default codeql config otherwise
+          echo "<<include(templates/codeql/codeql.conf)>>" > ~/.codeql.conf
+          cmd+=(--codescanning-config '~/.codeql.conf')
         fi
 
         "${cmd[@]}"
