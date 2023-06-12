@@ -29,41 +29,49 @@ steps:
       name: Setting up CodeQL
       working_directory: ~/
       command: |
+        mkdir -p ~/bin
+
         wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle-linux64.tar.gz && \
-        tar -xzf ./codeql-bundle-linux64.tar.gz && \
-        ln -s ~/codeql/codeql ~/bin/codeql
+          tar -xzf ./codeql-bundle-linux64.tar.gz && \
+          ln -s ~/codeql/codeql ~/bin/codeql
+
+        echo 'export PATH=$(realpath ~)/bin:"$PATH"' >> "$BASH_ENV"
   - steps: << parameters.pre-init-steps >>
   - run:
       name: Creating CodeQL databases to analyze
       working_directory: ~/
       command: |
-        cmd=(codeql database create << parameters.language >>-codeql-db)
+        cmd=( codeql database create << parameters.language >>-codeql-db )
 
-        cmd+=(--language << parameters.language >>)
-        cmd+=(--source-root ~/project)
-        cmd+=(--no-run-unnecessary-builds)
+        cmd+=( --language << parameters.language >> )
+        cmd+=( --source-root ~/project )
+        cmd+=( --no-run-unnecessary-builds )
 
         if [[ ! -z "<< parameters.build-command >>" ]]; then
-          cmd+=(--command '<< parameters.build-command >>')
+          cmd+=( --command '<< parameters.build-command >>' )
         fi
 
         if [[ ! -z "<< parameters.config-file >>" ]]; then
-          cmd+=(--codescanning-config 'project/<< parameters.config-file >>')
+          cmd+=( --codescanning-config 'project/<< parameters.config-file >>' )
+        else
+          # Use default codeql config otherwise
+          wget -O ~/.codeql.conf https://raw.githubusercontent.com/ricardo-ch/ricardo-orbs/main/src/templates/codeql/codeql.conf
+          cmd+=( --codescanning-config ~/.codeql.conf )
         fi
+
+        echo "${cmd[@]}"
 
         "${cmd[@]}"
   - run:
       name: Analyzing CodeQL database
       working_directory: ~/
       command: |
-        cmd=(codeql database analyze << parameters.language >>-codeql-db)
+        cmd=( codeql database analyze << parameters.language >>-codeql-db )
 
-        if [[ -z "<< parameters.config-file >>" ]]; then
-          cmd+=(<< parameters.language >>-security-and-quality.qls)
-        fi
+        cmd+=( --format sarif-latest )
+        cmd+=( --output=<< parameters.language >>-codeql-report.sarif )
 
-        cmd+=(--format sarif-latest)
-        cmd+=(--output=<< parameters.language >>-codeql-report.sarif)
+        echo "${cmd[@]}"
 
         "${cmd[@]}"
   - run:
