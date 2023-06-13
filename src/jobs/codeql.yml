@@ -76,7 +76,7 @@ steps:
         cmd+=( --output=<< parameters.language >>-codeql-report.sarif )
 
         if [[ ! -z "<< parameters.analize_params >>" ]]; then
-          cmd+=( << parameters.analize_params >>' )
+          cmd+=( << parameters.analize_params >> )
         fi
 
         echo "${cmd[@]}"
