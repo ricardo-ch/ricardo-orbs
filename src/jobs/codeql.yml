@@ -20,8 +20,8 @@ parameters:
     description: 'Use to specify the build command or script that invokes the build process for the codebase. If absent, tries to automatically build. Not needed for Python and JavaScript/TypeScript analysis'
     type: string
     default: ''
-  analyze_params:
-    description: 'Additional parameters for the codeql database analyze command. For more info see https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/database-analyze'
+  memory_usage:
+    description: 'Set total amount of RAM (in MB) the query evaluator should be allowed to use.'
     type: string
     default: ''
 
@@ -75,8 +75,8 @@ steps:
         cmd+=( --format sarif-latest )
         cmd+=( --output=<< parameters.language >>-codeql-report.sarif )
 
-        if [[ ! -z "<< parameters.analyze_params >>" ]]; then
-          cmd+=( << parameters.analyze_params >> )
+        if [[ ! -z "<< parameters.memory_usage >>" ]]; then
+          cmd+=( --ram=<< parameters.memory_usage >> )
         fi
 
         echo "${cmd[@]}"
