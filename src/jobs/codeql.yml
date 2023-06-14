@@ -20,6 +20,10 @@ parameters:
     description: 'Use to specify the build command or script that invokes the build process for the codebase. If absent, tries to automatically build. Not needed for Python and JavaScript/TypeScript analysis'
     type: string
     default: ''
+  analyze_params:
+    description: 'Additional parameters for the codeql database analyze command. For more info see https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/database-analyze'
+    type: string
+    default: ''
 
 executor: << parameters.executor >>
 
@@ -70,6 +74,10 @@ steps:
 
         cmd+=( --format sarif-latest )
         cmd+=( --output=<< parameters.language >>-codeql-report.sarif )
+
+        if [[ ! -z "<< parameters.analyze_params >>" ]]; then
+          cmd+=( << parameters.analyze_params >> )
+        fi
 
         echo "${cmd[@]}"
 
