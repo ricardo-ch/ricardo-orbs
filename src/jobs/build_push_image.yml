@@ -73,6 +73,11 @@ parameters:
   image_suffix:
     type: string
     default: ""
+  docker_template:
+    description: 'Get the Dockerfile from a template, normally for a given language/version.'
+    type: enum
+    enum: ['none', 'java17']
+    default: 'none'
 
 steps:
   - checkout
@@ -105,6 +110,9 @@ steps:
   - attach_workspace:
       at: .
   - steps: << parameters.prebuild_steps >>
+  - docker_fetch_dockerfile:
+      work_dir: << parameters.path >>
+      docker_template: << parameters.docker_template >>
   - build_push:
       work_dir: << parameters.path >>
       config: << parameters.isopod_config >>
