@@ -1,5 +1,5 @@
 # base image to build a JRE
-FROM amazoncorretto:17.0.7 as corretto-jdk
+FROM amazoncorretto:17 as corretto-jdk
 
 # required for strip-debug to work and unzipping the jar
 RUN yum install -y binutils unzip

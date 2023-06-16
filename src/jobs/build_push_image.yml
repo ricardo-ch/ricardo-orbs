@@ -73,6 +73,10 @@ parameters:
   image_suffix:
     type: string
     default: ""
+  repository_version:
+    description: 'The version of the ricardo-orbs from which to get the Dockerfiles, it can be a tag or a branch.'
+    type: string
+    default: 'v7.6.0'
   docker_template:
     description: 'Get the Dockerfile from a template, normally for a given language/version.'
     type: enum
@@ -112,6 +116,7 @@ steps:
   - steps: << parameters.prebuild_steps >>
   - docker_fetch_dockerfile:
       work_dir: << parameters.path >>
+      repository_version: << parameters.repository_version >>
       docker_template: << parameters.docker_template >>
   - build_push:
       work_dir: << parameters.path >>
