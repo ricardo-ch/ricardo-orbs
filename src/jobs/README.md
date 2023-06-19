@@ -137,6 +137,8 @@ jobs:
 - **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
 - **prebuild_steps**: the list of steps that are executed to prepare building image/application. Default is none
 - **postbuild_steps**: the list of steps that are executed after building image/application. Default is none
+- **docker_template**: The ricardo-orbs has some "templates" for standard Dockerfiles for some languages. If you want to use one, set the corresponding enum value here (see the code for the values currently available). Note that if you want to use a Dockerfile from a template, you also need to remove the Dockerfile from your repository and add `Dockerfile` to the repo's `.gitignore`, to prevent Isopod from throwing a "working directory not clean" error.
+- **repository_version**: The version of the ricardo-orbs from which to get the Dockerfiles, it can be a tag or a branch. Only makes sense if `docker_template` is used.
 
 This job builds docker image and pushes the image to the private docker registry. Uses *isopod *****executor from orb. Attaches root workspace to access existing build outputs.
 
