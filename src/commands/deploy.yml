@@ -27,7 +27,9 @@ steps:
         - run:
             working_directory: << parameters.work_dir >>
             name: Deploy to cluster
-            command: isopod -f << parameters.config >> deploy --environment << parameters.to >>
+            command: |
+              export GOOGLE_APPLICATION_CREDENTIALS="${HOME}"/gcp-key.json
+              isopod -f << parameters.config >> deploy --environment << parameters.to >>
   - when:
       condition:
         not:
@@ -36,5 +38,7 @@ steps:
         - run:
             working_directory: << parameters.work_dir >>
             name: Deploy to cluster
-            command: isopod -f << parameters.config >> deploy --environment << parameters.to >> --image-suffix << parameters.image_suffix >>
+            command: |
+              export GOOGLE_APPLICATION_CREDENTIALS="${HOME}"/gcp-key.json
+              isopod -f << parameters.config >> deploy --environment << parameters.to >> --image-suffix << parameters.image_suffix >>
 
