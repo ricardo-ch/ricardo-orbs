@@ -3,7 +3,7 @@ description: >
   Authentication is needed for creating/deleting storage objects.
 
 docker:
-  - image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
+  - image: gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 
 steps:
   - attach_workspace:
