@@ -2,13 +2,8 @@ description: >
   This job sync ui assets with web assets to google storage bucket.
   Authentication is needed for creating/deleting storage objects.
 
-# Executor
-
-executor:
-  name: isopod
-  tag: <<parameters.isopod_version>>
-  username: <<parameters.private_hub_username>>
-  password: <<parameters.private_hub_password>>
+docker:
+  - image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
 
 steps:
   - attach_workspace:
@@ -25,9 +20,6 @@ steps:
 # Parameters
 
 parameters:
-  isopod_version:
-    type: string
-    default: ${ISOPOD_VERSION}
   private_hub_username:
     type: string
     default: $DOCKER_JFROG_USERNAME
