@@ -7,9 +7,12 @@ parameters:
     description: 'The pom file to use'
     type: string
     default: 'pom.xml'
+  executor:
+    description: 'Executor for the build (Either use existing ones: maven_docker, maven_vm or define your own)'
+    type: executor
+    default: 'maven_docker'
 
-executor:
-  name: 'maven_docker'
+executor: << parameters.executor >>
 
 steps:
   - checkout
