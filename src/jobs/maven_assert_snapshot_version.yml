@@ -16,6 +16,7 @@ executor: << parameters.executor >>
 
 steps:
   - checkout
+  - maven_auth
   - maven_assert_expression:
       expression: 'project.version'
       pattern: '^.*-SNAPSHOT$'
