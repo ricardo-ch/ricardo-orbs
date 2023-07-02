@@ -3,7 +3,26 @@ description: >
 
 # Executor
 
-executor: js
+executor: << parameters.e >>
+
+# Parameters
+
+parameters:
+  e:
+    default: js_16
+    type: executor
+  reports_path:
+    default: ""
+    type: string
+  resource_class:
+    default: medium+
+    type: string
+  script:
+    type: string
+
+# generic CircleCI params
+
+resource_class: << parameters.resource_class >>
 
 # Execution
 
@@ -15,10 +34,10 @@ steps:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
             command: yarn << parameters.script >>
             environment:
               JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
+            name: Running tests
         - store_test_results:
             path: << parameters.reports_path >>
         - store_artifacts:
@@ -27,21 +46,5 @@ steps:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
             command: yarn << parameters.script >>
-
-# generic CircleCI params
-
-resource_class: << parameters.resource_class >>
-
-# Parameters
-
-parameters:
-  resource_class:
-    type: string
-    default: medium+
-  script:
-    type: string
-  reports_path:
-    type: string
-    default: ''
+            name: Running tests

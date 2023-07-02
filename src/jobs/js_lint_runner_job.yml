@@ -2,7 +2,37 @@ description: Runs jest tests with CircleCI parallelism
 
 # Executor
 
-executor: js
+executor: << parameters.e >>
+
+# Parallelism
+
+parallelism: << parameters.parallelism >>
+
+# Parameters
+
+parameters:
+  e:
+    default: js_16
+    type: executor
+  eslint_options:
+    default: ""
+    type: string
+  # define which files should be included for testing
+  globPattern:
+    type: string
+  # how many nodes will run in parallel
+  parallelism:
+    default: 4
+    type: integer
+  resource_class:
+    default: "medium+"
+    enum:
+      ["small", "medium", "medium+", "large", "xlarge", "2xlarge", "2xlarge+"]
+    type: enum
+
+# Generic CircleCI params
+
+resource_class: << parameters.resource_class >>
 
 # Execution
 
@@ -11,36 +41,14 @@ steps:
   - attach_workspace:
       at: .
   - run:
-      name: Running tests
       # equally spread tests with a given split_by strategy
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=filesize > testing/tmp-test-list
         yarn ci:lint $(cat testing/tmp-test-list) -f junit -o reports/junit/eslint-results.xml << parameters.eslint_options >>
+      name: Running tests
   # storing test results is needed for circleci to compare them between runs and choose the best split
   # in circleci UI it results with TESTS tab being filled with results
   # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
   - store_test_results:
       path: ./reports/junit
-
-# generic CircleCI params
-
-resource_class: << parameters.resource_class >>
-parallelism: << parameters.parallelism >>
-
-# Parameters
-
-parameters:
-  resource_class:
-    type: string
-    default: medium+
-  # define which files should be included for testing
-  globPattern:
-    type: string
-  # how many nodes will run in parallel
-  parallelism:
-    type: integer
-    default: 4
-  eslint_options:
-    type: string
-    default: ''

@@ -616,7 +616,7 @@ This example shows an example for javascript, where also a build of the code is 
 jobs:
   - ric-orb/codeql:
       context: dev
-      executor: js
+      executor: js_16 # or js_lts
       language: javascript
 ```
 
