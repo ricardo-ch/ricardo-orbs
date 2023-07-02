@@ -107,11 +107,10 @@ usage:
             requires:
               - integration-test
 
-
     development_workflow:
       jobs:
         - ric-orb/quality_gate_job:
-            executor: js
+            executor: js_16 # or js_lts
             context: dev
             resource_class: large
             cache_name: dependency-cache-{{ checksum "yarn.lock" }}

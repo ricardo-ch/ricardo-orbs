@@ -3,16 +3,23 @@ description: >
 
 # Executor
 
-executor: js
+executor: << parameters.e >>
+
+# Parameters
+
+parameters:
+  e:
+    default: js_16
+    type: executor
 
 # Execution
 
 steps:
   - checkout
   - run:
-      name: Install dependencies
       command: yarn --immutable
+      name: Install dependencies
   - persist_to_workspace:
-      root: .
       paths:
         - node_modules
+      root: .

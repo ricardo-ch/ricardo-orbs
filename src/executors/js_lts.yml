@@ -1,0 +1,16 @@
+description: >
+  Node.js LTS executor
+docker:
+  - auth:
+      password: <<parameters.password>>
+      username: <<parameters.username>>
+    image: cimg/node:lts
+parameters:
+  password:
+    default: $DOCKER_HUB_PASSWORD
+    description: Docker hub password
+    type: string
+  username:
+    default: $DOCKER_HUB_USERNAME
+    description: Docker hub username
+    type: string

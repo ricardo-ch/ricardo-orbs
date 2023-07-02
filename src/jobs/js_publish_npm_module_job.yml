@@ -3,7 +3,26 @@ description: >
 
 # Executor
 
-executor: js
+executor: << parameters.e >>
+
+# Parameters
+
+parameters:
+  before-publish:
+    default: []
+    description: Steps to run before publish. Should be removed once all our apps will be migrated to yarn-3.
+    type: steps
+  e:
+    default: js_16
+    type: executor
+  fingerprints:
+    description: SSH key fingerprint
+    type: string
+  publish-with:
+    default: np
+    description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
+    enum: ["np", "custom"]
+    type: enum
 
 # Execution
 
@@ -16,7 +35,6 @@ steps:
   - attach_workspace:
       at: .
   - run:
-      name: Try to extract version from last commit
       command: |
         lastCommitTitle=$(git log -1 --pretty="%s")
         version=$(echo "$lastCommitTitle" | awk -F ':' '{ print tolower($1) }' | grep -Eo '^(patch|minor|major)' || true)
@@ -29,12 +47,12 @@ steps:
           echo "Last commit: $lastCommitTitle"
           echo "New '$version' version will be published..."
         fi
+      name: Try to extract version from last commit
   - when:
       condition:
-        equal: [ np, << parameters.publish-with >> ]
+        equal: [np, << parameters.publish-with >>]
       steps:
         - run:
-            name: Publish version
             command: |
               if [ -z "$VERSION_VAR" ]
               then
@@ -43,24 +61,24 @@ steps:
                 echo "Publishing $VERSION_VAR version"
                 yarn np $VERSION_VAR --yolo --contents=build --no-release-draft
               fi
+            name: Publish version
   - when:
       condition:
         not:
-          equal: [ np, << parameters.publish-with >> ]
+          equal: [np, << parameters.publish-with >>]
       steps:
         - run:
-            name: Configure Git user.name and user.email based on last commit
             command: |
               git config --global user.name `git log -1 --pretty=format:'%an'`
               git config --global user.email `git log -1 --pretty=format:'%ae'`
+            name: Configure Git user.name and user.email based on last commit
         - run:
-            name: Github Registry authentication
             # NPM_GHP_TOKEN was generated for ricardo-saas user
             command: |
               npm set registry https://npm.pkg.github.com/
               echo "//npm.pkg.github.com/:_authToken=$NPM_GHP_TOKEN" > ~/.npmrc
+            name: Github Registry authentication
         - run:
-            name: publish npm
             command: |
               if [ -z "$VERSION_VAR" ]
               then
@@ -70,8 +88,8 @@ steps:
                 npm version $VERSION_VAR
                 npm publish
               fi
+            name: publish npm
         - run:
-            name: git push version commit and tags
             command: |
               if [ -z "$VERSION_VAR" ]
               then
@@ -79,19 +97,4 @@ steps:
               else
                 git push --follow-tags --set-upstream origin `git branch --show-current`
               fi
-
-# Parameters
-
-parameters:
-  fingerprints:
-    description: SSH key fingerprint
-    type: string
-  before-publish:
-    type: steps
-    description: Steps to run before publish. Should be removed once all our apps will be migrated to yarn-3.
-    default: []
-  publish-with:
-    type: enum
-    enum: ['np', 'custom']
-    default: np
-    description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
+            name: git push version commit and tags
