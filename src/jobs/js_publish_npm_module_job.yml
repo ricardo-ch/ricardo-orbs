@@ -55,7 +55,7 @@ steps:
               git config --global user.email `git log -1 --pretty=format:'%ae'`
         - run:
             name: Github Registry authentication
-            # NPM_GHP_TOKEN was generated for ricardo-saas user
+            # NPM_GHP_TOKEN was generated for ricardo-circleci user
             command: |
               npm set registry https://npm.pkg.github.com/
               echo "//npm.pkg.github.com/:_authToken=$NPM_GHP_TOKEN" > ~/.npmrc
@@ -68,6 +68,14 @@ steps:
               else
                 echo "Publishing $VERSION_VAR version"
                 npm version $VERSION_VAR
+
+                # ci:prepublish need to copy at least package.json file into build folder
+                # ideally packages.json should be formatted to have only necessary information, e.g. excluding devDependencies
+                yarn ci:prepublish
+
+                # we will publish from ./build folder
+                cd build
+
                 npm publish
               fi
         - run:
