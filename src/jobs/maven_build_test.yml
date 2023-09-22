@@ -3,6 +3,10 @@ description: >
   Supports app-module from monorepo as well as single app from single-app-repo.
 
 parameters:
+  working_directory:
+    description: 'In which directory to run the steps. Will be interpreted as an absolute path.'
+    type: string
+    default: .
   path:
     description: 'Path of maven module for the app, or "." for single-app-repo'
     type: string
@@ -18,8 +22,11 @@ parameters:
 
 executor: << parameters.executor >>
 
+working_directory: ~/project/<< parameters.working_directory >>
+
 steps:
-  - checkout
+  - checkout:
+      path: ~/project
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
       path: << parameters.path >>
