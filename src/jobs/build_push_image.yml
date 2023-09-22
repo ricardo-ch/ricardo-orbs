@@ -10,6 +10,10 @@ executor:
   password: <<parameters.private_hub_password>>
 
 parameters:
+  working_directory:
+    description: 'In which directory to run the steps. Will be interpreted as an absolute path.'
+    type: string
+    default: .
   path:
     description: 'Path to directory containing isopod.yml file'
     type: string
@@ -74,8 +78,11 @@ parameters:
     type: string
     default: ""
 
+working_directory: ~/project/<< parameters.working_directory >>
+
 steps:
-  - checkout
+  - checkout:
+      path: ~/project
   # only really needed for maven/java, but less painful to just do it than to configure it in each java build config
   - maven_auth:
       maven_credentials: << parameters.maven_credentials >>

@@ -9,6 +9,10 @@ executor:
   password: <<parameters.private_hub_password>>
 
 parameters:
+  working_directory:
+    description: 'In which directory to run the steps. Will be interpreted as an absolute path.'
+    type: string
+    default: .
   path:
     description: 'Path to directory containing isopod.yml file'
     type: string
@@ -68,8 +72,11 @@ parameters:
     type: string
     default: ""
 
+working_directory: ~/project/<< parameters.working_directory >>
+
 steps:
-  - checkout
+  - checkout:
+      path: ~/project
   - steps: << parameters.predeploy_steps >>
   - deploy:
       config: << parameters.path >>/<< parameters.isopod_config >>
