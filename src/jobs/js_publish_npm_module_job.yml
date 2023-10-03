@@ -87,6 +87,7 @@ steps:
               else
                 git push --follow-tags --set-upstream origin `git branch --show-current`
               fi
+  - steps: << parameters.after-publish >>
 
 # Parameters
 
@@ -97,6 +98,10 @@ parameters:
   before-publish:
     type: steps
     description: Steps to run before publish. Should be removed once all our apps will be migrated to yarn-3.
+    default: []
+  after-publish:
+    type: steps
+    description: Steps to run after successful publish. Used for deploying storybook.
     default: []
   publish-with:
     type: enum
