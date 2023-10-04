@@ -224,10 +224,10 @@ jobs:
 - **postdeploy_steps**: steps that are executed after deployment. Default is none
 - **slack_notify_success**: flag to send slack message if job is successful. Default is false
 - **slack_ok_webhook**: the slack webhook used to send slack message on success. Default is value from context variable $SLACK_WEBHOOK
-- **slack_ok_branches**: comma separated list of branches for which successful slack message will be sent. Default is *master*
+- **slack_ok_branches**: comma separated list of branches for which successful slack message will be sent. Default is *master,main*
 - **slack_notify_failure**: flag to send slack message when job fails. Default is false
 - **slack_fail_webhook**: the slack webhook used to send slack message on failure. Default is value from context variable $SLACK_WEBHOOK
-- **slack_fail_branches**: comma separated list of branches for which failure slack message will be sent. Default is *master*
+- **slack_fail_branches**: comma separated list of branches for which failure slack message will be sent. Default is *master,main*
 - **work_dir**: working directory for default deployment (with the isopod). This should be relative to the job working directory. Default is `.`
 
 This job executes deployment on GKE.
