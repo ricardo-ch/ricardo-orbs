@@ -56,7 +56,7 @@ parameters:
   slack_ok_branches:
     description: 'Comma separated list of branches for which notifications are sent'
     type: string
-    default: 'master'
+    default: 'master,main'
   slack_notify_failure:
     description: 'Flag to trigger sending slack notification on failure'
     type: boolean
@@ -67,7 +67,7 @@ parameters:
   slack_fail_branches:
     description: 'Comma separated list of branches for which notifications are sent'
     type: string
-    default: 'master'
+    default: 'master,main'
   image_suffix:
     type: string
     default: ""
