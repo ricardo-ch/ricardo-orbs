@@ -85,9 +85,6 @@ jobs:
 - **path**: Path to directory containing dockerfile (also working directory). Default is *"."*
 - **docker_hub_username**: Docker hub credentials. Default is context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password**: Docker hub credentials. Default is context variable *$DOCKER_HUB_PASSWORD*
-- **private_hub_url**: JFrog url. Default is *$DOCKER_JFROG_REGISTRY_URL*
-- **private_hub_username**: JFrog credentials. Default is *$DOCKER_JFROG_USERNAME*
-- **private_hub_password**: JFrog credentials. Default is *$DOCKER_JFROG_PASSWORD*
 - **docker_version**: Default is *''* (which defaults to CircleCI's default)
 - **docker_layer_caching**: for enabling [docker layer caching](https://circleci.com/docs/2.0/docker-layer-caching/). Default is *true*
 
@@ -127,9 +124,6 @@ jobs:
 - **isopod_version**: isopod version in executor. Not required. Default is *latest*
 - **docker_hub_username**: username for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_USERNAME*
 - **docker_hub_password**: password for public docker registry(Docker Hub), default is value of context variable *$DOCKER_HUB_PASSWORD*
-- **private_hub_username**: username for private docker registry, default is value of context variable *$DOCKER_JFROG_USERNAME*
-- **private_hub_password**: password for private docker registry, default is value of context variable *$DOCKER_JFROG_PASSWORD*
-- **private_hub_url**: url for private docker registry, default is value of context variable *$DOCKER_JFROG_REGISTRY_URL*
 - **cache_name**: Not required. If not specified cache will not be used/created
 - **maven_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .m2/settings.xml file. Default is *ARTIFACTORY_MAVEN_CREDENTIALS* which already defined in our contexts
 - **npm_credentials**: environment/context variable name (just the name, not the actual variable!) which holds base64 encoded content for .npmrc file. Default is *NPM_RC* which already defined in our contexts
@@ -184,8 +178,6 @@ jobs:
       isopod_version: "0.31.2"
       docker_version: "20.10.17"
       isopod_config: isopod.yaml
-      private_hub_username: ${PDOCKER_USERNAME}
-      private_hub_password: ${PDOCKER_PASSWORD}
       docker_hub_username: ${MY_DOCKER_HUB_USERNAME}
       docker_hub_password: ${MY_DOCKER_HUB_PASSWORD}
       private_hub_url: ${PDOCKER_REGISTRY_URL}
@@ -217,8 +209,6 @@ jobs:
 - **path**: Path to directory containing isopod.yml file. Default is "*.*"
 - **isopod_config**: Name of the isopod config file. Default is *isopod.yml*
 - **isopod_version**: isopod version in executor. Not required. Default is **latest**
-- **private_hub_username**: username for private docker registry. Default is value of context variable ${DOCKER_JFROG_USERNAME}
-- **private_hub_password**: password for private docker registry. Default is value of context variable ${DOCKER_JFROG_PASSWORD}
 - **env**: environment for which deployment is executed. Values: *prod*, *dev*. Default is *dev*
 - **predeploy_steps**: steps that are executed to prepare deployment. Default is none
 - **postdeploy_steps**: steps that are executed after deployment. Default is none
@@ -242,8 +232,6 @@ jobs:
   # ...
   - ric-orb/deploy_job:
       isopod_version: 0.31.2
-      private_hub_username: $PDOCKER_USERNAME
-      private_hub_password: $PDOCKER_PASSWORD
       env: prod
       context: prod
       requires:
@@ -317,8 +305,6 @@ jobs:
 
 **Parameters**:
 - **isopod_version**: isopod version in executor. Not required. Default is **latest**
-- **private_hub_username**: username for private docker registry, default is value of context variable DOCKER_JFROG_USERNAME
-- **private_hub_password**: password for private docker registry, default is value of context variable DOCKER_JFROG_PASSWORD
 - **bucket_name**: name of the bucket where assets will be pushed, default is value of context variable GCLOUD_WEB_ASSETS_BUCKET_NAME
 - **bucket_path**: bucket's path where assets will be pushed, default is /static-assets
 - **app_name**: this is a folder name for application's assets, the convention is to use a github repo name
