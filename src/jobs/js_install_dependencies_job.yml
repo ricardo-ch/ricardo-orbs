@@ -3,7 +3,9 @@ description: >
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -16,3 +18,11 @@ steps:
       root: .
       paths:
         - node_modules
+
+# Parameters
+
+parameters:
+  node-version:
+    default: lts
+    description: Node version
+    type: string

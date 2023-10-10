@@ -3,7 +3,9 @@ description: >
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -28,3 +30,7 @@ parameters:
     enum:
       ["small", "medium", "medium+", "large", "xlarge", "2xlarge", "2xlarge+"]
     default: "medium"
+  node-version:
+    default: lts
+    description: Node version
+    type: string

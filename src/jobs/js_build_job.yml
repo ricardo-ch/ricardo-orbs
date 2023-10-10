@@ -3,7 +3,9 @@ description: >
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -56,3 +58,7 @@ parameters:
     description: some apps doesn't have .env file, e.g. selling-ui
     type: boolean
     default: true
+  node-version:
+    default: lts
+    description: Node version
+    type: string
