@@ -31,10 +31,10 @@ parameters:
     default: $ISOPOD_VERSION
   private_hub_username:
     type: string
-    default: $DOCKER_JFROG_USERNAME
+    default: $DOCKER_GAR_USERNAME
   private_hub_password:
     type: string
-    default: $DOCKER_JFROG_PASSWORD
+    default: $DOCKER_GAR_PASSWORD
   work_dir:
     type: string
     default: .
