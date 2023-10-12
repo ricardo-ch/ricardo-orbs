@@ -78,8 +78,6 @@ steps:
                 # we will publish from ./build folder
                 cd build
 
-                cat package.json
-
                 npm publish
               fi
         - run:
