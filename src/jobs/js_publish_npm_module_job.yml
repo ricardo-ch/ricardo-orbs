@@ -3,7 +3,9 @@ description: >
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -103,3 +105,7 @@ parameters:
     enum: ['np', 'custom']
     default: np
     description: Which tool should be used to publish. This is temporary param and will be removed once we get rid of np module from all our apps
+  node-version:
+    default: lts
+    description: Node version
+    type: string

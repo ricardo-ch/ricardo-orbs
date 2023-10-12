@@ -2,7 +2,9 @@ description: Runs jest tests with CircleCI parallelism
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -51,3 +53,7 @@ parameters:
   jest_options:
     type: string
     default: ''
+  node-version:
+    default: lts
+    description: Node version
+    type: string

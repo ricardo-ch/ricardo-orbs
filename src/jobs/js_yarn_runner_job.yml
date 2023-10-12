@@ -3,7 +3,9 @@ description: >
 
 # Executor
 
-executor: js
+executor:
+  name: js
+  node-version: <<parameters.node-version>>
 
 # Execution
 
@@ -45,3 +47,7 @@ parameters:
   reports_path:
     type: string
     default: ''
+  node-version:
+    default: lts
+    description: Node version
+    type: string
