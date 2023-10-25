@@ -17,7 +17,7 @@ steps:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
+            name: Running yarn command
             command: cd << parameters.monorepo >> && yarn << parameters.script >>
             environment:
               JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
@@ -29,8 +29,8 @@ steps:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
-            command: yarn << parameters.script >>
+            name: Running yarn command
+            command: cd << parameters.monorepo >> && yarn << parameters.script >>
 
 # generic CircleCI params
 
