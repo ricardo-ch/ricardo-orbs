@@ -25,7 +25,7 @@ steps:
                   environment:
                     JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
         - unless:
-            condition: << parameters.reports_path >>
+            condition: << parameters.monorepo >>
             steps:
               - run:
                   name: Running tests
