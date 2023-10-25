@@ -16,22 +16,11 @@ steps:
   - when:
       condition: << parameters.reports_path >>
       steps:
-        - when:
-            condition: << parameters.monorepo >>
-            steps:
-              - run:
-                  name: Running tests
-                  command: cd << parameters.monorepo >> && yarn << parameters.script >>
-                  environment:
-                    JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
-        - unless:
-            condition: << parameters.monorepo >>
-            steps:
-              - run:
-                  name: Running tests
-                  command: yarn << parameters.script >>
-                  environment:
-                    JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
+        - run:
+            name: Running tests
+            command: cd << parameters.monorepo >> && yarn << parameters.script >>
+            environment:
+              JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
         - store_test_results:
             path: << parameters.reports_path >>
         - store_artifacts:
@@ -64,4 +53,4 @@ parameters:
     type: string
   monorepo:
     type: string
-    default: ''
+    default: '.'
