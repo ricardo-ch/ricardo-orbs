@@ -6,6 +6,13 @@ docker:
   - image: gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 
 steps:
+  - when:
+      condition:
+        equal: [ true, << parameters.do_checkout >> ]
+      steps:
+        # in auth0 build files are committed
+        - checkout
+  - checkout
   - attach_workspace:
       at: .
   - run:
@@ -30,3 +37,6 @@ parameters:
     type: string
   source:
     type: string
+  do_checkout:
+    type: boolean
+    default: false
