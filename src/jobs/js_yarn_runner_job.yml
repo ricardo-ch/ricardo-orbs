@@ -18,7 +18,9 @@ steps:
       steps:
         - run:
             name: Running yarn command
-            command: cd << parameters.monorepo >> && yarn << parameters.script >>
+            command: |
+              cd << parameters.monorepoAppPath >>
+              yarn << parameters.script >>
             environment:
               JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
         - store_test_results:
@@ -30,7 +32,9 @@ steps:
       steps:
         - run:
             name: Running yarn command
-            command: cd << parameters.monorepo >> && yarn << parameters.script >>
+            command: |
+              cd << parameters.monorepoAppPath >>
+              yarn << parameters.script >>
 
 # generic CircleCI params
 
@@ -51,6 +55,6 @@ parameters:
     default: lts
     description: Node version
     type: string
-  monorepo:
+  monorepoAppPath:
     type: string
     default: '.'
