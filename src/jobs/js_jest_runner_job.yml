@@ -18,11 +18,11 @@ steps:
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=timings > testing/tmp-test-list
-        yarn ts-node --transpileOnly ./testing/ci.displayTestList.ts
+        << parameters.pre_test >>
         yarn << parameters.script >> --findRelatedTests $(cat testing/tmp-test-list) --ci --logHeapUsage --reporters=default --reporters=jest-junit << parameters.jest_options >>
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
-        JEST_JUNIT_ADD_FILE_ATTRIBUTE: 'true'
+        JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
         TESTING_LIBRARY_ASYNC_UTIL_TIMEOUT: 5000
   # storing test results is needed for circleci to compare them between runs and choose the best split
   # in circleci UI it results with TESTS tab being filled with results
@@ -38,6 +38,9 @@ parallelism: << parameters.parallelism >>
 # Parameters
 
 parameters:
+  pre_test:
+    type: string
+    default: yarn ts-node --skipProject --transpileOnly ./testing/ci.displayTestList.ts
   resource_class:
     type: string
     default: medium+
@@ -52,7 +55,7 @@ parameters:
     default: 4
   jest_options:
     type: string
-    default: ''
+    default: ""
   node-version:
     default: lts
     description: Node version
