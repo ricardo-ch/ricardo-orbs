@@ -18,7 +18,7 @@ steps:
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=timings > testing/tmp-test-list
-        yarn ts-node --skipProject --transpileOnly ./testing/ci.displayTestList.ts
+        yarn ts-node --transpileOnly ./testing/ci.displayTestList.ts
         yarn << parameters.script >> --findRelatedTests $(cat testing/tmp-test-list) --ci --logHeapUsage --reporters=default --reporters=jest-junit << parameters.jest_options >>
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
