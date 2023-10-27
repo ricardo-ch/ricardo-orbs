@@ -7,19 +7,20 @@ executor:
   name: js
   node-version: <<parameters.node-version>>
 
+working_directory: ~/project/<< parameters.working_directory >>
+
 # Execution
 
 steps:
-  - checkout
+  - checkout:
+      path: ~/project
   - run:
       name: Install dependencies
-      command: |
-        cd << parameters.monorepoAppPath >>
-        yarn --immutable
+      command: yarn --immutable
   - persist_to_workspace:
       root: .
       paths:
-        - << parameters.monorepoAppPath >>/node_modules
+        - node_modules
 
 # Parameters
 
@@ -28,6 +29,6 @@ parameters:
     default: lts
     description: Node version
     type: string
-  monorepoAppPath:
+  working_directory: 
     type: string
-    default: '.'
+    default: ''
