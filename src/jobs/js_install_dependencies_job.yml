@@ -29,6 +29,6 @@ parameters:
     default: lts
     description: Node version
     type: string
-  working_directory: 
+  working_directory:
     type: string
     default: ''
