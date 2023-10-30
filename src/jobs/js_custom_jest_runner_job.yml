@@ -1,3 +1,6 @@
+# this job is not using ts-node which is breaking the jest tests with Typescript 5+
+# to use it you have to change the extension of your ci.displayTestList file from "ts" to "js"
+
 description: Runs jest tests with CircleCI parallelism
 
 # Executor
@@ -18,11 +21,11 @@ steps:
       command: |
         shopt -s globstar # This is to make sure that ** is understood as pattern when globbing, e.g. /src/**/*.test.ts
         circleci tests glob << parameters.globPattern >> | circleci tests split --split-by=timings > testing/tmp-test-list
-        yarn ts-node --skipProject --transpileOnly ./testing/ci.displayTestList.ts
+        yarn node --skipProject --transpileOnly ./testing/ci.displayTestList.js
         yarn << parameters.script >> --findRelatedTests $(cat testing/tmp-test-list) --ci --logHeapUsage --reporters=default --reporters=jest-junit << parameters.jest_options >>
       environment:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
-        JEST_JUNIT_ADD_FILE_ATTRIBUTE: 'true'
+        JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
         TESTING_LIBRARY_ASYNC_UTIL_TIMEOUT: 5000
   # storing test results is needed for circleci to compare them between runs and choose the best split
   # in circleci UI it results with TESTS tab being filled with results
@@ -52,7 +55,7 @@ parameters:
     default: 4
   jest_options:
     type: string
-    default: ''
+    default: ""
   node-version:
     default: lts
     description: Node version
