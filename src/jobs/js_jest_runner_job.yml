@@ -24,9 +24,9 @@ steps:
         JEST_JUNIT_OUTPUT_DIR: ./reports/junit
         JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
         TESTING_LIBRARY_ASYNC_UTIL_TIMEOUT: 5000
-  # storing test results is needed for circleci to compare them between runs and choose the best split
-  # in circleci UI it results with TESTS tab being filled with results
-  # for debugging use circleci's store_artifacts command, in circleci UI you will see the content of xml file
+  # storing test results is needed for CircleCI to compare them between runs and choose the best split
+  # in CircleCI UI it results with TESTS tab being filled with results
+  # for debugging use CircleCI's store_artifacts command, in CircleCI UI you will see the content of xml file
   - store_test_results:
       path: ./reports/junit
 
