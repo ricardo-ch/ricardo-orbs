@@ -1,0 +1,26 @@
+description: |
+  Python executor using [CircleCI images](https://circleci.com/developer/images/image/cimg/python)
+docker:
+  - image: cimg/python:<< parameters.python-version >><< parameters.variant >>
+    auth:
+      username: <<parameters.username>>
+      password: <<parameters.password>>
+parameters:
+  python-version:
+    default: "3.10"
+    description: |
+      The version of Python to use. This can be a full SemVer point release (such as 3.8.1) or just the minor release (such as 3.8).
+    type: string
+  variant:
+    default: ""
+    description: |
+      Variant tags, if available, can optionally be used. For example, the Node.js variant could be used like this: "-node"
+    type: string
+  username:
+    type: string
+    description: Docker hub username
+    default: $DOCKER_HUB_USERNAME
+  password:
+    type: string
+    description: Docker hub password
+    default: $DOCKER_HUB_PASSWORD
