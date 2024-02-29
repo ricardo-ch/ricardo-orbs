@@ -15,7 +15,6 @@ usage:
   version: 2.1
 
   orbs:
-    compliance: ricardo/compliance-orb@2
     go: circleci/go@1.7.1
     ric-orb: ricardo/ric-orb@5
 
@@ -129,11 +128,6 @@ usage:
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev
 
-        - compliance/sre_compliance_checks:
-            context: dev
-            requires:
-              - build-push-image
-
         - ric-orb/deploy_job:
             # FIXME: replace suffix with your actual app name
             name: 'deploy-dev-api'
@@ -213,12 +207,6 @@ usage:
               - *build-test-worker
               # note semantic of 'requires': on master this is ignored
               - approve_deploy_dev
-
-        - compliance/sre_compliance_checks:
-            context: dev
-            requires:
-              - build-push-image-dev
-              - build-push-image-prod
 
         - ric-orb/deploy_job:
             # FIXME: replace suffix with your actual app name
