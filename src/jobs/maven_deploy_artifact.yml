@@ -29,7 +29,6 @@ executor: << parameters.executor >>
 steps:
   - checkout
   - install_gcloud
-  - auth_gke
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
       pom_file: << parameters.pom_file >>

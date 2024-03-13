@@ -21,7 +21,6 @@ executor: << parameters.executor >>
 steps:
   - checkout
   - install_gcloud
-  - auth_gke
   - maven_auth:
       maven_credentials: << parameters.maven_credentials >>
   - maven_assert_expression:
