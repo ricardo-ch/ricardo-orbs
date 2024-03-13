@@ -1,0 +1,11 @@
+description: >
+  If executor does not have gcloud and kubectl this command install both and add to the PATH
+steps:
+  - run:
+      name: install gcloud
+      command: |
+        curl https://sdk.cloud.google.com > install.sh
+        bash install.sh --disable-prompts
+        export PATH=/home/circleci/google-cloud-sdk/bin/:${PATH}
+        gcloud components install kubectl
+        echo 'export PATH=/home/circleci/google-cloud-sdk/bin/:${PATH}' >> $BASH_ENV

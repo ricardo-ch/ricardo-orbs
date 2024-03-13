@@ -31,14 +31,7 @@ working_directory: ~/project/<< parameters.working_directory >>
 steps:
   - checkout:
       path: ~/project
-  - run:
-      name: install gcloud
-      command: |
-        curl https://sdk.cloud.google.com > install.sh
-        bash install.sh --disable-prompts
-        export PATH=/home/circleci/google-cloud-sdk/bin/:${PATH}
-        gcloud components install kubectl
-        echo 'export PATH=/home/circleci/google-cloud-sdk/bin/:${PATH}' >> $BASH_ENV
+  - install_gcloud
   - auth_gke
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
