@@ -31,6 +31,11 @@ working_directory: ~/project/<< parameters.working_directory >>
 steps:
   - checkout:
       path: ~/project
+  - run:
+      name: install gcloud
+      command: |
+        curl https://sdk.cloud.google.com > install.sh
+        bash install.sh --disable-prompts
   - auth_gke
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
