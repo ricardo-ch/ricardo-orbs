@@ -36,6 +36,7 @@ steps:
       command: |
         curl https://sdk.cloud.google.com > install.sh
         bash install.sh --disable-prompts
+        echo 'export PATH=/home/circleci/google-cloud-sdk/bin/:${PATH}' >> $BASH_ENV
   - auth_gke
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
