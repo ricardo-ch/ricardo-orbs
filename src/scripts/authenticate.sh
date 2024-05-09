@@ -8,6 +8,5 @@ kubectl config rename-context gke_"${GOOGLE_PROJECT_ID}"_"${GKE_COMPUTE_ZONE}"_"
 # If cluster is a "dev-banana" cluster, pull it again and rename it to "dev-cookie". Required for isopod to work
 if [ "${GKE_CLUSTER_NAME}" = "dev-banana" ]; then
   gcloud --quiet container clusters get-credentials "${GKE_CLUSTER_NAME}" --zone "${GKE_COMPUTE_ZONE}"
-  kubectl config rename-context gke_"${GOOGLE_PROJECT_ID}"_"${GKE_COMPUTE_ZONE}"_"${GKE_CLUSTER_NAME}" "${GKE_CLUSTER_NAME}"
-  kubectl config rename-context "${GKE_CLUSTER_NAME}" "dev-cookie"
+  kubectl config rename-context gke_"${GOOGLE_PROJECT_ID}"_"${GKE_COMPUTE_ZONE}"_"${GKE_CLUSTER_NAME}" "dev-cookie"
 fi
