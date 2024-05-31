@@ -7,17 +7,20 @@ executor:
   name: js
   node-version: <<parameters.node-version>>
 
+working_directory: ~/project/<< parameters.working_directory >>
+
 # Execution
 
 steps:
-  - checkout
+  - checkout:
+      path: ~/project
   - attach_workspace:
       at: .
   - when:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
+            name: Running yarn command
             command: yarn << parameters.script >>
             environment:
               JEST_JUNIT_OUTPUT_DIR: << parameters.reports_path >>
@@ -29,7 +32,7 @@ steps:
       condition: << parameters.reports_path >>
       steps:
         - run:
-            name: Running tests
+            name: Running yarn command
             command: yarn << parameters.script >>
 
 # generic CircleCI params
@@ -51,3 +54,6 @@ parameters:
     default: lts
     description: Node version
     type: string
+  working_directory:
+    type: string
+    default: ''
