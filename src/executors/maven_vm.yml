@@ -2,5 +2,12 @@ description: >
   VM executor with JDK 11 to build java applications.
   Typically required if maven build needs docker for testcontainers.
 
+parameters:
+  tag:
+    default: 'current'
+    description: >
+      Pick a specific ubuntu-2204 image version
+    type: string
+
 machine:
-  image: 'ubuntu-2204:current'
+  image: 'ubuntu-2204:<< parameters.tag >>'
