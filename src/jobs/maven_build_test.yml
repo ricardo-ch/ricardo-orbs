@@ -19,6 +19,10 @@ parameters:
     description: 'Executor for the build (Either use existing ones: maven_docker, maven_vm or define your own)'
     type: executor
     default: 'maven_docker'
+  maven_credentials:
+    # NOTE that this is the context variable name, not the context variable itself (i.e. ARTIFACTORY_MAVEN_CREDENTIALS, not ${ARTIFACTORY_MAVEN_CREDENTIALS})
+    type: string
+    default: 'ARTIFACTORY_MAVEN_CREDENTIALS'
 
 executor: << parameters.executor >>
 
@@ -27,10 +31,13 @@ working_directory: ~/project/<< parameters.working_directory >>
 steps:
   - checkout:
       path: ~/project
+  - install_gcloud
+  - auth_gke
   - maven_restore_artifacts:
       prefix: << parameters.cache_key_prefix >>
       path: << parameters.path >>
-  - maven_auth
+  - maven_auth:
+      maven_credentials: << parameters.maven_credentials >>
   - login_docker_registry:
       url: ${DOCKER_GAR_REGISTRY_URL}
       username: ${DOCKER_GAR_USERNAME}
